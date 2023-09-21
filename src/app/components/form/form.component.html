@@ -1,0 +1,23 @@
+<form [formGroup]="form" (submit)="handleSubmit()">
+    <div class="input-container">
+        <label for="initialDeposit">Initial Deposit:</label>
+        <input
+            type="number"
+            pattern="[0-9]*"
+            id="initialDeposit"
+            formControlName="initialDeposit"
+        >
+    </div>
+
+    <div class="input-container">
+        <label for="regularDeposit">Regular Deposit:</label>
+        <input
+            type="number"
+            pattern="[0-9]*"
+            id="regularDeposit"
+            formControlName="regularDeposit"
+        >
+    </div>
+
+    <button type="submit">Apply</button>
+</form>
