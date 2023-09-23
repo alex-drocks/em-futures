@@ -1,0 +1,19 @@
+:host {
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        min-width: 120px;
+    }
+}

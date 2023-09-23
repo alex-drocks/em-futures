@@ -1,22 +1,57 @@
-<form [formGroup]="form" (submit)="handleSubmit()">
-    <div class="input-container">
-        <label for="initialDeposit">Initial Deposit:</label>
-        <input
-            type="number"
-            pattern="[0-9]*"
-            id="initialDeposit"
-            formControlName="initialDeposit"
-        >
-    </div>
+<form
+    [formGroup]="form"
+    (submit)="handleSubmit()"
+>
 
-    <div class="input-container">
-        <label for="regularDeposit">Regular Deposit:</label>
-        <input
-            type="number"
-            pattern="[0-9]*"
-            id="regularDeposit"
-            formControlName="regularDeposit"
-        >
+    <div class="input-group">
+        <mat-form-field>
+            <mat-label>Date Start</mat-label>
+            <input
+                formControlName="dateStart"
+                matInput
+                [matDatepicker]="dateStart"
+            >
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+                matIconSuffix
+                [for]="dateStart"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #dateStart></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>First Deposit Amount</mat-label>
+            <input
+                formControlName="initialDeposit"
+                matInput
+                maxlength="20"
+            >
+            <mat-hint>Minimum $200</mat-hint>
+        </mat-form-field>
+    </div>
+    <div class="input-group">
+        <mat-form-field>
+            <mat-label>Date next deposit</mat-label>
+            <input
+                formControlName="dateNextDeposit"
+                matInput
+                [matDatepicker]="dateNext"
+            >
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+                matIconSuffix
+                [for]="dateNext"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #dateNext></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Regular Deposit Amount</mat-label>
+            <input
+                formControlName="regularDeposit"
+                matInput
+                maxlength="20"
+            >
+            <mat-hint>Minimum $200</mat-hint>
+        </mat-form-field>
     </div>
 
     <button type="submit">Apply</button>
