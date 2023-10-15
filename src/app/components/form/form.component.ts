@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
 import * as dayjs from 'dayjs';
-
+import {CalculatorService} from "../../services/calculator.service";
 
 @Component({
   selector: 'app-form',
@@ -10,25 +10,28 @@ import * as dayjs from 'dayjs';
 })
 export class FormComponent implements OnInit {
   public form!: FormGroup;
+  public dateFormat = "YYYY-MM-DD";
+
+  constructor(private calculator: CalculatorService) {
+  }
 
   ngOnInit(): void {
-    console.log("init form group");
-    const today = dayjs();
-    const firstDayOfNextMonth = today.add(1, 'month').startOf('month').hour(today.hour());
-
     this.form = new FormGroup({
-      initialDeposit: new FormControl(200),
-      regularDeposit: new FormControl(200),
-      dateStart: new FormControl(today.toISOString()),
-      dateNextDeposit: new FormControl(firstDayOfNextMonth.toISOString()),
+      dateStart: new FormControl(this.calculator.getDateStart().toISOString()),
+      initialDeposit: new FormControl(this.calculator.getInitialDeposit()),
+      regularDeposit: new FormControl(this.calculator.getRegularDeposit()),
     });
-
-    console.log(this.form.value);
-
   }
 
-  handleSubmit() {
-    console.log(this.form.value);
-
+  get minimumDeposit(): number {
+    return this.calculator.minimumDeposit;
   }
+
+  applyFormValues() {
+    const {initialDeposit, regularDeposit, dateStart} = this.form.value;
+    this.calculator.setDateStart(dateStart);
+    this.calculator.setInitialDeposit(initialDeposit);
+    this.calculator.setRegularDeposit(regularDeposit);
+  }
+
 }

@@ -1,0 +1,13 @@
+<mat-form-field>
+  <mat-label>Balance</mat-label>
+  <span matSuffix>$&nbsp;</span>
+  <input matInput placeholder="Balance" [value]="balance" [readonly]="true">
+  <mat-hint>Total Value Locked (TVL)</mat-hint>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Daily Yield</mat-label>
+  <span matSuffix>$&nbsp;</span>
+  <input matInput placeholder="Balance" [value]="dailyYieldAmount" [readonly]="true">
+  <mat-hint>{{yieldPercent}}% of TVL each 24h</mat-hint>
+</mat-form-field>

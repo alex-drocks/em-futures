@@ -1,58 +1,60 @@
 <form
-    [formGroup]="form"
-    (submit)="handleSubmit()"
+  [formGroup]="form"
+  (submit)="applyFormValues()"
 >
 
-    <div class="input-group">
-        <mat-form-field>
-            <mat-label>Date Start</mat-label>
-            <input
-                formControlName="dateStart"
-                matInput
-                [matDatepicker]="dateStart"
-            >
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-                matIconSuffix
-                [for]="dateStart"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #dateStart></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>First Deposit Amount</mat-label>
-            <input
-                formControlName="initialDeposit"
-                matInput
-                maxlength="20"
-            >
-            <mat-hint>Minimum $200</mat-hint>
-        </mat-form-field>
-    </div>
-    <div class="input-group">
-        <mat-form-field>
-            <mat-label>Date next deposit</mat-label>
-            <input
-                formControlName="dateNextDeposit"
-                matInput
-                [matDatepicker]="dateNext"
-            >
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-                matIconSuffix
-                [for]="dateNext"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #dateNext></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Regular Deposit Amount</mat-label>
-            <input
-                formControlName="regularDeposit"
-                matInput
-                maxlength="20"
-            >
-            <mat-hint>Minimum $200</mat-hint>
-        </mat-form-field>
-    </div>
+  <div class="input-group">
+    <mat-form-field>
+      <mat-label>Date Start</mat-label>
+      <input
+        formControlName="dateStart"
+        matInput
+        [matDatepicker]="dateStart"
+      >
+      <mat-hint>{{dateFormat}}</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="dateStart"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #dateStart></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Initial Deposit Amount</mat-label>
+      <span matSuffix>$&nbsp;</span>
+      <input
+        formControlName="initialDeposit"
+        matInput
+        maxlength="20"
+      >
+      <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="input-group">
+<!--    <mat-form-field>-->
+<!--      <mat-label>Date Next Deposit</mat-label>-->
+<!--      <input-->
+<!--        formControlName="dateNextDeposit"-->
+<!--        matInput-->
+<!--        [matDatepicker]="dateNext"-->
+<!--      >-->
+<!--      <mat-hint>{{dateFormat}}</mat-hint>-->
+<!--      <mat-datepicker-toggle-->
+<!--        matIconSuffix-->
+<!--        [for]="dateNext"-->
+<!--      ></mat-datepicker-toggle>-->
+<!--      <mat-datepicker #dateNext></mat-datepicker>-->
+<!--    </mat-form-field>-->
+    <mat-form-field>
+      <mat-label>Regular Deposit Amount</mat-label>
+      <span matSuffix>$&nbsp;</span>
+      <input
+        formControlName="regularDeposit"
+        matInput
+        maxlength="20"
+      >
+      <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+    </mat-form-field>
+  </div>
 
-    <button type="submit">Apply</button>
+  <button type="submit" mat-raised-button color="primary">Apply</button>
 </form>
