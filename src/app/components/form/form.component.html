@@ -2,59 +2,75 @@
   [formGroup]="form"
   (submit)="applyFormValues()"
 >
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title><h3>First Deposit Information</h3></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="input-group">
+        <mat-form-field class="field">
+          <mat-label>Date First Deposit</mat-label>
+          <input
+            formControlName="dateStart"
+            matInput
+            [matDatepicker]="dateStart"
+          >
+          <mat-hint>{{dateFormat}}</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="dateStart"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #dateStart></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="field">
+          <mat-label>First Deposit Amount</mat-label>
+          <span matSuffix>$&nbsp;</span>
+          <input
+            formControlName="initialDeposit"
+            matInput
+            maxlength="20"
+          >
+          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-  <div class="input-group">
-    <mat-form-field>
-      <mat-label>Date Start</mat-label>
-      <input
-        formControlName="dateStart"
-        matInput
-        [matDatepicker]="dateStart"
-      >
-      <mat-hint>{{dateFormat}}</mat-hint>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="dateStart"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #dateStart></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Initial Deposit Amount</mat-label>
-      <span matSuffix>$&nbsp;</span>
-      <input
-        formControlName="initialDeposit"
-        matInput
-        maxlength="20"
-      >
-      <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
-    </mat-form-field>
-  </div>
-  <div class="input-group">
-<!--    <mat-form-field>-->
-<!--      <mat-label>Date Next Deposit</mat-label>-->
-<!--      <input-->
-<!--        formControlName="dateNextDeposit"-->
-<!--        matInput-->
-<!--        [matDatepicker]="dateNext"-->
-<!--      >-->
-<!--      <mat-hint>{{dateFormat}}</mat-hint>-->
-<!--      <mat-datepicker-toggle-->
-<!--        matIconSuffix-->
-<!--        [for]="dateNext"-->
-<!--      ></mat-datepicker-toggle>-->
-<!--      <mat-datepicker #dateNext></mat-datepicker>-->
-<!--    </mat-form-field>-->
-    <mat-form-field>
-      <mat-label>Regular Deposit Amount</mat-label>
-      <span matSuffix>$&nbsp;</span>
-      <input
-        formControlName="regularDeposit"
-        matInput
-        maxlength="20"
-      >
-      <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
-    </mat-form-field>
-  </div>
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title><h3>Your Plan</h3></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="input-group">
+        <!--    <mat-form-field class="field">-->
+        <!--      <mat-label>Date Next Deposit</mat-label>-->
+        <!--      <input-->
+        <!--        formControlName="dateNextDeposit"-->
+        <!--        matInput-->
+        <!--        [matDatepicker]="dateNext"-->
+        <!--      >-->
+        <!--      <mat-hint>{{dateFormat}}</mat-hint>-->
+        <!--      <mat-datepicker-toggle-->
+        <!--        matIconSuffix-->
+        <!--        [for]="dateNext"-->
+        <!--      ></mat-datepicker-toggle>-->
+        <!--      <mat-datepicker #dateNext></mat-datepicker>-->
+        <!--    </mat-form-field>-->
+        <mat-form-field class="field">
+          <mat-label>Regular Deposit Amount</mat-label>
+          <span matSuffix>$&nbsp;</span>
+          <input
+            formControlName="regularDeposit"
+            matInput
+            maxlength="20"
+          >
+          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-  <button type="submit" mat-raised-button color="primary">Apply</button>
+  <div class="buttons">
+    <button type="submit" mat-raised-button color="primary">Apply</button>
+  </div>
 </form>

@@ -16,6 +16,7 @@ import {AppComponent} from './app.component';
 import {FormComponent} from './components/form/form.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StatsComponent} from './components/stats/stats.component';
+import {MatCardModule} from "@angular/material/card";
 
 
 export const MY_DATE_FORMATS = {
@@ -36,16 +37,17 @@ export const MY_DATE_FORMATS = {
     FormComponent,
     StatsComponent,
   ],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    BrowserAnimationsModule,
-  ],
+    imports: [
+        BrowserModule,
+        ReactiveFormsModule,
+        MatDatepickerModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatNativeDateModule,
+        BrowserAnimationsModule,
+        MatCardModule,
+    ],
   providers: [
     {
       provide: DateAdapter,
