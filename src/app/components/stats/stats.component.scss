@@ -11,6 +11,7 @@
 
     .accordion-item {
       border: solid 1px #ccc;
+      font-size: 12px;
 
       &:first-child {
         border-top-left-radius: 4px;
@@ -55,6 +56,12 @@
             flex-grow: 0;
           }
         }
+
+        &.column-names {
+          mat-icon {
+            visibility: hidden;
+          }
+        }
       }
 
     }
@@ -64,11 +71,11 @@
     }
 
     .accordion-item-header {
-      padding: 16px 16px 16px 8px;
+      padding: 16px 16px 16px 4px;
     }
 
     .accordion-item-body {
-      padding: 16px 32px;
+      padding: 16px 28px;
     }
   }
 

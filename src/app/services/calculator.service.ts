@@ -9,6 +9,7 @@ import {
 } from "../helpers/storage";
 import {claimCycleEnum, depositCycleEnum} from "../components/form/form.definitions";
 import * as dayjs from "dayjs";
+import {Dayjs} from "dayjs";
 
 export enum StorageKeys {
   INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
@@ -22,9 +23,15 @@ export enum StorageKeys {
 export interface IDailyData {
   date: string;
   balance: number;
-  deposits: number;
-  claimable: number;
-  yieldPerDay: number;
+  dailyYield: number;
+  totalDeposited: number;
+  totalClaimed: number;
+  totalCompounded: number;
+  availableToday: number;
+  depositedToday: number;
+  compoundedToday: number;
+  claimedToday: number;
+  balanceDifference: number;
 }
 
 @Injectable({
@@ -129,28 +136,76 @@ export class CalculatorService {
     return this.roundNumber(this.getYieldPerDay(this.getInitialDeposit())).toString();
   }
 
+  public evaluateShouldDeposit(date: dayjs.Dayjs, index: number): boolean {
+    if (index <= 0) {
+      return false;
+    }
+    const cycle = this.getDepositCycle();
+    switch (cycle) {
+      case "DAY":
+        return true;
+      default:
+        return false;
+    }
+  }
+
   // TODO: calculate data
   public calculateDailyData(): void {
     this._dailyData = [];
-    const dateStart = dayjs(this.getDateStart());
-    const maxDays = 5
 
-    let balance = this.getInitialDeposit();
-    let deposits = balance;
-    let claimable = 0;
+    const dateStart = this.getDateStart();
+    const regularDepositAmount = this.getRegularDeposit();
+    const daysToCalculate = 5
 
-    for (let index = 0; index < maxDays; index++) {
-      const yieldPerDay = this.getYieldPerDay(balance);
-      claimable = yieldPerDay * index;
+    const total = {
+      daysElapsed: 0,
+      balance: this.getInitialDeposit(),
+      deposited: this.getInitialDeposit(),
+      compounded: 0,
+      claimed: 0,
+      available: 0,
+    }
 
+    for (let index = 0; index < daysToCalculate; index++) {
+      total.daysElapsed = index; // starts at 0 because interest has not accrued yet
+
+      const date = dayjs(dateStart).add(total.daysElapsed, "day");
+      const dailyYield = this.getYieldPerDay(total.balance);
+      const availableToday = total.daysElapsed > 0 ? dailyYield : 0;
+      let depositedToday = 0
+      let compoundedToday = 0;
+      let claimedToday = 0;
+
+      const shouldDeposit = this.evaluateShouldDeposit(date, total.daysElapsed);
+      if (shouldDeposit) {
+        depositedToday = regularDepositAmount;
+        compoundedToday = availableToday;
+        total.balance += depositedToday + compoundedToday;
+        total.deposited += depositedToday;
+        total.compounded += compoundedToday;
+      }
+
+      const shouldClaimToday = false; // TODO
+      if (shouldClaimToday) {
+        claimedToday = availableToday;
+        total.balance -= claimedToday;
+        total.claimed += claimedToday;
+      }
 
       this._dailyData.push({
-        date: dateStart.add(index, "day").format("YYYY-MM-DD"),
-        balance: this.roundNumber(balance),
-        claimable: this.roundNumber(claimable),
-        yieldPerDay: this.roundNumber(yieldPerDay),
-        deposits: this.roundNumber(deposits),
-      })
+        date: date.format("YY-MM-DD"),
+        balance: this.roundNumber(total.balance),
+        dailyYield: this.roundNumber(dailyYield),
+        totalDeposited: this.roundNumber(total.deposited),
+        totalCompounded: this.roundNumber(total.compounded),
+        totalClaimed: this.roundNumber(total.claimed),
+        availableToday: this.roundNumber(availableToday),
+        depositedToday: this.roundNumber(depositedToday),
+        compoundedToday: this.roundNumber(compoundedToday),
+        claimedToday: this.roundNumber(claimedToday),
+        balanceDifference: this.roundNumber(depositedToday + compoundedToday - claimedToday),
+      });
+
     }
 
   }
