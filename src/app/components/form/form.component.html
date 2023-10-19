@@ -6,7 +6,7 @@
     <mat-card-header>
       <mat-card-title>Your First Deposit</mat-card-title>
       <mat-card-subtitle>
-        As of {{dateStart | date:"longDate"}}, my total balance is {{initialDeposit}}$.
+        I started on {{dateStart | date:"longDate"}} with a balance of {{initialDeposit}}$.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -18,7 +18,6 @@
             matInput
             [matDatepicker]="dateStartPicker"
           >
-<!--          <mat-hint>{{dateFormat}}</mat-hint>-->
           <mat-datepicker-toggle
             matIconSuffix
             [for]="dateStartPicker"
@@ -31,9 +30,8 @@
           <input
             formControlName="initialDeposit"
             matInput
-            maxlength="20"
+            maxlength="9"
           >
-<!--          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>-->
         </mat-form-field>
       </div>
     </mat-card-content>
@@ -43,7 +41,7 @@
     <mat-card-header>
       <mat-card-title>Your Investing Plan</mat-card-title>
       <mat-card-subtitle>
-        I want to deposit {{regularDeposit}}$ every {{depositCycleName}} and then claim {{claimCycleName}} later.
+        I want to deposit {{regularDeposit}}$ every {{depositCycleName}}, then claim {{claimCycleName}} later.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -54,9 +52,8 @@
           <input
             formControlName="regularDeposit"
             matInput
-            maxlength="20"
+            maxlength="9"
           >
-<!--          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>-->
         </mat-form-field>
 
         <mat-form-field class="field">
@@ -75,6 +72,16 @@
               {{cycle.name}}
             </mat-option>
           </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="field">
+          <mat-label>Start Claiming Minimum Balance</mat-label>
+          <span matSuffix>$&nbsp;</span>
+          <input
+            formControlName="startClaimAmount"
+            matInput
+            maxlength="9"
+          >
         </mat-form-field>
       </div>
     </mat-card-content>

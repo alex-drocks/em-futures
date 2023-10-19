@@ -16,6 +16,7 @@ export enum StorageKeys {
   REGULAR_DEPOSIT_AMOUNT = "REGULAR_DEPOSIT_AMOUNT",
   DEPOSIT_CYCLE = "DEPOSIT_CYCLE",
   CLAIM_CYCLE = "CLAIM_CYCLE",
+  START_CLAIM_AMOUNT = "START_CLAIM_AMOUNT",
 }
 
 export interface IDailyData {
@@ -35,6 +36,7 @@ export class CalculatorService {
   private _regularDeposit: number;
   private _depositCycle: keyof typeof depositCycleEnum;
   private _claimCycle: keyof typeof claimCycleEnum;
+  private _startClaimAmount: number;
 
   private _dailyData: IDailyData[];
 
@@ -48,6 +50,7 @@ export class CalculatorService {
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
     this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof depositCycleEnum;
     this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof claimCycleEnum;
+    this._startClaimAmount = storeLoadNumber(StorageKeys.START_CLAIM_AMOUNT, 20000);
     this._dailyData = [];
   }
 
@@ -86,6 +89,10 @@ export class CalculatorService {
     return this._claimCycle;
   }
 
+  public getStartClaimAmount(): number {
+    return this._startClaimAmount;
+  }
+
   public getDailyData(): IDailyData[] {
     return this._dailyData;
   }
@@ -103,6 +110,11 @@ export class CalculatorService {
   public setClaimCycle(value: keyof typeof claimCycleEnum): void {
     this._claimCycle = value ?? "WEEK";
     storeSave(StorageKeys.CLAIM_CYCLE, this._claimCycle);
+  }
+
+  public setStartClaimAmount(value: number): void {
+    this._startClaimAmount = value ?? 20000;
+    storeSave(StorageKeys.START_CLAIM_AMOUNT, this._startClaimAmount);
   }
 
   public roundNumber(value: number, precision: number = 2): number {

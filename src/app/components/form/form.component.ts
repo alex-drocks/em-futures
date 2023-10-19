@@ -28,6 +28,7 @@ export class FormComponent implements OnInit {
       regularDeposit: new FormControl(this.regularDeposit),
       depositCycle: new FormControl(this.depositCycleId),
       claimCycle: new FormControl(this.claimCycleId),
+      startClaimAmount: new FormControl(this.startClaimAmount),
     });
 
     this.calculator.calculateDailyData();
@@ -56,6 +57,9 @@ export class FormComponent implements OnInit {
   get claimCycleId(): keyof typeof claimCycleEnum {
     return this.calculator.getClaimCycle();
   }
+  get startClaimAmount(): number {
+    return this.calculator.getStartClaimAmount();
+  }
 
   get depositCycleName(): string {
     return depositCycleEnum[this.depositCycleId];
@@ -66,12 +70,14 @@ export class FormComponent implements OnInit {
   }
 
   public applyFormValues(): void {
-    const {initialDeposit, regularDeposit, dateStart, depositCycle, claimCycle} = this.form.value;
+    const {initialDeposit, regularDeposit, dateStart, depositCycle, claimCycle, startClaimAmount} = this.form.value;
     this.calculator.setDateStart(dateStart);
     this.calculator.setInitialDeposit(initialDeposit);
     this.calculator.setRegularDeposit(regularDeposit);
     this.calculator.setDepositCycle(depositCycle);
     this.calculator.setClaimCycle(claimCycle);
+    this.calculator.setStartClaimAmount(startClaimAmount);
+
     this.calculator.calculateDailyData();
   }
 
