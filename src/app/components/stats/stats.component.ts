@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CalculatorService} from "../../services/calculator.service";
+import {CalculatorService, IDailyData} from "../../services/calculator.service";
 
 @Component({
   selector: 'app-stats',
@@ -15,11 +15,15 @@ export class StatsComponent {
     return `${this.calculator.getInitialDeposit()}`;
   }
 
-  public get dailyYieldAmount(): string {
-    return `${this.calculator.roundNumber(this.calculator.getDailyYield(), 3)}`;
-  }
-
   public get yieldPercent(): string {
     return this.calculator.yieldPercent.toString();
+  }
+
+  public get currentDailyYieldAmount(): string {
+    return this.calculator.getCurrentDailyYieldAmount();
+  }
+
+  public get dailyData(): IDailyData[] {
+    return this.calculator.getDailyData();
   }
 }

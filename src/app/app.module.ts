@@ -18,6 +18,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StatsComponent} from './components/stats/stats.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
+import {CdkAccordionModule} from "@angular/cdk/accordion";
+import {MatIconModule} from "@angular/material/icon";
 
 
 export const MY_DATE_FORMATS = {
@@ -49,6 +51,8 @@ export const MY_DATE_FORMATS = {
     BrowserAnimationsModule,
     MatCardModule,
     MatSelectModule,
+    CdkAccordionModule,
+    MatIconModule,
   ],
   providers: [
     {

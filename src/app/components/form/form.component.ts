@@ -26,6 +26,8 @@ export class FormComponent implements OnInit {
       regularDeposit: new FormControl(this.regularDeposit),
       repeatingCycle: new FormControl(this.repeatingCycleId),
     });
+
+    this.calculator.calculateDailyData();
   }
 
   get minimumDeposit(): number {
@@ -58,6 +60,7 @@ export class FormComponent implements OnInit {
     this.calculator.setInitialDeposit(initialDeposit);
     this.calculator.setRegularDeposit(regularDeposit);
     this.calculator.setRepeatingCycle(repeatingCycle);
+    this.calculator.calculateDailyData();
   }
 
   private enumToKeyValueArray(enumObj: Record<string, string>): ISelectOption[] {
@@ -67,5 +70,4 @@ export class FormComponent implements OnInit {
     }));
   }
 
-  protected readonly Date = Date;
 }

@@ -8,12 +8,21 @@ import {
   storeSave
 } from "../helpers/storage";
 import {RepeatingCyclesEnum} from "../components/form/form.definitions";
+import * as dayjs from "dayjs";
 
-enum StorageKeys {
+export enum StorageKeys {
   INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
   DATE_START = "DATE_START",
   REGULAR_DEPOSIT_AMOUNT = "REGULAR_DEPOSIT_AMOUNT",
   REPEATING_CYCLE = "REPEATING_CYCLE",
+}
+
+export interface IDailyData {
+  date: string;
+  balance: number;
+  deposits: number;
+  claimable: number;
+  yieldPerDay: number;
 }
 
 @Injectable({
@@ -25,7 +34,10 @@ export class CalculatorService {
   private _regularDeposit: number;
   private _repeatingCycle: keyof typeof RepeatingCyclesEnum;
 
+  private _dailyData: IDailyData[];
+
   public yieldPercent = 0.5;
+  public yieldRate = 0.5 / 100;
   public minimumDeposit = 200;
 
   constructor() {
@@ -33,6 +45,7 @@ export class CalculatorService {
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.minimumDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
     this._repeatingCycle = storeLoadString(StorageKeys.REPEATING_CYCLE, "WEEK") as keyof typeof RepeatingCyclesEnum;
+    this._dailyData = [];
   }
 
   public getDateStart(): Date {
@@ -66,6 +79,10 @@ export class CalculatorService {
     return this._repeatingCycle;
   }
 
+  public getDailyData(): IDailyData[] {
+    return this._dailyData;
+  }
+
   public setRegularDeposit(value: number): void {
     this._regularDeposit = value ?? this.minimumDeposit;
     storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
@@ -76,12 +93,42 @@ export class CalculatorService {
     storeSave(StorageKeys.REPEATING_CYCLE, this._repeatingCycle);
   }
 
-  public getDailyYield(): number {
-    return this.roundNumber(this._initialDeposit * (this.yieldPercent / 100));
-  }
-
   public roundNumber(value: number, precision: number = 2): number {
     return round(value, precision);
+  }
+
+  public getYieldPerDay(balance: number): number {
+    return balance * this.yieldRate;
+  }
+
+  public getCurrentDailyYieldAmount(): string {
+    return this.roundNumber(this.getYieldPerDay(this.getInitialDeposit())).toString();
+  }
+
+  // TODO: calculate data
+  public calculateDailyData(): void {
+    this._dailyData = [];
+    const dateStart = dayjs(this.getDateStart());
+    const maxDays = 5
+
+    let balance = this.getInitialDeposit();
+    let deposits = balance;
+    let claimable = 0;
+
+    for (let index = 0; index < maxDays; index++) {
+      const yieldPerDay = this.getYieldPerDay(balance);
+      claimable = yieldPerDay * index;
+
+
+      this._dailyData.push({
+        date: dateStart.add(index, "day").format("YYYY-MM-DD"),
+        balance,
+        claimable,
+        yieldPerDay: this.roundNumber(yieldPerDay),
+        deposits,
+      })
+    }
+
   }
 
 }
