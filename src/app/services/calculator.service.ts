@@ -7,14 +7,15 @@ import {
   storeLoadString,
   storeSave
 } from "../helpers/storage";
-import {RepeatingCyclesEnum} from "../components/form/form.definitions";
+import {claimCycleEnum, depositCycleEnum} from "../components/form/form.definitions";
 import * as dayjs from "dayjs";
 
 export enum StorageKeys {
   INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
   DATE_START = "DATE_START",
   REGULAR_DEPOSIT_AMOUNT = "REGULAR_DEPOSIT_AMOUNT",
-  REPEATING_CYCLE = "REPEATING_CYCLE",
+  DEPOSIT_CYCLE = "DEPOSIT_CYCLE",
+  CLAIM_CYCLE = "CLAIM_CYCLE",
 }
 
 export interface IDailyData {
@@ -32,7 +33,8 @@ export class CalculatorService {
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
-  private _repeatingCycle: keyof typeof RepeatingCyclesEnum;
+  private _depositCycle: keyof typeof depositCycleEnum;
+  private _claimCycle: keyof typeof claimCycleEnum;
 
   private _dailyData: IDailyData[];
 
@@ -44,7 +46,8 @@ export class CalculatorService {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.minimumDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
-    this._repeatingCycle = storeLoadString(StorageKeys.REPEATING_CYCLE, "WEEK") as keyof typeof RepeatingCyclesEnum;
+    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof depositCycleEnum;
+    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof claimCycleEnum;
     this._dailyData = [];
   }
 
@@ -75,8 +78,12 @@ export class CalculatorService {
     return this._regularDeposit;
   }
 
-  public getRepeatingCycle(): keyof typeof RepeatingCyclesEnum {
-    return this._repeatingCycle;
+  public getDepositCycle(): keyof typeof depositCycleEnum {
+    return this._depositCycle;
+  }
+
+  public getClaimCycle(): keyof typeof claimCycleEnum {
+    return this._claimCycle;
   }
 
   public getDailyData(): IDailyData[] {
@@ -88,9 +95,14 @@ export class CalculatorService {
     storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
   }
 
-  public setRepeatingCycle(value: keyof typeof RepeatingCyclesEnum): void {
-    this._repeatingCycle = value ?? "DAY";
-    storeSave(StorageKeys.REPEATING_CYCLE, this._repeatingCycle);
+  public setDepositCycle(value: keyof typeof depositCycleEnum): void {
+    this._depositCycle = value ?? "TWO_WEEKS";
+    storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
+  }
+
+  public setClaimCycle(value: keyof typeof claimCycleEnum): void {
+    this._claimCycle = value ?? "WEEK";
+    storeSave(StorageKeys.CLAIM_CYCLE, this._claimCycle);
   }
 
   public roundNumber(value: number, precision: number = 2): number {
@@ -122,10 +134,10 @@ export class CalculatorService {
 
       this._dailyData.push({
         date: dateStart.add(index, "day").format("YYYY-MM-DD"),
-        balance,
-        claimable,
+        balance: this.roundNumber(balance),
+        claimable: this.roundNumber(claimable),
         yieldPerDay: this.roundNumber(yieldPerDay),
-        deposits,
+        deposits: this.roundNumber(deposits),
       })
     }
 

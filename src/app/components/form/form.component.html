@@ -18,7 +18,7 @@
             matInput
             [matDatepicker]="dateStartPicker"
           >
-          <mat-hint>{{dateFormat}}</mat-hint>
+<!--          <mat-hint>{{dateFormat}}</mat-hint>-->
           <mat-datepicker-toggle
             matIconSuffix
             [for]="dateStartPicker"
@@ -33,7 +33,7 @@
             matInput
             maxlength="20"
           >
-          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+<!--          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>-->
         </mat-form-field>
       </div>
     </mat-card-content>
@@ -43,7 +43,7 @@
     <mat-card-header>
       <mat-card-title>Your Investing Plan</mat-card-title>
       <mat-card-subtitle>
-        I want to deposit {{regularDeposit}}$ every {{repeatingCycleName}}.
+        I want to deposit {{regularDeposit}}$ every {{depositCycleName}} and then claim {{claimCycleName}} later.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -56,13 +56,22 @@
             matInput
             maxlength="20"
           >
-          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>
+<!--          <mat-hint>Minimum ${{minimumDeposit}}</mat-hint>-->
         </mat-form-field>
 
         <mat-form-field class="field">
-          <mat-label>Repeating Cycle</mat-label>
-          <mat-select formControlName="repeatingCycle">
-            <mat-option *ngFor="let cycle of repeatingCycleOptions" [value]="cycle.id">
+          <mat-label>Deposit Cycle</mat-label>
+          <mat-select formControlName="depositCycle">
+            <mat-option *ngFor="let cycle of depositCycleOptions" [value]="cycle.id">
+              {{cycle.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="field">
+          <mat-label>Claim Cycle</mat-label>
+          <mat-select formControlName="claimCycle">
+            <mat-option *ngFor="let cycle of claimCycleOptions" [value]="cycle.id">
               {{cycle.name}}
             </mat-option>
           </mat-select>

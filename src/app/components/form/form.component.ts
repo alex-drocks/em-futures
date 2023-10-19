@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
-import {ISelectOption, RepeatingCyclesEnum} from "./form.definitions";
+import {ISelectOption, depositCycleEnum, claimCycleEnum} from "./form.definitions";
 
 
 @Component({
@@ -12,19 +12,22 @@ import {ISelectOption, RepeatingCyclesEnum} from "./form.definitions";
 export class FormComponent implements OnInit {
   public form!: FormGroup;
   public dateFormat = "YYYY-MM-DD";
-  public repeatingCycleOptions!: ISelectOption[];
+  public depositCycleOptions!: ISelectOption[];
+  public claimCycleOptions!: ISelectOption[];
 
   constructor(private calculator: CalculatorService) {
   }
 
   ngOnInit(): void {
-    this.repeatingCycleOptions = this.enumToKeyValueArray(RepeatingCyclesEnum);
+    this.depositCycleOptions = this.mapEnumToSelectOptions(depositCycleEnum, "Every ");
+    this.claimCycleOptions = this.mapEnumToSelectOptions(claimCycleEnum, "", " later");
 
     this.form = new FormGroup({
       dateStart: new FormControl(this.dateStart.toISOString()),
       initialDeposit: new FormControl(this.initialDeposit),
       regularDeposit: new FormControl(this.regularDeposit),
-      repeatingCycle: new FormControl(this.repeatingCycleId),
+      depositCycle: new FormControl(this.depositCycleId),
+      claimCycle: new FormControl(this.claimCycleId),
     });
 
     this.calculator.calculateDailyData();
@@ -46,27 +49,36 @@ export class FormComponent implements OnInit {
     return this.calculator.getRegularDeposit();
   }
 
-  get repeatingCycleId(): keyof typeof RepeatingCyclesEnum {
-    return this.calculator.getRepeatingCycle();
+  get depositCycleId(): keyof typeof depositCycleEnum {
+    return this.calculator.getDepositCycle();
   }
 
-  get repeatingCycleName(): string {
-    return RepeatingCyclesEnum[this.repeatingCycleId];
+  get claimCycleId(): keyof typeof claimCycleEnum {
+    return this.calculator.getClaimCycle();
+  }
+
+  get depositCycleName(): string {
+    return depositCycleEnum[this.depositCycleId];
+  }
+
+  get claimCycleName(): string {
+    return claimCycleEnum[this.claimCycleId];
   }
 
   public applyFormValues(): void {
-    const {initialDeposit, regularDeposit, dateStart, repeatingCycle} = this.form.value;
+    const {initialDeposit, regularDeposit, dateStart, depositCycle, claimCycle} = this.form.value;
     this.calculator.setDateStart(dateStart);
     this.calculator.setInitialDeposit(initialDeposit);
     this.calculator.setRegularDeposit(regularDeposit);
-    this.calculator.setRepeatingCycle(repeatingCycle);
+    this.calculator.setDepositCycle(depositCycle);
+    this.calculator.setClaimCycle(claimCycle);
     this.calculator.calculateDailyData();
   }
 
-  private enumToKeyValueArray(enumObj: Record<string, string>): ISelectOption[] {
+  private mapEnumToSelectOptions(enumObj: Record<string, string>, prefix: string = "", suffix: string = ""): ISelectOption[] {
     return Object.keys(enumObj).map((key: string) => ({
       id: key,
-      name: enumObj[key]
+      name: `${prefix}${enumObj[key]}${suffix}`
     }));
   }
 
