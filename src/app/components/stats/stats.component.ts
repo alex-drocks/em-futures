@@ -19,11 +19,4 @@ export class StatsComponent {
     return this.calculator.yieldPercent.toString();
   }
 
-  public get currentDailyYieldAmount(): string {
-    return this.calculator.getCurrentDailyYieldAmount();
-  }
-
-  public get dailyData(): IDailyData[] {
-    return this.calculator.getDailyData();
-  }
 }

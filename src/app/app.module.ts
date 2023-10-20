@@ -20,6 +20,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
 import {CdkAccordionModule} from "@angular/cdk/accordion";
 import {MatIconModule} from "@angular/material/icon";
+import { CalculationsTableComponent } from './components/calculations-table/calculations-table.component';
 
 
 export const MY_DATE_FORMATS = {
@@ -39,6 +40,7 @@ export const MY_DATE_FORMATS = {
     AppComponent,
     FormComponent,
     StatsComponent,
+    CalculationsTableComponent,
   ],
   imports: [
     BrowserModule,
