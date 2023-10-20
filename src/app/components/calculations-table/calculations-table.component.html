@@ -25,7 +25,7 @@
           </span>
           <span class="accordion-item-column align-start">Date</span>
           <span class="accordion-item-column align-start">Balance</span>
-          <span class="accordion-item-column align-end">Daily</span>
+          <span class="accordion-item-column align-end">Daily %</span>
           <span class="accordion-item-column align-end">Available<br>Today</span>
           <span class="accordion-item-column align-end">Deposited<br>Today</span>
           <span class="accordion-item-column align-end">Compounded<br>Today</span>
@@ -52,7 +52,7 @@
           </span>
           <span class="accordion-item-column align-start">{{ item.date }}</span>
           <span class="accordion-item-column align-start">${{ item.balance }}</span>
-          <span class="accordion-item-column align-end">${{ item.dailyAmountAvailable }}</span>
+          <span class="accordion-item-column align-end">{{ item.dailyPercent }}%</span>
           <span class="accordion-item-column align-end">${{ item.availableToday }}</span>
           <span class="accordion-item-column align-end">${{ item.depositedToday }}</span>
           <span class="accordion-item-column align-end">${{ item.compoundedToday }}</span>

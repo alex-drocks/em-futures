@@ -20,18 +20,19 @@ export enum StorageKeys {
   START_CLAIM_AMOUNT = "START_CLAIM_AMOUNT",
 }
 
-export enum DailyRate {
-  PERCENT_0_500 = 0.005,
-  PERCENT_0_450 = 0.0045,
-  PERCENT_0_425 = 0.00425,
-  PERCENT_0_375 = 0.00375,
-  PERCENT_0_325 = 0.00325,
-  PERCENT_0_250 = 0.0025,
+export enum DailyYieldPercent {
+  PERCENT_0_500 = 0.5,
+  PERCENT_0_450 = 0.45,
+  PERCENT_0_425 = 0.425,
+  PERCENT_0_375 = 0.375,
+  PERCENT_0_325 = 0.325,
+  PERCENT_0_250 = 0.25,
 }
 
 export interface IDailyData {
   date: string;
   balance: number;
+  dailyPercent: DailyYieldPercent;
   dailyAmountAvailable: number;
   totalDeposited: number;
   totalClaimed: number;
@@ -150,21 +151,26 @@ export class CalculatorService {
     }
   }
 
-  public getDailyRate(totalCompoundedRewards: number, totalDeposited: number): DailyRate {
+  public getDailyYieldPercent(totalCompoundedRewards: number, totalDeposited: number): DailyYieldPercent {
     const compoundedSpread = totalCompoundedRewards - totalDeposited;
     if (compoundedSpread >= 50000 && compoundedSpread <= 249999) {
-      return DailyRate.PERCENT_0_450;
+      return DailyYieldPercent.PERCENT_0_450;
     } else if (compoundedSpread >= 250000 && compoundedSpread <= 499999) {
-      return DailyRate.PERCENT_0_425;
+      return DailyYieldPercent.PERCENT_0_425;
     } else if (compoundedSpread >= 500000 && compoundedSpread <= 749999) {
-      return DailyRate.PERCENT_0_375;
+      return DailyYieldPercent.PERCENT_0_375;
     } else if (compoundedSpread >= 750000 && compoundedSpread <= 999999) {
-      return DailyRate.PERCENT_0_325;
+      return DailyYieldPercent.PERCENT_0_325;
     } else if (compoundedSpread >= 1000000) {
-      return DailyRate.PERCENT_0_250;
+      return DailyYieldPercent.PERCENT_0_250;
     } else {
-      return DailyRate.PERCENT_0_500;
+      return DailyYieldPercent.PERCENT_0_500;
     }
+  }
+
+  public getDailyRate(totalCompoundedRewards: number, totalDeposited: number): number {
+    const percent = this.getDailyYieldPercent(totalCompoundedRewards, totalDeposited);
+    return percent / 100;
   }
 
   // TODO: calculate data
@@ -189,7 +195,9 @@ export class CalculatorService {
 
       const date = dayjs(dateStart).add(total.daysElapsed, "day");
 
-      const dailyRate = this.getDailyRate(total.compounded, total.deposited);
+      const dailyPercent: DailyYieldPercent = this.getDailyYieldPercent(total.compounded, total.deposited);
+      const dailyRate = dailyPercent / 100;
+
       const dailyAmountAvailable = total.balance * dailyRate;
       const availableToday = total.daysElapsed > 0 ? dailyAmountAvailable : 0;
 
@@ -216,6 +224,7 @@ export class CalculatorService {
       this._dailyData.push({
         date: date.format("YY-MM-DD"),
         balance: this.roundNumber(total.balance),
+        dailyPercent: dailyPercent,
         dailyAmountAvailable: this.roundNumber(dailyAmountAvailable),
         totalDeposited: this.roundNumber(total.deposited),
         totalCompounded: this.roundNumber(total.compounded),
