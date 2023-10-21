@@ -15,8 +15,4 @@ export class StatsComponent {
     return `${this.calculator.getInitialDeposit()}`;
   }
 
-  public get yieldPercent(): string {
-    return this.calculator.yieldPercent.toString();
-  }
-
 }

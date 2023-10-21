@@ -1,15 +1,8 @@
 import {Injectable} from '@angular/core';
 import {round} from "../helpers/utils";
-import {
-  storeDelete,
-  storeLoadDate,
-  storeLoadNumber,
-  storeLoadString,
-  storeSave
-} from "../helpers/storage";
-import {claimCycleEnum, depositCycleEnum} from "../components/form/form.definitions";
+import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
+import {ClaimCycleEnum, DepositCycleEnum} from "../components/form/form.definitions";
 import * as dayjs from "dayjs";
-import {Dayjs} from "dayjs";
 
 export enum StorageKeys {
   INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
@@ -29,6 +22,13 @@ export enum DailyYieldPercent {
   PERCENT_0_250 = 0.25,
 }
 
+export enum UserActionEnum {
+  INIT = "Initial Deposit",
+  HOLD = "Hold",
+  DEPOSIT = "Deposit",
+  WITHDRAW = "Withdraw",
+}
+
 export interface IDailyData {
   date: string;
   balance: number;
@@ -38,10 +38,12 @@ export interface IDailyData {
   totalClaimed: number;
   totalCompounded: number;
   availableToday: number;
+  actionMade: UserActionEnum;
   depositedToday: number;
   compoundedToday: number;
   claimedToday: number;
-  balanceDifference: number;
+  balanceDifference: string;
+  newBalance: number;
 }
 
 @Injectable({
@@ -51,22 +53,20 @@ export class CalculatorService {
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
-  private _depositCycle: keyof typeof depositCycleEnum;
-  private _claimCycle: keyof typeof claimCycleEnum;
+  private _depositCycle: keyof typeof DepositCycleEnum;
+  private _claimCycle: keyof typeof ClaimCycleEnum;
   private _startClaimAmount: number;
 
   private _dailyData: IDailyData[];
 
-  public yieldPercent = 0.5;
-  public yieldRate = 0.5 / 100;
   public minimumDeposit = 200;
 
   constructor() {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.minimumDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
-    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof depositCycleEnum;
-    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof claimCycleEnum;
+    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof DepositCycleEnum;
+    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof ClaimCycleEnum;
     this._startClaimAmount = storeLoadNumber(StorageKeys.START_CLAIM_AMOUNT, 20000);
     this._dailyData = [];
   }
@@ -98,11 +98,11 @@ export class CalculatorService {
     return this._regularDeposit;
   }
 
-  public getDepositCycle(): keyof typeof depositCycleEnum {
+  public getDepositCycle(): keyof typeof DepositCycleEnum {
     return this._depositCycle;
   }
 
-  public getClaimCycle(): keyof typeof claimCycleEnum {
+  public getClaimCycle(): keyof typeof ClaimCycleEnum {
     return this._claimCycle;
   }
 
@@ -119,12 +119,12 @@ export class CalculatorService {
     storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
   }
 
-  public setDepositCycle(value: keyof typeof depositCycleEnum): void {
+  public setDepositCycle(value: keyof typeof DepositCycleEnum): void {
     this._depositCycle = value ?? "TWO_WEEKS";
     storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
   }
 
-  public setClaimCycle(value: keyof typeof claimCycleEnum): void {
+  public setClaimCycle(value: keyof typeof ClaimCycleEnum): void {
     this._claimCycle = value ?? "WEEK";
     storeSave(StorageKeys.CLAIM_CYCLE, this._claimCycle);
   }
@@ -138,17 +138,82 @@ export class CalculatorService {
     return round(value, precision);
   }
 
-  public evaluateShouldDeposit(date: dayjs.Dayjs, index: number): boolean {
-    if (index <= 0) {
+  public depositCycleToDays(cycle: DepositCycleEnum): number {
+    switch (cycle) {
+      case DepositCycleEnum.DAY:
+        return 1;
+      case DepositCycleEnum.TWO_DAY:
+        return 2;
+      case DepositCycleEnum.THREE_DAYS:
+        return 3;
+      case DepositCycleEnum.FIVE_DAYS:
+        return 5;
+      case DepositCycleEnum.WEEK:
+        return 7;
+      case DepositCycleEnum.TWO_WEEKS:
+        return 14;
+      case DepositCycleEnum.THREE_WEEKS:
+        return 21;
+      case DepositCycleEnum.MONTH:
+        return 30; // Considered a month as 30 days
+      case DepositCycleEnum.TWO_MONTHS:
+        return 60;
+      case DepositCycleEnum.QUARTER:
+        return 90; // Considered a quarter as 90 days
+      default:
+        return 0;
+    }
+  }
+
+  public claimCycleToDays(cycle: ClaimCycleEnum): number {
+    switch (cycle) {
+      case ClaimCycleEnum.DAY:
+        return 1;
+      case ClaimCycleEnum.TWO_DAY:
+        return 2;
+      case ClaimCycleEnum.THREE_DAYS:
+        return 3;
+      case ClaimCycleEnum.FIVE_DAYS:
+        return 5;
+      case ClaimCycleEnum.WEEK:
+        return 7;
+      case ClaimCycleEnum.TWO_WEEKS:
+        return 14;
+      case ClaimCycleEnum.THREE_WEEKS:
+        return 21;
+      case ClaimCycleEnum.MONTH:
+        return 30; // Considering a month as 30 days for simplicity
+      case ClaimCycleEnum.TWO_MONTHS:
+        return 60;
+      case ClaimCycleEnum.QUARTER:
+        return 90; // Considering a quarter as 90 days for simplicity
+      default:
+        return 0;
+    }
+  }
+
+  public evaluateShouldDeposit(currentBalance: number, daysElapsedSinceStart: number): boolean {
+    if (daysElapsedSinceStart <= 0) {
       return false;
     }
+
     const cycle = this.getDepositCycle();
-    switch (cycle) {
-      case "DAY":
-        return true;
-      default:
-        return false;
+    const daysForCycle = this.depositCycleToDays(DepositCycleEnum[cycle]);
+
+    // Check if the remainder when dividing by the number of days for the cycle is 0
+    return daysElapsedSinceStart % daysForCycle === 0;
+  }
+
+
+  public evaluateShouldClaim(currentBalance: number, daysElapsedSinceStart: number): boolean {
+    const minBalanceToStartClaiming = this.getStartClaimAmount();
+    if (currentBalance >= minBalanceToStartClaiming) {
+      const cycle = this.getClaimCycle();
+      const daysForCycle = this.claimCycleToDays(ClaimCycleEnum[cycle]);
+      // Check if the remainder when dividing by the number of days for the cycle is 0
+      return daysElapsedSinceStart % daysForCycle === 0;
     }
+    return false;
   }
 
   public getDailyYieldPercent(totalCompoundedRewards: number, totalDeposited: number): DailyYieldPercent {
@@ -168,26 +233,20 @@ export class CalculatorService {
     }
   }
 
-  public getDailyRate(totalCompoundedRewards: number, totalDeposited: number): number {
-    const percent = this.getDailyYieldPercent(totalCompoundedRewards, totalDeposited);
-    return percent / 100;
-  }
-
-  // TODO: calculate data
   public calculateDailyData(): void {
     this._dailyData = [];
 
     const dateStart = this.getDateStart();
     const regularDepositAmount = this.getRegularDeposit();
-    const daysToCalculate = 365
+    const daysToCalculate = 100
 
     const total = {
       daysElapsed: 0,
       balance: this.getInitialDeposit(),
+      available: 0,
+      claimed: 0,
       deposited: this.getInitialDeposit(),
       compounded: 0,
-      claimed: 0,
-      available: 0,
     }
 
     for (let index = 0; index < daysToCalculate; index++) {
@@ -198,42 +257,61 @@ export class CalculatorService {
       const dailyPercent: DailyYieldPercent = this.getDailyYieldPercent(total.compounded, total.deposited);
       const dailyRate = dailyPercent / 100;
 
-      const dailyAmountAvailable = total.balance * dailyRate;
-      const availableToday = total.daysElapsed > 0 ? dailyAmountAvailable : 0;
+      const currentBalance = total.balance;
+      const dailyAmountAvailable = currentBalance * dailyRate;
 
-      let depositedToday = 0
+      let userAction: UserActionEnum = UserActionEnum.HOLD;
+      let depositedToday = 0;
       let compoundedToday = 0;
       let claimedToday = 0;
+      let availableToday = 0;
 
-      const shouldDeposit = this.evaluateShouldDeposit(date, total.daysElapsed);
-      if (shouldDeposit) {
+      if (total.daysElapsed === 0) {
+        userAction = UserActionEnum.INIT;
+      }
+
+      if (total.daysElapsed > 0) {
+        total.available += dailyAmountAvailable;
+        availableToday = total.available;
+      }
+
+      const shouldClaimToday = this.evaluateShouldClaim(currentBalance, total.daysElapsed);
+      if (shouldClaimToday) {
+        userAction = UserActionEnum.WITHDRAW;
+        claimedToday = availableToday;
+        total.available = 0;
+        total.balance -= claimedToday;
+        total.claimed += claimedToday;
+      }
+
+      const shouldDepositToday = this.evaluateShouldDeposit(currentBalance, total.daysElapsed);
+      if (!shouldClaimToday && shouldDepositToday) {
+        userAction = UserActionEnum.DEPOSIT;
         depositedToday = regularDepositAmount;
         compoundedToday = availableToday;
+        total.available = 0;
         total.balance += depositedToday + compoundedToday;
         total.deposited += depositedToday;
         total.compounded += compoundedToday;
       }
 
-      const shouldClaimToday = false; // TODO
-      if (shouldClaimToday) {
-        claimedToday = availableToday;
-        total.balance -= claimedToday;
-        total.claimed += claimedToday;
-      }
+      const balanceDiff = this.roundNumber(depositedToday + compoundedToday - claimedToday)
 
       this._dailyData.push({
         date: date.format("YY-MM-DD"),
-        balance: this.roundNumber(total.balance),
+        balance: this.roundNumber(currentBalance),
         dailyPercent: dailyPercent,
         dailyAmountAvailable: this.roundNumber(dailyAmountAvailable),
         totalDeposited: this.roundNumber(total.deposited),
         totalCompounded: this.roundNumber(total.compounded),
         totalClaimed: this.roundNumber(total.claimed),
         availableToday: this.roundNumber(availableToday),
+        actionMade: userAction,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
         claimedToday: this.roundNumber(claimedToday),
-        balanceDifference: this.roundNumber(depositedToday + compoundedToday - claimedToday),
+        balanceDifference: balanceDiff > 0 ? `+$${balanceDiff}` : `-$${Math.abs(balanceDiff)}`,
+        newBalance: this.roundNumber(total.balance),
       });
 
     }

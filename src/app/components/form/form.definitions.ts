@@ -1,4 +1,4 @@
-export enum depositCycleEnum {
+export enum DepositCycleEnum {
   DAY = "Day",
   TWO_DAY = "2 Days",
   THREE_DAYS = "3 Days",
@@ -10,7 +10,7 @@ export enum depositCycleEnum {
   TWO_MONTHS = "2 Months",
   QUARTER = "Quarter",
 }
-export enum claimCycleEnum {
+export enum ClaimCycleEnum {
   DAY = "1 Day",
   TWO_DAY = "2 Days",
   THREE_DAYS = "3 Days",

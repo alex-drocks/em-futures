@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
-import {ISelectOption, depositCycleEnum, claimCycleEnum} from "./form.definitions";
+import {ISelectOption, DepositCycleEnum, ClaimCycleEnum} from "./form.definitions";
 
 
 @Component({
@@ -19,8 +19,8 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.depositCycleOptions = this.mapEnumToSelectOptions(depositCycleEnum, "Every ");
-    this.claimCycleOptions = this.mapEnumToSelectOptions(claimCycleEnum, "", " later");
+    this.depositCycleOptions = this.mapEnumToSelectOptions(DepositCycleEnum, "Every ");
+    this.claimCycleOptions = this.mapEnumToSelectOptions(ClaimCycleEnum, "", " later");
 
     this.form = new FormGroup({
       dateStart: new FormControl(this.dateStart.toISOString()),
@@ -50,11 +50,11 @@ export class FormComponent implements OnInit {
     return this.calculator.getRegularDeposit();
   }
 
-  get depositCycleId(): keyof typeof depositCycleEnum {
+  get depositCycleId(): keyof typeof DepositCycleEnum {
     return this.calculator.getDepositCycle();
   }
 
-  get claimCycleId(): keyof typeof claimCycleEnum {
+  get claimCycleId(): keyof typeof ClaimCycleEnum {
     return this.calculator.getClaimCycle();
   }
   get startClaimAmount(): number {
@@ -62,11 +62,11 @@ export class FormComponent implements OnInit {
   }
 
   get depositCycleName(): string {
-    return depositCycleEnum[this.depositCycleId];
+    return DepositCycleEnum[this.depositCycleId];
   }
 
   get claimCycleName(): string {
-    return claimCycleEnum[this.claimCycleId];
+    return ClaimCycleEnum[this.claimCycleId];
   }
 
   public applyFormValues(): void {
