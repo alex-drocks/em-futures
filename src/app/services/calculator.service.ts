@@ -23,7 +23,7 @@ export enum DailyYieldPercent {
 }
 
 export enum UserActionEnum {
-  INIT = "Initial Deposit",
+  INIT = "First Deposit",
   HOLD = "Hold",
   DEPOSIT = "Deposit",
   WITHDRAW = "Withdraw",
@@ -33,11 +33,11 @@ export interface IDailyData {
   date: string;
   balance: number;
   dailyPercent: DailyYieldPercent;
-  dailyAmountAvailable: number;
+  dailyUnlocked: number;
+  totalUnlocked: number;
   totalDeposited: number;
   totalClaimed: number;
   totalCompounded: number;
-  availableToday: number;
   actionMade: UserActionEnum;
   depositedToday: number;
   compoundedToday: number;
@@ -253,32 +253,29 @@ export class CalculatorService {
       total.daysElapsed = index; // starts at 0 because interest has not accrued yet
 
       const date = dayjs(dateStart).add(total.daysElapsed, "day");
-
       const dailyPercent: DailyYieldPercent = this.getDailyYieldPercent(total.compounded, total.deposited);
       const dailyRate = dailyPercent / 100;
-
       const currentBalance = total.balance;
-      const dailyAmountAvailable = currentBalance * dailyRate;
 
       let userAction: UserActionEnum = UserActionEnum.HOLD;
+      let dailyUnlocked = 0;
       let depositedToday = 0;
       let compoundedToday = 0;
       let claimedToday = 0;
-      let availableToday = 0;
+      let totalUnlocked = 0;
 
       if (total.daysElapsed === 0) {
         userAction = UserActionEnum.INIT;
-      }
-
-      if (total.daysElapsed > 0) {
-        total.available += dailyAmountAvailable;
-        availableToday = total.available;
+      } else {
+        dailyUnlocked = currentBalance * dailyRate;
+        total.available += dailyUnlocked;
+        totalUnlocked = total.available;
       }
 
       const shouldClaimToday = this.evaluateShouldClaim(currentBalance, total.daysElapsed);
       if (shouldClaimToday) {
         userAction = UserActionEnum.WITHDRAW;
-        claimedToday = availableToday;
+        claimedToday = totalUnlocked;
         total.available = 0;
         total.balance -= claimedToday;
         total.claimed += claimedToday;
@@ -288,7 +285,7 @@ export class CalculatorService {
       if (!shouldClaimToday && shouldDepositToday) {
         userAction = UserActionEnum.DEPOSIT;
         depositedToday = regularDepositAmount;
-        compoundedToday = availableToday;
+        compoundedToday = totalUnlocked;
         total.available = 0;
         total.balance += depositedToday + compoundedToday;
         total.deposited += depositedToday;
@@ -301,16 +298,16 @@ export class CalculatorService {
         date: date.format("YY-MM-DD"),
         balance: this.roundNumber(currentBalance),
         dailyPercent: dailyPercent,
-        dailyAmountAvailable: this.roundNumber(dailyAmountAvailable),
+        dailyUnlocked: this.roundNumber(dailyUnlocked),
         totalDeposited: this.roundNumber(total.deposited),
         totalCompounded: this.roundNumber(total.compounded),
         totalClaimed: this.roundNumber(total.claimed),
-        availableToday: this.roundNumber(availableToday),
+        totalUnlocked: this.roundNumber(totalUnlocked),
         actionMade: userAction,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
         claimedToday: this.roundNumber(claimedToday),
-        balanceDifference: balanceDiff > 0 ? `+$${balanceDiff}` : `-$${Math.abs(balanceDiff)}`,
+        balanceDifference: balanceDiff >= 0 ? `+$${balanceDiff}` : `-$${Math.abs(balanceDiff)}`,
         newBalance: this.roundNumber(total.balance),
       });
 

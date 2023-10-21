@@ -23,10 +23,11 @@
               [fontIcon]="'event'"
             ></mat-icon>
           </span>
-          <span class="accordion-item-column align-start">Date &rarr;</span>
+          <span class="accordion-item-column align-start">Date</span>
           <span class="accordion-item-column align-end">Balance<br>Start of Day</span>
           <span class="accordion-item-column align-end">Daily %<br>Rewards</span>
-          <span class="accordion-item-column align-end">Available</span>
+          <span class="accordion-item-column align-end">Daily<br>Available</span>
+          <span class="accordion-item-column align-end">Total<br>Available</span>
           <span class="accordion-item-column align-end">User<br>Action</span>
           <span class="accordion-item-column align-end">Claimed</span>
           <span class="accordion-item-column align-end">Deposited</span>
@@ -55,7 +56,8 @@
           <span class="accordion-item-column align-start">{{ item.date }}</span>
           <span class="accordion-item-column align-end">${{ item.balance }}</span>
           <span class="accordion-item-column align-end">{{ item.dailyPercent }}%</span>
-          <span class="accordion-item-column align-end">${{ item.availableToday }}</span>
+          <span class="accordion-item-column align-end">${{ item.dailyUnlocked }}</span>
+          <span class="accordion-item-column align-end">${{ item.totalUnlocked }}</span>
           <span class="accordion-item-column align-end">{{ item.actionMade }}</span>
           <span class="accordion-item-column align-end">${{ item.claimedToday }}</span>
           <span class="accordion-item-column align-end">${{ item.depositedToday }}</span>
