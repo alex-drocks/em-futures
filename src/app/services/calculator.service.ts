@@ -14,6 +14,11 @@ import {round} from "../helpers/utils";
   providedIn: 'root'
 })
 export class CalculatorService {
+  public DATE_FORMAT = "YY-MM-DD";
+  public MIN_DEPOSIT = 200;
+  public MAX_BALANCE = 1000000;
+  public MAX_WITHDRAWAL = 2500000;
+
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
@@ -24,14 +29,10 @@ export class CalculatorService {
 
   private _dailyData: IDailyData[];
 
-  public minimumDeposit = 200;
-  public maximumBalance = 1000000;
-  public maximumWithdrawal = 2500000;
-
   constructor() {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START);
-    this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.minimumDeposit);
-    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
+    this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.MIN_DEPOSIT);
+    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.MIN_DEPOSIT);
     this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof CycleEnum;
     this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof CycleEnum;
     this._startClaimAmount = storeLoadNumber(StorageKeys.START_CLAIM_AMOUNT, 20000);
@@ -82,23 +83,23 @@ export class CalculatorService {
   }
 
   public setInitialDeposit(value: number): void {
-    this._initialDeposit = value ?? this.minimumDeposit;
-    if (this._initialDeposit < this.minimumDeposit) {
-      this._initialDeposit = this.minimumDeposit;
+    this._initialDeposit = value ?? this.MIN_DEPOSIT;
+    if (this._initialDeposit < this.MIN_DEPOSIT) {
+      this._initialDeposit = this.MIN_DEPOSIT;
     }
-    if (this._initialDeposit > this.maximumBalance) {
-      this._initialDeposit = this.maximumBalance;
+    if (this._initialDeposit > this.MAX_BALANCE) {
+      this._initialDeposit = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.INITIAL_DEPOSIT, this._initialDeposit);
   }
 
   public setRegularDeposit(value: number): void {
-    this._regularDeposit = value ?? this.minimumDeposit;
-    if (this._regularDeposit < this.minimumDeposit) {
-      this._regularDeposit = this.minimumDeposit;
+    this._regularDeposit = value ?? this.MIN_DEPOSIT;
+    if (this._regularDeposit < this.MIN_DEPOSIT) {
+      this._regularDeposit = this.MIN_DEPOSIT;
     }
-    if (this._regularDeposit > this.maximumBalance) {
-      this._regularDeposit = this.maximumBalance;
+    if (this._regularDeposit > this.MAX_BALANCE) {
+      this._regularDeposit = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
   }
@@ -115,22 +116,22 @@ export class CalculatorService {
 
   public setStartClaimAmount(value: number): void {
     this._startClaimAmount = value ?? 20000;
-    if (this._startClaimAmount < this.minimumDeposit) {
+    if (this._startClaimAmount < this.MIN_DEPOSIT) {
       this._startClaimAmount = 200;
     }
-    if (this._startClaimAmount > this.maximumBalance) {
-      this._startClaimAmount = this.maximumBalance;
+    if (this._startClaimAmount > this.MAX_BALANCE) {
+      this._startClaimAmount = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.START_CLAIM_AMOUNT, this._startClaimAmount);
   }
 
   public setStopDepositAmount(value: number): void {
     this._stopDepositAmount = value ?? 1000000;
-    if (this._stopDepositAmount > this.maximumBalance) {
-      this._stopDepositAmount = this.maximumBalance;
+    if (this._stopDepositAmount > this.MAX_BALANCE) {
+      this._stopDepositAmount = this.MAX_BALANCE;
     }
-    if (this._stopDepositAmount < this.minimumDeposit) {
-      this._stopDepositAmount = this.minimumDeposit;
+    if (this._stopDepositAmount < this.MIN_DEPOSIT) {
+      this._stopDepositAmount = this.MIN_DEPOSIT;
     }
     storeSave(StorageKeys.STOP_DEPOSIT_AMOUNT, this._stopDepositAmount);
   }
@@ -167,11 +168,11 @@ export class CalculatorService {
   }
 
   public evaluateShouldDeposit(balance: number, daysElapsedSinceStart: number, depositedToday: number, compoundedToday: number): boolean {
-    if (daysElapsedSinceStart <= 0 || balance >= this.maximumBalance || balance >= this.getStopDepositAmount()) {
+    if (daysElapsedSinceStart <= 0 || balance >= this.MAX_BALANCE || balance >= this.getStopDepositAmount()) {
       return false;
     }
 
-    if (balance + depositedToday + compoundedToday >= this.maximumBalance) {
+    if (balance + depositedToday + compoundedToday >= this.MAX_BALANCE) {
       return false;
     }
 
@@ -273,7 +274,7 @@ export class CalculatorService {
       }
 
       this._dailyData.push({
-        date: date.format("YY-MM-DD"),
+        date: date.format(this.DATE_FORMAT),
         balance: this.roundNumber(currentBalance),
         dailyPercent: dailyPercent,
         dailyUnlocked: this.roundNumber(dailyUnlocked),

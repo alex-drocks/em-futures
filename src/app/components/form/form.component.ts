@@ -35,7 +35,7 @@ export class FormComponent implements OnInit {
   }
 
   get minimumDeposit(): number {
-    return this.calculator.minimumDeposit;
+    return this.calculator.MIN_DEPOSIT;
   }
 
   get dateStart(): Date {
