@@ -1,8 +1,8 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>Calculations</mat-card-title>
+    <mat-card-title>Your Futures Account Growth</mat-card-title>
     <mat-card-subtitle>
-      Here is the data for your investing plan.
+      Here are the calculations for your investing plan.
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -24,16 +24,15 @@
             ></mat-icon>
           </span>
           <span class="accordion-item-column align-start">Date</span>
-          <span class="accordion-item-column align-end">Balance<br>Start of Day</span>
-          <span class="accordion-item-column align-end">Daily %<br>Rewards</span>
-          <span class="accordion-item-column align-end">Daily<br>Available</span>
-          <span class="accordion-item-column align-end">Total<br>Available</span>
+          <span class="accordion-item-column align-end">Balance</span>
+          <span class="accordion-item-column align-end">Rewards<br>%</span>
+          <span class="accordion-item-column align-end">Rewards<br>Today</span>
+          <span class="accordion-item-column align-end">Rewards<br>Available</span>
           <span class="accordion-item-column align-end">User<br>Action</span>
-          <span class="accordion-item-column align-end">Claimed</span>
-          <span class="accordion-item-column align-end">Deposited</span>
-          <span class="accordion-item-column align-end">Compounded<br>Rewards</span>
+          <span class="accordion-item-column align-end">Withdraw</span>
+          <span class="accordion-item-column align-end">Deposit</span>
+          <span class="accordion-item-column align-end">Rewards<br>Compound</span>
           <span class="accordion-item-column align-end">Balance<br>Difference</span>
-          <span class="accordion-item-column align-end">Balance<br>End of Day</span>
         </div>
       </cdk-accordion-item>
       <cdk-accordion-item
@@ -54,16 +53,17 @@
             ></mat-icon>
           </span>
           <span class="accordion-item-column align-start">{{ item.date }}</span>
-          <span class="accordion-item-column align-end">${{ item.balance }}</span>
+          <span class="accordion-item-column align-end">{{ item.balance }}$</span>
           <span class="accordion-item-column align-end">{{ item.dailyPercent }}%</span>
-          <span class="accordion-item-column align-end">${{ item.dailyUnlocked }}</span>
-          <span class="accordion-item-column align-end">${{ item.totalUnlocked }}</span>
+          <span class="accordion-item-column align-end">{{ item.dailyUnlocked }}$</span>
+          <span class="accordion-item-column align-end">{{ item.totalUnlocked }}$</span>
           <span class="accordion-item-column align-end">{{ item.actionMade }}</span>
-          <span class="accordion-item-column align-end">${{ item.claimedToday }}</span>
-          <span class="accordion-item-column align-end">${{ item.depositedToday }}</span>
-          <span class="accordion-item-column align-end">${{ item.compoundedToday }}</span>
-          <span class="accordion-item-column align-end">{{item.balanceDifference }}</span>
-          <span class="accordion-item-column align-end">${{ item.newBalance }}</span>
+          <span class="accordion-item-column align-end">{{ item.claimedToday }}$</span>
+          <span class="accordion-item-column align-end">{{ item.depositedToday }}$</span>
+          <span class="accordion-item-column align-end">{{ item.compoundedToday }}$</span>
+          <span class="accordion-item-column align-end">
+            {{ item.balanceDifference >= 0 ? "+" : null }}{{ item.balanceDifference }}$
+          </span>
         </div>
         <div
           class="accordion-item-body"

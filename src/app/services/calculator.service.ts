@@ -42,7 +42,7 @@ export interface IDailyData {
   depositedToday: number;
   compoundedToday: number;
   claimedToday: number;
-  balanceDifference: string;
+  balanceDifference: number;
   newBalance: number;
 }
 
@@ -242,7 +242,7 @@ export class CalculatorService {
 
     const total = {
       daysElapsed: 0,
-      balance: this.getInitialDeposit(),
+      balance: 0,
       available: 0,
       claimed: 0,
       deposited: this.getInitialDeposit(),
@@ -265,6 +265,8 @@ export class CalculatorService {
       let totalUnlocked = 0;
 
       if (total.daysElapsed === 0) {
+        depositedToday = total.deposited;
+        total.balance = depositedToday;
         userAction = UserActionEnum.INIT;
       } else {
         dailyUnlocked = currentBalance * dailyRate;
@@ -292,8 +294,6 @@ export class CalculatorService {
         total.compounded += compoundedToday;
       }
 
-      const balanceDiff = this.roundNumber(depositedToday + compoundedToday - claimedToday)
-
       this._dailyData.push({
         date: date.format("YY-MM-DD"),
         balance: this.roundNumber(currentBalance),
@@ -307,12 +307,10 @@ export class CalculatorService {
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
         claimedToday: this.roundNumber(claimedToday),
-        balanceDifference: balanceDiff >= 0 ? `+$${balanceDiff}` : `-$${Math.abs(balanceDiff)}`,
+        balanceDifference: this.roundNumber(depositedToday + compoundedToday - claimedToday),
         newBalance: this.roundNumber(total.balance),
       });
-
     }
-
   }
 
 }

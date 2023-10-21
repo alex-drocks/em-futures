@@ -11,7 +11,7 @@
 
     .accordion-item {
       border: solid 1px #ccc;
-      font-size: 12px;
+      font-size: 11px;
 
       &:first-child {
         border-top-left-radius: 4px;
@@ -58,6 +58,7 @@
         }
 
         &.column-names {
+          font-weight: 500;
           mat-icon {
             visibility: hidden;
           }
