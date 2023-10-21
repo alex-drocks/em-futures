@@ -1,50 +1,14 @@
 import {Injectable} from '@angular/core';
-import {round} from "../helpers/utils";
 import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
-import {ClaimCycleEnum, DepositCycleEnum} from "../components/form/form.definitions";
 import * as dayjs from "dayjs";
-
-export enum StorageKeys {
-  INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
-  DATE_START = "DATE_START",
-  REGULAR_DEPOSIT_AMOUNT = "REGULAR_DEPOSIT_AMOUNT",
-  DEPOSIT_CYCLE = "DEPOSIT_CYCLE",
-  CLAIM_CYCLE = "CLAIM_CYCLE",
-  START_CLAIM_AMOUNT = "START_CLAIM_AMOUNT",
-}
-
-export enum DailyYieldPercent {
-  PERCENT_0_500 = 0.5,
-  PERCENT_0_450 = 0.45,
-  PERCENT_0_425 = 0.425,
-  PERCENT_0_375 = 0.375,
-  PERCENT_0_325 = 0.325,
-  PERCENT_0_250 = 0.25,
-}
-
-export enum UserActionEnum {
-  INIT = "First Deposit",
-  HOLD = "Hold",
-  DEPOSIT = "Deposit",
-  WITHDRAW = "Withdraw",
-}
-
-export interface IDailyData {
-  date: string;
-  balance: number;
-  dailyPercent: DailyYieldPercent;
-  dailyUnlocked: number;
-  totalUnlocked: number;
-  totalDeposited: number;
-  totalClaimed: number;
-  totalCompounded: number;
-  actionMade: UserActionEnum;
-  depositedToday: number;
-  compoundedToday: number;
-  claimedToday: number;
-  balanceDifference: number;
-  newBalance: number;
-}
+import {
+  CycleEnum,
+  DailyYieldPercent,
+  IDailyData,
+  StorageKeys,
+  UserActionEnum
+} from "./calculator.definitions";
+import {round} from "../helpers/utils";
 
 @Injectable({
   providedIn: 'root'
@@ -53,26 +17,58 @@ export class CalculatorService {
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
-  private _depositCycle: keyof typeof DepositCycleEnum;
-  private _claimCycle: keyof typeof ClaimCycleEnum;
+  private _depositCycle: keyof typeof CycleEnum;
+  private _claimCycle: keyof typeof CycleEnum;
   private _startClaimAmount: number;
+  private _stopDepositAmount: number;
 
   private _dailyData: IDailyData[];
 
   public minimumDeposit = 200;
+  public maximumBalance = 1000000;
+  public maximumWithdrawal = 2500000;
 
   constructor() {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.minimumDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.minimumDeposit);
-    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof DepositCycleEnum;
-    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof ClaimCycleEnum;
+    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof CycleEnum;
+    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof CycleEnum;
     this._startClaimAmount = storeLoadNumber(StorageKeys.START_CLAIM_AMOUNT, 20000);
+    this._stopDepositAmount = storeLoadNumber(StorageKeys.STOP_DEPOSIT_AMOUNT, 1000000);
     this._dailyData = [];
   }
 
   public getDateStart(): Date {
     return this._dateStart;
+  }
+
+  public getInitialDeposit(): number {
+    return this._initialDeposit;
+  }
+
+  public getRegularDeposit(): number {
+    return this._regularDeposit;
+  }
+
+  public getDepositCycle(): keyof typeof CycleEnum {
+    return this._depositCycle;
+  }
+
+  public getClaimCycle(): keyof typeof CycleEnum {
+    return this._claimCycle;
+  }
+
+  public getStartClaimAmount(): number {
+    return this._startClaimAmount;
+  }
+
+  public getStopDepositAmount(): number {
+    return this._stopDepositAmount;
+  }
+
+  public getDailyData(): IDailyData[] {
+    return this._dailyData;
   }
 
   public setDateStart(value: Date | string): void {
@@ -85,131 +81,113 @@ export class CalculatorService {
     }
   }
 
-  public getInitialDeposit(): number {
-    return this._initialDeposit;
-  }
-
   public setInitialDeposit(value: number): void {
     this._initialDeposit = value ?? this.minimumDeposit;
+    if (this._initialDeposit < this.minimumDeposit) {
+      this._initialDeposit = this.minimumDeposit;
+    }
+    if (this._initialDeposit > this.maximumBalance) {
+      this._initialDeposit = this.maximumBalance;
+    }
     storeSave(StorageKeys.INITIAL_DEPOSIT, this._initialDeposit);
-  }
-
-  public getRegularDeposit(): number {
-    return this._regularDeposit;
-  }
-
-  public getDepositCycle(): keyof typeof DepositCycleEnum {
-    return this._depositCycle;
-  }
-
-  public getClaimCycle(): keyof typeof ClaimCycleEnum {
-    return this._claimCycle;
-  }
-
-  public getStartClaimAmount(): number {
-    return this._startClaimAmount;
-  }
-
-  public getDailyData(): IDailyData[] {
-    return this._dailyData;
   }
 
   public setRegularDeposit(value: number): void {
     this._regularDeposit = value ?? this.minimumDeposit;
+    if (this._regularDeposit < this.minimumDeposit) {
+      this._regularDeposit = this.minimumDeposit;
+    }
+    if (this._regularDeposit > this.maximumBalance) {
+      this._regularDeposit = this.maximumBalance;
+    }
     storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
   }
 
-  public setDepositCycle(value: keyof typeof DepositCycleEnum): void {
+  public setDepositCycle(value: keyof typeof CycleEnum): void {
     this._depositCycle = value ?? "TWO_WEEKS";
     storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
   }
 
-  public setClaimCycle(value: keyof typeof ClaimCycleEnum): void {
+  public setClaimCycle(value: keyof typeof CycleEnum): void {
     this._claimCycle = value ?? "WEEK";
     storeSave(StorageKeys.CLAIM_CYCLE, this._claimCycle);
   }
 
   public setStartClaimAmount(value: number): void {
     this._startClaimAmount = value ?? 20000;
+    if (this._startClaimAmount < this.minimumDeposit) {
+      this._startClaimAmount = 200;
+    }
+    if (this._startClaimAmount > this.maximumBalance) {
+      this._startClaimAmount = this.maximumBalance;
+    }
     storeSave(StorageKeys.START_CLAIM_AMOUNT, this._startClaimAmount);
+  }
+
+  public setStopDepositAmount(value: number): void {
+    this._stopDepositAmount = value ?? 1000000;
+    if (this._stopDepositAmount > this.maximumBalance) {
+      this._stopDepositAmount = this.maximumBalance;
+    }
+    if (this._stopDepositAmount < this.minimumDeposit) {
+      this._stopDepositAmount = this.minimumDeposit;
+    }
+    storeSave(StorageKeys.STOP_DEPOSIT_AMOUNT, this._stopDepositAmount);
   }
 
   public roundNumber(value: number, precision: number = 2): number {
     return round(value, precision);
   }
 
-  public depositCycleToDays(cycle: DepositCycleEnum): number {
+  public cycleEnumToDays(cycle: CycleEnum): number {
     switch (cycle) {
-      case DepositCycleEnum.DAY:
+      case CycleEnum.DAY:
         return 1;
-      case DepositCycleEnum.TWO_DAY:
+      case CycleEnum.TWO_DAY:
         return 2;
-      case DepositCycleEnum.THREE_DAYS:
+      case CycleEnum.THREE_DAYS:
         return 3;
-      case DepositCycleEnum.FIVE_DAYS:
+      case CycleEnum.FIVE_DAYS:
         return 5;
-      case DepositCycleEnum.WEEK:
+      case CycleEnum.WEEK:
         return 7;
-      case DepositCycleEnum.TWO_WEEKS:
+      case CycleEnum.TWO_WEEKS:
         return 14;
-      case DepositCycleEnum.THREE_WEEKS:
+      case CycleEnum.THREE_WEEKS:
         return 21;
-      case DepositCycleEnum.MONTH:
-        return 30; // Considered a month as 30 days
-      case DepositCycleEnum.TWO_MONTHS:
+      case CycleEnum.MONTH:
+        return 30;
+      case CycleEnum.TWO_MONTHS:
         return 60;
-      case DepositCycleEnum.QUARTER:
-        return 90; // Considered a quarter as 90 days
+      case CycleEnum.THREE_MONTHS:
+        return 90;
       default:
         return 0;
     }
   }
 
-  public claimCycleToDays(cycle: ClaimCycleEnum): number {
-    switch (cycle) {
-      case ClaimCycleEnum.DAY:
-        return 1;
-      case ClaimCycleEnum.TWO_DAY:
-        return 2;
-      case ClaimCycleEnum.THREE_DAYS:
-        return 3;
-      case ClaimCycleEnum.FIVE_DAYS:
-        return 5;
-      case ClaimCycleEnum.WEEK:
-        return 7;
-      case ClaimCycleEnum.TWO_WEEKS:
-        return 14;
-      case ClaimCycleEnum.THREE_WEEKS:
-        return 21;
-      case ClaimCycleEnum.MONTH:
-        return 30; // Considering a month as 30 days for simplicity
-      case ClaimCycleEnum.TWO_MONTHS:
-        return 60;
-      case ClaimCycleEnum.QUARTER:
-        return 90; // Considering a quarter as 90 days for simplicity
-      default:
-        return 0;
+  public evaluateShouldDeposit(balance: number, daysElapsedSinceStart: number, depositedToday: number, compoundedToday: number): boolean {
+    if (daysElapsedSinceStart <= 0 || balance >= this.maximumBalance || balance >= this.getStopDepositAmount()) {
+      return false;
     }
-  }
 
-  public evaluateShouldDeposit(currentBalance: number, daysElapsedSinceStart: number): boolean {
-    if (daysElapsedSinceStart <= 0) {
+    if (balance + depositedToday + compoundedToday >= this.maximumBalance) {
       return false;
     }
 
     const cycle = this.getDepositCycle();
-    const daysForCycle = this.depositCycleToDays(DepositCycleEnum[cycle]);
+    const daysForCycle = this.cycleEnumToDays(CycleEnum[cycle]);
 
     // Check if the remainder when dividing by the number of days for the cycle is 0
     return daysElapsedSinceStart % daysForCycle === 0;
   }
 
 
-  public evaluateShouldClaim(currentBalance: number, daysElapsedSinceStart: number): boolean {
+  public evaluateShouldClaim(balance: number, daysElapsedSinceStart: number): boolean {
     const minBalanceToStartClaiming = this.getStartClaimAmount();
-    if (currentBalance >= minBalanceToStartClaiming) {
+    if (balance >= minBalanceToStartClaiming) {
       const cycle = this.getClaimCycle();
-      const daysForCycle = this.claimCycleToDays(ClaimCycleEnum[cycle]);
+      const daysForCycle = this.cycleEnumToDays(CycleEnum[cycle]);
       // Check if the remainder when dividing by the number of days for the cycle is 0
       return daysElapsedSinceStart % daysForCycle === 0;
     }
@@ -283,7 +261,7 @@ export class CalculatorService {
         total.claimed += claimedToday;
       }
 
-      const shouldDepositToday = this.evaluateShouldDeposit(currentBalance, total.daysElapsed);
+      const shouldDepositToday = this.evaluateShouldDeposit(currentBalance, total.daysElapsed, regularDepositAmount, totalUnlocked);
       if (!shouldClaimToday && shouldDepositToday) {
         userAction = UserActionEnum.DEPOSIT;
         depositedToday = regularDepositAmount;

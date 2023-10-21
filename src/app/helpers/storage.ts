@@ -1,3 +1,5 @@
+import {getNumber} from "./utils";
+
 function storeSave(key: string, value: any) {
   let parsedValue: string = "";
   if (typeof value === "string") {
@@ -25,7 +27,7 @@ function storeLoadDate(key: string, fallback?: Date): Date {
 
 function storeLoadNumber(key: string, fallback?: number): number {
   const storedValue = storeLoad(key);
-  return storedValue ? Number(storedValue) : fallback || 0;
+  return getNumber(storedValue);
 }
 
 function storeLoadString(key: string, fallback?: string): string {

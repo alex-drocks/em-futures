@@ -23,15 +23,16 @@
               [fontIcon]="'event'"
             ></mat-icon>
           </span>
+          <span class="accordion-item-column align-start">Day</span>
           <span class="accordion-item-column align-start">Date</span>
           <span class="accordion-item-column align-end">Balance</span>
           <span class="accordion-item-column align-end">Rewards<br>%</span>
           <span class="accordion-item-column align-end">Rewards<br>Today</span>
-          <span class="accordion-item-column align-end">Rewards<br>Available</span>
+          <span class="accordion-item-column align-end">Rewards<br>Accumulated</span>
           <span class="accordion-item-column align-end">User<br>Action</span>
-          <span class="accordion-item-column align-end">Withdraw</span>
-          <span class="accordion-item-column align-end">Deposit</span>
-          <span class="accordion-item-column align-end">Rewards<br>Compound</span>
+          <span class="accordion-item-column align-end">Withdrawn<br>Amount</span>
+          <span class="accordion-item-column align-end">Deposited<br>Amount</span>
+          <span class="accordion-item-column align-end">Rewards<br>Compounded</span>
           <span class="accordion-item-column align-end">Balance<br>Difference</span>
         </div>
       </cdk-accordion-item>
@@ -52,6 +53,7 @@
               [fontIcon]="accordionItem.expanded ? 'expand_more' : 'chevron_right' "
             ></mat-icon>
           </span>
+          <span class="accordion-item-column align-start">{{ index }}</span>
           <span class="accordion-item-column align-start">{{ item.date }}</span>
           <span class="accordion-item-column align-end">{{ item.balance }}$</span>
           <span class="accordion-item-column align-end">{{ item.dailyPercent }}%</span>

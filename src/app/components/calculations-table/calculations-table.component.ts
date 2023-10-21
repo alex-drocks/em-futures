@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
-import {CalculatorService, IDailyData} from "../../services/calculator.service";
+import {CalculatorService} from "../../services/calculator.service";
+import {IDailyData} from "../../services/calculator.definitions";
 
 @Component({
   selector: 'app-calculations-table',
