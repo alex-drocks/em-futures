@@ -60,5 +60,3 @@ export interface IDailyData {
   balanceDifference: number;
   newBalance: number;
 }
-
-export type BarChartData = { backgroundColor: string; data: number[]; label: string }[];

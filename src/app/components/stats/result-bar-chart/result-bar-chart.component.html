@@ -1,7 +1,8 @@
 <canvas
   baseChart
-  [datasets]="barChartData"
-  [labels]="barChartLabels"
+  [type]="barChartType"
+  [datasets]="barChartData.datasets"
+  [labels]="barChartData.labels"
   [options]="barChartOptions"
   [legend]="barChartLegend">
 </canvas>
