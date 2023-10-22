@@ -1,14 +1,14 @@
 export enum StorageKeys {
   INITIAL_DEPOSIT = "INITIAL_DEPOSIT",
   DATE_START = "DATE_START",
-  REGULAR_DEPOSIT_AMOUNT = "REGULAR_DEPOSIT_AMOUNT",
+  REGULAR_DEPOSIT = "REGULAR_DEPOSIT",
   DEPOSIT_CYCLE = "DEPOSIT_CYCLE",
-  CLAIM_CYCLE = "CLAIM_CYCLE",
-  START_CLAIM_AMOUNT = "START_CLAIM_AMOUNT",
-  STOP_DEPOSIT_AMOUNT = "STOP_DEPOSIT_AMOUNT",
+  WITHDRAW_CYCLE = "WITHDRAW_CYCLE",
+  START_WITHDRAWING_BALANCE = "START_WITHDRAWING_BALANCE",
+  STOP_DEPOSITING_BALANCE = "STOP_DEPOSITING_BALANCE",
 }
 
-export enum DailyYieldPercent {
+export enum DailyRewardsPercent {
   PERCENT_0_500 = 0.5,
   PERCENT_0_450 = 0.45,
   PERCENT_0_425 = 0.425,
@@ -35,6 +35,7 @@ export enum CycleEnum {
   MONTH = "Month",
   TWO_MONTHS = "2 Months",
   THREE_MONTHS = "3 Months",
+  NEVER = "Never",
 }
 
 export interface ISelectOption {
@@ -45,16 +46,16 @@ export interface ISelectOption {
 export interface IDailyData {
   date: string;
   balance: number;
-  dailyPercent: DailyYieldPercent;
-  dailyUnlocked: number;
-  totalUnlocked: number;
-  totalDeposited: number;
-  totalClaimed: number;
-  totalCompounded: number;
+  rewardsPercent: DailyRewardsPercent;
+  rewardsToday: number;
+  rewardsAvailable: number;
+  totalWithdrawals: number;
+  totalDeposits: number;
+  totalCompounds: number;
   actionMade: UserActionEnum;
+  withdrawnToday: number;
   depositedToday: number;
   compoundedToday: number;
-  claimedToday: number;
   balanceDifference: number;
   newBalance: number;
 }

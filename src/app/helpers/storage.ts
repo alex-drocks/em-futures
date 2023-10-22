@@ -27,7 +27,7 @@ function storeLoadDate(key: string, fallback?: Date): Date {
 
 function storeLoadNumber(key: string, fallback?: number): number {
   const storedValue = storeLoad(key);
-  return getNumber(storedValue);
+  return getNumber(storedValue, fallback);
 }
 
 function storeLoadString(key: string, fallback?: string): string {

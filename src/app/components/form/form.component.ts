@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
-import {CycleEnum, ISelectOption} from "../../services/calculator.definitions";
+import {CycleEnum, ISelectOption} from "../../app.definitions";
 
 
 @Component({
@@ -12,23 +12,23 @@ import {CycleEnum, ISelectOption} from "../../services/calculator.definitions";
 export class FormComponent implements OnInit {
   public form!: FormGroup;
   public depositCycleOptions!: ISelectOption[];
-  public claimCycleOptions!: ISelectOption[];
+  public withdrawCycleOptions!: ISelectOption[];
 
   constructor(private calculator: CalculatorService) {
   }
 
   ngOnInit(): void {
     this.depositCycleOptions = this.mapEnumToSelectOptions(CycleEnum, "Every ");
-    this.claimCycleOptions = this.mapEnumToSelectOptions(CycleEnum, "", " after compound");
+    this.withdrawCycleOptions = this.mapEnumToSelectOptions(CycleEnum, "Every ");
 
     this.form = new FormGroup({
       dateStart: new FormControl(this.dateStart.toISOString()),
       initialDeposit: new FormControl(this.initialDeposit),
       regularDeposit: new FormControl(this.regularDeposit),
       depositCycle: new FormControl(this.depositCycleId),
-      claimCycle: new FormControl(this.claimCycleId),
-      startClaimAmount: new FormControl(this.startClaimAmount),
-      stopDepositAmount: new FormControl(this.stopDepositAmount),
+      withdrawCycle: new FormControl(this.withdrawCycleId),
+      startWithdrawingBalance: new FormControl(this.startWithdrawingBalance),
+      stopDepositingBalance: new FormControl(this.stopDepositingBalance),
     });
 
     this.calculator.calculateDailyData();
@@ -54,24 +54,24 @@ export class FormComponent implements OnInit {
     return this.calculator.getDepositCycle();
   }
 
-  get claimCycleId(): keyof typeof CycleEnum {
-    return this.calculator.getClaimCycle();
+  get withdrawCycleId(): keyof typeof CycleEnum {
+    return this.calculator.getWithdrawCycle();
   }
 
-  get startClaimAmount(): number {
-    return this.calculator.getStartClaimAmount();
+  get startWithdrawingBalance(): number {
+    return this.calculator.getStartWithdrawingBalance();
   }
 
-  get stopDepositAmount(): number {
-    return this.calculator.getStopDepositAmount();
+  get stopDepositingBalance(): number {
+    return this.calculator.getStopDepositingBalance();
   }
 
   get depositCycleName(): string {
     return CycleEnum[this.depositCycleId];
   }
 
-  get claimCycleName(): string {
-    return CycleEnum[this.claimCycleId];
+  get withdrawCycleName(): string {
+    return CycleEnum[this.withdrawCycleId];
   }
 
   public applyFormValues(): void {
@@ -79,9 +79,9 @@ export class FormComponent implements OnInit {
     this.calculator.setInitialDeposit(this.form.value.initialDeposit);
     this.calculator.setRegularDeposit(this.form.value.regularDeposit);
     this.calculator.setDepositCycle(this.form.value.depositCycle);
-    this.calculator.setClaimCycle(this.form.value.claimCycle);
-    this.calculator.setStartClaimAmount(this.form.value.startClaimAmount);
-    this.calculator.setStopDepositAmount(this.form.value.stopDepositAmount);
+    this.calculator.setWithdrawCycle(this.form.value.withdrawCycle);
+    this.calculator.setStartWithdrawingBalance(this.form.value.startWithdrawingBalance);
+    this.calculator.setStopDepositingBalance(this.form.value.stopDepositingBalance);
 
     this.calculator.calculateDailyData();
 
@@ -96,9 +96,9 @@ export class FormComponent implements OnInit {
         initialDeposit: this.calculator.getInitialDeposit(),
         regularDeposit: this.calculator.getRegularDeposit(),
         depositCycle: this.calculator.getDepositCycle(),
-        claimCycle: this.calculator.getClaimCycle(),
-        startClaimAmount: this.calculator.getStartClaimAmount(),
-        stopDepositAmount: this.calculator.getStopDepositAmount(),
+        withdrawCycle: this.calculator.getWithdrawCycle(),
+        startWithdrawingBalance: this.calculator.getStartWithdrawingBalance(),
+        stopDepositingBalance: this.calculator.getStopDepositingBalance(),
       },
       {emitEvent: false}
     );
@@ -107,7 +107,7 @@ export class FormComponent implements OnInit {
   private mapEnumToSelectOptions(enumObj: Record<string, string>, prefix: string = "", suffix: string = ""): ISelectOption[] {
     return Object.keys(enumObj).map((key: string) => ({
       id: key,
-      name: `${prefix}${enumObj[key]}${suffix}`
+      name: key === "NEVER" ? enumObj[key] : `${prefix}${enumObj[key]}${suffix}`,
     }));
   }
 

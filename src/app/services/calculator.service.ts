@@ -3,11 +3,11 @@ import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave}
 import * as dayjs from "dayjs";
 import {
   CycleEnum,
-  DailyYieldPercent,
+  DailyRewardsPercent,
   IDailyData,
   StorageKeys,
   UserActionEnum
-} from "./calculator.definitions";
+} from "../app.definitions";
 import {round} from "../helpers/utils";
 
 @Injectable({
@@ -16,27 +16,28 @@ import {round} from "../helpers/utils";
 export class CalculatorService {
   public DATE_FORMAT = "YY-MM-DD";
   public MIN_DEPOSIT = 200;
-  public MAX_BALANCE = 1000000;
-  public MAX_WITHDRAWAL = 2500000;
+  public MAX_BALANCE = 1_000_000;
+  public MAX_WITHDRAWAL = 2_500_000;
+  public MAX_DAILY_WITHDRAWAL = 50_000;
 
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
   private _depositCycle: keyof typeof CycleEnum;
-  private _claimCycle: keyof typeof CycleEnum;
-  private _startClaimAmount: number;
-  private _stopDepositAmount: number;
+  private _withdrawCycle: keyof typeof CycleEnum;
+  private _startWithdrawingBalance: number;
+  private _stopDepositingBalance: number;
 
   private _dailyData: IDailyData[];
 
   constructor() {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.MIN_DEPOSIT);
-    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this.MIN_DEPOSIT);
+    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.MIN_DEPOSIT);
     this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof CycleEnum;
-    this._claimCycle = storeLoadString(StorageKeys.CLAIM_CYCLE, "WEEK") as keyof typeof CycleEnum;
-    this._startClaimAmount = storeLoadNumber(StorageKeys.START_CLAIM_AMOUNT, 20000);
-    this._stopDepositAmount = storeLoadNumber(StorageKeys.STOP_DEPOSIT_AMOUNT, 1000000);
+    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, "WEEK") as keyof typeof CycleEnum;
+    this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, 50_000);
+    this._stopDepositingBalance = storeLoadNumber(StorageKeys.STOP_DEPOSITING_BALANCE, 1_000_000);
     this._dailyData = [];
   }
 
@@ -56,16 +57,16 @@ export class CalculatorService {
     return this._depositCycle;
   }
 
-  public getClaimCycle(): keyof typeof CycleEnum {
-    return this._claimCycle;
+  public getWithdrawCycle(): keyof typeof CycleEnum {
+    return this._withdrawCycle;
   }
 
-  public getStartClaimAmount(): number {
-    return this._startClaimAmount;
+  public getStartWithdrawingBalance(): number {
+    return this._startWithdrawingBalance;
   }
 
-  public getStopDepositAmount(): number {
-    return this._stopDepositAmount;
+  public getStopDepositingBalance(): number {
+    return this._stopDepositingBalance;
   }
 
   public getDailyData(): IDailyData[] {
@@ -101,7 +102,7 @@ export class CalculatorService {
     if (this._regularDeposit > this.MAX_BALANCE) {
       this._regularDeposit = this.MAX_BALANCE;
     }
-    storeSave(StorageKeys.REGULAR_DEPOSIT_AMOUNT, this._regularDeposit);
+    storeSave(StorageKeys.REGULAR_DEPOSIT, this._regularDeposit);
   }
 
   public setDepositCycle(value: keyof typeof CycleEnum): void {
@@ -109,38 +110,38 @@ export class CalculatorService {
     storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
   }
 
-  public setClaimCycle(value: keyof typeof CycleEnum): void {
-    this._claimCycle = value ?? "WEEK";
-    storeSave(StorageKeys.CLAIM_CYCLE, this._claimCycle);
+  public setWithdrawCycle(value: keyof typeof CycleEnum): void {
+    this._withdrawCycle = value ?? "WEEK";
+    storeSave(StorageKeys.WITHDRAW_CYCLE, this._withdrawCycle);
   }
 
-  public setStartClaimAmount(value: number): void {
-    this._startClaimAmount = value ?? 20000;
-    if (this._startClaimAmount < this.MIN_DEPOSIT) {
-      this._startClaimAmount = 200;
+  public setStartWithdrawingBalance(value: number): void {
+    this._startWithdrawingBalance = value ?? 20_000;
+    if (this._startWithdrawingBalance < this.MIN_DEPOSIT) {
+      this._startWithdrawingBalance = 200;
     }
-    if (this._startClaimAmount > this.MAX_BALANCE) {
-      this._startClaimAmount = this.MAX_BALANCE;
+    if (this._startWithdrawingBalance > this.MAX_BALANCE) {
+      this._startWithdrawingBalance = this.MAX_BALANCE;
     }
-    storeSave(StorageKeys.START_CLAIM_AMOUNT, this._startClaimAmount);
+    storeSave(StorageKeys.START_WITHDRAWING_BALANCE, this._startWithdrawingBalance);
   }
 
-  public setStopDepositAmount(value: number): void {
-    this._stopDepositAmount = value ?? 1000000;
-    if (this._stopDepositAmount > this.MAX_BALANCE) {
-      this._stopDepositAmount = this.MAX_BALANCE;
+  public setStopDepositingBalance(value: number): void {
+    this._stopDepositingBalance = value ?? 1_000_000;
+    if (this._stopDepositingBalance > this.MAX_BALANCE) {
+      this._stopDepositingBalance = this.MAX_BALANCE;
     }
-    if (this._stopDepositAmount < this.MIN_DEPOSIT) {
-      this._stopDepositAmount = this.MIN_DEPOSIT;
+    if (this._stopDepositingBalance < this.MIN_DEPOSIT) {
+      this._stopDepositingBalance = this.MIN_DEPOSIT;
     }
-    storeSave(StorageKeys.STOP_DEPOSIT_AMOUNT, this._stopDepositAmount);
+    storeSave(StorageKeys.STOP_DEPOSITING_BALANCE, this._stopDepositingBalance);
   }
 
   public roundNumber(value: number, precision: number = 2): number {
     return round(value, precision);
   }
 
-  public cycleEnumToDays(cycle: CycleEnum): number {
+  public cycleEnumToDays(cycle: CycleEnum): number | null {
     switch (cycle) {
       case CycleEnum.DAY:
         return 1;
@@ -162,131 +163,160 @@ export class CalculatorService {
         return 60;
       case CycleEnum.THREE_MONTHS:
         return 90;
+      case CycleEnum.NEVER:
+        return null;
       default:
         return 0;
     }
   }
 
-  public evaluateShouldDeposit(balance: number, daysElapsedSinceStart: number, depositedToday: number, compoundedToday: number): boolean {
-    if (daysElapsedSinceStart <= 0 || balance >= this.MAX_BALANCE || balance >= this.getStopDepositAmount()) {
-      return false;
+  public exceedsMaxWithdrawals(totalWithdrawals: number, rewards: number): boolean {
+    if (totalWithdrawals > this.MAX_WITHDRAWAL) {
+      return true;
     }
+    const forecastedWithdrawals = totalWithdrawals + rewards;
+    return forecastedWithdrawals > this.MAX_WITHDRAWAL;
+  }
 
-    if (balance + depositedToday + compoundedToday >= this.MAX_BALANCE) {
-      return false;
+  public exceedsMaxBalance(balance: number, rewards: number): boolean {
+    if (balance > this.MAX_BALANCE) {
+      return true;
     }
+    const forecastedBalance = balance + this.getRegularDeposit() + rewards;
+    return forecastedBalance > this.MAX_BALANCE;
+  }
 
-    const cycle = this.getDepositCycle();
+  public isCycleDay(daysElapsed: number, cycle: keyof typeof CycleEnum): boolean {
     const daysForCycle = this.cycleEnumToDays(CycleEnum[cycle]);
-
-    // Check if the remainder when dividing by the number of days for the cycle is 0
-    return daysElapsedSinceStart % daysForCycle === 0;
-  }
-
-
-  public evaluateShouldClaim(balance: number, daysElapsedSinceStart: number): boolean {
-    const minBalanceToStartClaiming = this.getStartClaimAmount();
-    if (balance >= minBalanceToStartClaiming) {
-      const cycle = this.getClaimCycle();
-      const daysForCycle = this.cycleEnumToDays(CycleEnum[cycle]);
-      // Check if the remainder when dividing by the number of days for the cycle is 0
-      return daysElapsedSinceStart % daysForCycle === 0;
+    if (daysForCycle === null) {
+      return false;
     }
-    return false;
+    return daysElapsed % daysForCycle === 0;
   }
 
-  public getDailyYieldPercent(totalCompoundedRewards: number, totalDeposited: number): DailyYieldPercent {
+  public shouldWithdraw(balance: number, daysElapsed: number, totalWithdrawals: number, rewards: number): boolean {
+    if (balance < this.getStartWithdrawingBalance() || this.exceedsMaxWithdrawals(totalWithdrawals, rewards)) {
+      return false;
+    }
+    const withdrawCycle = this.getWithdrawCycle();
+    return this.isCycleDay(daysElapsed, withdrawCycle);
+  }
+
+  public shouldDeposit(balance: number, daysElapsed: number, rewards: number): boolean {
+    if (daysElapsed <= 0 || balance >= this.getStopDepositingBalance() || this.exceedsMaxBalance(balance, rewards)) {
+      return false;
+    }
+    const depositCycle = this.getDepositCycle();
+    return this.isCycleDay(daysElapsed, depositCycle);
+  }
+
+  public getDailyRewardsPercent(totalCompoundedRewards: number, totalDeposited: number): DailyRewardsPercent {
     const compoundedSpread = totalCompoundedRewards - totalDeposited;
-    if (compoundedSpread >= 50000 && compoundedSpread <= 249999) {
-      return DailyYieldPercent.PERCENT_0_450;
-    } else if (compoundedSpread >= 250000 && compoundedSpread <= 499999) {
-      return DailyYieldPercent.PERCENT_0_425;
-    } else if (compoundedSpread >= 500000 && compoundedSpread <= 749999) {
-      return DailyYieldPercent.PERCENT_0_375;
-    } else if (compoundedSpread >= 750000 && compoundedSpread <= 999999) {
-      return DailyYieldPercent.PERCENT_0_325;
-    } else if (compoundedSpread >= 1000000) {
-      return DailyYieldPercent.PERCENT_0_250;
+    if (compoundedSpread >= 50_000 && compoundedSpread <= 249_999) {
+      return DailyRewardsPercent.PERCENT_0_450;
+    } else if (compoundedSpread >= 250_000 && compoundedSpread <= 499_999) {
+      return DailyRewardsPercent.PERCENT_0_425;
+    } else if (compoundedSpread >= 500_000 && compoundedSpread <= 749_999) {
+      return DailyRewardsPercent.PERCENT_0_375;
+    } else if (compoundedSpread >= 750_000 && compoundedSpread <= 999_999) {
+      return DailyRewardsPercent.PERCENT_0_325;
+    } else if (compoundedSpread >= 1_000_000) {
+      return DailyRewardsPercent.PERCENT_0_250;
     } else {
-      return DailyYieldPercent.PERCENT_0_500;
+      return DailyRewardsPercent.PERCENT_0_500;
     }
+  }
+
+  public getDailyRewardsRate(dailyPercent: DailyRewardsPercent): number {
+    return dailyPercent / 100;
+  }
+
+  public getDailyUnlocked(balance: number, dailyRate: number): number {
+    return balance * dailyRate;
+  }
+
+  public getTotalUnlocked(balance: number, totalUnlocked: number, dailyUnlocked: number): number {
+    let newTotalUnlocked = totalUnlocked + dailyUnlocked;
+    if (newTotalUnlocked > this.MAX_DAILY_WITHDRAWAL || newTotalUnlocked > balance) {
+      newTotalUnlocked = this.MAX_DAILY_WITHDRAWAL;
+    }
+    return newTotalUnlocked;
   }
 
   public calculateDailyData(): void {
     this._dailyData = [];
 
     const dateStart = this.getDateStart();
-    const regularDepositAmount = this.getRegularDeposit();
-    const daysToCalculate = 100
+    const daysToCalculate = 365 * 4;
 
     const total = {
       daysElapsed: 0,
       balance: 0,
-      available: 0,
-      claimed: 0,
-      deposited: this.getInitialDeposit(),
-      compounded: 0,
+      rewardsAvailable: 0,
+      withdrawals: 0,
+      rewards: 0,
+      deposits: this.getInitialDeposit(),
     }
 
     for (let index = 0; index < daysToCalculate; index++) {
-      total.daysElapsed = index; // starts at 0 because interest has not accrued yet
+      total.daysElapsed = index;
 
       const date = dayjs(dateStart).add(total.daysElapsed, "day");
-      const dailyPercent: DailyYieldPercent = this.getDailyYieldPercent(total.compounded, total.deposited);
-      const dailyRate = dailyPercent / 100;
+      const dailyRewardsPercent: DailyRewardsPercent = this.getDailyRewardsPercent(total.rewards, total.deposits);
+      const dailyRate = this.getDailyRewardsRate(dailyRewardsPercent);
       const currentBalance = total.balance;
 
       let userAction: UserActionEnum = UserActionEnum.HOLD;
-      let dailyUnlocked = 0;
+      let rewardsToday = 0;
+      let rewardsAvailable = 0;
       let depositedToday = 0;
       let compoundedToday = 0;
-      let claimedToday = 0;
-      let totalUnlocked = 0;
+      let withdrawnToday = 0;
 
       if (total.daysElapsed === 0) {
-        depositedToday = total.deposited;
+        depositedToday = total.deposits;
         total.balance = depositedToday;
         userAction = UserActionEnum.INIT;
       } else {
-        dailyUnlocked = currentBalance * dailyRate;
-        total.available += dailyUnlocked;
-        totalUnlocked = total.available;
+        rewardsToday = currentBalance * dailyRate;
+        total.rewardsAvailable = this.getTotalUnlocked(currentBalance, total.rewardsAvailable, rewardsToday);
+        rewardsAvailable = total.rewardsAvailable;
       }
 
-      const shouldClaimToday = this.evaluateShouldClaim(currentBalance, total.daysElapsed);
-      if (shouldClaimToday) {
+      const shouldWithdraw = this.shouldWithdraw(currentBalance, total.daysElapsed, total.withdrawals, rewardsAvailable);
+      if (shouldWithdraw) {
         userAction = UserActionEnum.WITHDRAW;
-        claimedToday = totalUnlocked;
-        total.available = 0;
-        total.balance -= claimedToday;
-        total.claimed += claimedToday;
+        withdrawnToday = rewardsAvailable;
+        total.rewardsAvailable = 0;
+        total.balance -= withdrawnToday;
+        total.withdrawals += withdrawnToday;
       }
 
-      const shouldDepositToday = this.evaluateShouldDeposit(currentBalance, total.daysElapsed, regularDepositAmount, totalUnlocked);
-      if (!shouldClaimToday && shouldDepositToday) {
+      const shouldDeposit = this.shouldDeposit(currentBalance, total.daysElapsed, rewardsAvailable);
+      if (!shouldWithdraw && shouldDeposit) {
         userAction = UserActionEnum.DEPOSIT;
-        depositedToday = regularDepositAmount;
-        compoundedToday = totalUnlocked;
-        total.available = 0;
+        depositedToday = this.getRegularDeposit();
+        compoundedToday = rewardsAvailable;
+        total.rewardsAvailable = 0;
         total.balance += depositedToday + compoundedToday;
-        total.deposited += depositedToday;
-        total.compounded += compoundedToday;
+        total.deposits += depositedToday;
+        total.rewards += compoundedToday;
       }
 
       this._dailyData.push({
         date: date.format(this.DATE_FORMAT),
         balance: this.roundNumber(currentBalance),
-        dailyPercent: dailyPercent,
-        dailyUnlocked: this.roundNumber(dailyUnlocked),
-        totalDeposited: this.roundNumber(total.deposited),
-        totalCompounded: this.roundNumber(total.compounded),
-        totalClaimed: this.roundNumber(total.claimed),
-        totalUnlocked: this.roundNumber(totalUnlocked),
+        rewardsPercent: dailyRewardsPercent,
+        rewardsToday: this.roundNumber(rewardsToday),
+        rewardsAvailable: this.roundNumber(rewardsAvailable),
+        totalDeposits: this.roundNumber(total.deposits),
+        totalCompounds: this.roundNumber(total.rewards),
+        totalWithdrawals: this.roundNumber(total.withdrawals),
         actionMade: userAction,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
-        claimedToday: this.roundNumber(claimedToday),
-        balanceDifference: this.roundNumber(depositedToday + compoundedToday - claimedToday),
+        withdrawnToday: this.roundNumber(withdrawnToday),
+        balanceDifference: this.roundNumber(depositedToday + compoundedToday - withdrawnToday),
         newBalance: this.roundNumber(total.balance),
       });
     }

@@ -43,8 +43,8 @@
       <mat-card-title>Your Investing Plan</mat-card-title>
       <mat-card-subtitle>
         I want to deposit {{regularDeposit}}$ every {{depositCycleName}} to compound my accumulated rewards. Then, I
-        want to withdraw my rewards every {{claimCycleName}} after I compounded. But, until I have
-        reached a minimum balance of {{startClaimAmount}}$, I only want to compound my rewards.
+        want to withdraw my rewards every {{withdrawCycleName}} after I rewards. But, until I have
+        reached a minimum balance of {{startWithdrawingBalance}}$, I only want to compound my rewards.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -71,8 +71,8 @@
 
         <mat-form-field class="field">
           <mat-label>Withdraw Cycle (Claim)</mat-label>
-          <mat-select formControlName="claimCycle">
-            <mat-option *ngFor="let cycle of claimCycleOptions" [value]="cycle.id">
+          <mat-select formControlName="withdrawCycle">
+            <mat-option *ngFor="let cycle of withdrawCycleOptions" [value]="cycle.id">
               {{cycle.name}}
             </mat-option>
           </mat-select>
@@ -82,7 +82,7 @@
           <mat-label>Start withdrawing at minimum balance</mat-label>
           <span matSuffix>$&nbsp;</span>
           <input
-            formControlName="startClaimAmount"
+            formControlName="startWithdrawingBalance"
             type="number"
             matInput
             maxlength="9"
@@ -93,7 +93,7 @@
           <mat-label>Stop depositing at maximum balance</mat-label>
           <span matSuffix>$&nbsp;</span>
           <input
-            formControlName="stopDepositAmount"
+            formControlName="stopDepositingBalance"
             type="number"
             matInput
             maxlength="9"
