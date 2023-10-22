@@ -14,17 +14,19 @@ export class ResultBarChartComponent implements OnChanges {
   @Input() rewards!: number;
   @Input() unrealizedProfit!: number;
   @Input() realizedProfit!: number;
+  @Input() deposits!: number;
+  @Input() withdrawals!: number;
 
   public barChartData!: BarChartData;
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true
   };
-  public barChartLabels = ["Your Balance", "Total Rewards", "Realized Profit", "Unrealized Profit"];
+  public barChartLabels = ["Balance", "Deposits", "Compounds", "Withdrawals", "Unrealized Profit", "Realized Profit"];
   public barChartLegend = false;
 
   ngOnChanges(changes: SimpleChanges) {
     this.barChartData = [{
-      data: [this.balance, this.rewards, this.realizedProfit, this.unrealizedProfit],
+      data: [this.balance, this.deposits, this.rewards, this.withdrawals, this.unrealizedProfit, this.realizedProfit],
       label: 'Results',
       backgroundColor: '#1565c0',
     },];
