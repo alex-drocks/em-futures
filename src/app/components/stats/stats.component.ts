@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {CalculatorService} from "../../services/calculator.service";
-import {BarChartData, IDailyData} from "../../app.definitions";
-import {Subscription} from "rxjs";
+import { IDailyData} from "../../app.definitions";
 
 @Component({
   selector: 'app-stats',
@@ -22,7 +21,7 @@ export class StatsComponent {
     return this.lastCalculatedDay.totalDeposited;
   }
 
-  public get rewards(): number {
+  public get compounds(): number {
     return this.lastCalculatedDay.totalCompounded;
   }
 
@@ -34,12 +33,8 @@ export class StatsComponent {
     return this.lastCalculatedDay.newBalance;
   }
 
-  public get realizedProfit(): number {
-    return this.calculator.roundNumber(this.withdrawals - this.deposits);
-  }
-
-  public get unrealizedProfit(): number {
-    return this.calculator.roundNumber(this.balance - this.deposits);
+  public get netCost(): number {
+    return this.calculator.roundNumber(this.deposits - this.withdrawals);
   }
 
 }

@@ -11,9 +11,7 @@ import {BarChartData, IDailyData} from "../../../app.definitions";
 })
 export class ResultBarChartComponent implements OnChanges {
   @Input() balance!: number;
-  @Input() rewards!: number;
-  @Input() unrealizedProfit!: number;
-  @Input() realizedProfit!: number;
+  @Input() compounds!: number;
   @Input() deposits!: number;
   @Input() withdrawals!: number;
 
@@ -21,12 +19,22 @@ export class ResultBarChartComponent implements OnChanges {
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true
   };
-  public barChartLabels = ["Balance", "Deposits", "Compounds", "Withdrawals", "Unrealized Profit", "Realized Profit"];
+  public barChartLabels = [
+    "Deposits (Invested Capital)",
+    "Compounds (Earned Yield)",
+    "Withdrawals (Cashed Out)",
+    "Balance (TVL)"
+  ];
   public barChartLegend = false;
 
   ngOnChanges(changes: SimpleChanges) {
     this.barChartData = [{
-      data: [this.balance, this.deposits, this.rewards, this.withdrawals, this.unrealizedProfit, this.realizedProfit],
+      data: [
+        this.deposits,
+        this.compounds,
+        this.withdrawals,
+        this.balance
+      ],
       label: 'Results',
       backgroundColor: '#1565c0',
     },];
