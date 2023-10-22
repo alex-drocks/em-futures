@@ -50,9 +50,9 @@ export interface IDailyData {
   rewardsPercent: DailyRewardsPercent;
   rewardsToday: number;
   rewardsAvailable: number;
-  totalWithdrawals: number;
-  totalDeposits: number;
-  totalCompounds: number;
+  totalWithdrawn: number;
+  totalDeposited: number;
+  totalCompounded: number;
   actionMade: UserActionEnum;
   withdrawnToday: number;
   depositedToday: number;
