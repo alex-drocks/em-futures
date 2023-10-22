@@ -45,7 +45,7 @@
       <mat-card-title>Your Investing Plan</mat-card-title>
       <mat-card-subtitle>
         I want to deposit {{regularDeposit}}$ every {{depositCycleName}} to compound my accumulated rewards. Then, I
-        want to withdraw my rewards every {{withdrawCycleName}} after I rewards. But, until I have
+        want to withdraw my rewards every {{withdrawCycleName}} after I deposited. But, until I have
         reached a minimum balance of {{startWithdrawingBalance}}$, I only want to compound my rewards.
       </mat-card-subtitle>
     </mat-card-header>
@@ -120,7 +120,7 @@
   </mat-card>
 
   <div class="buttons">
-    <button type="submit" mat-raised-button color="primary">Apply & Calculate</button>
-    <button type="button" mat-raised-button (click)="resetDefaults()">Reset Defaults</button>
+    <button type="submit" mat-raised-button color="primary">Calculate</button>
+    <button type="button" mat-raised-button (click)="resetDefaults()">Reset</button>
   </div>
 </form>

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
 import * as dayjs from "dayjs";
 import {
@@ -14,6 +14,8 @@ import {round} from "../helpers/utils";
   providedIn: 'root'
 })
 export class CalculatorService {
+  public calculationEmitter: EventEmitter<void> = new EventEmitter();
+
   public DATE_FORMAT = "YY-MM-DD";
   public MIN_DEPOSIT = 200;
   public MAX_BALANCE = 1_000_000;
@@ -357,6 +359,8 @@ export class CalculatorService {
         balanceDifference: this.roundNumber(depositedToday + compoundedToday - withdrawnToday),
         newBalance: this.roundNumber(total.balance),
       });
+
+      this.calculationEmitter.emit();
     }
   }
 
