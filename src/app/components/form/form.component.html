@@ -6,7 +6,8 @@
     <mat-card-header>
       <mat-card-title>Your First Deposit</mat-card-title>
       <mat-card-subtitle>
-        I started on {{dateStart | date:"longDate"}} with a balance of {{initialDeposit}}$.
+        I started on {{dateStart | date:"longDate"}} with a balance of {{initialDeposit}}$ deposited in my Futures
+        wallet.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -32,6 +33,7 @@
             type="number"
             matInput
             maxlength="9"
+            autocomplete="off"
           >
         </mat-form-field>
       </div>
@@ -57,6 +59,7 @@
             type="number"
             matInput
             maxlength="9"
+            autocomplete="off"
           >
         </mat-form-field>
 
@@ -79,31 +82,45 @@
         </mat-form-field>
 
         <mat-form-field class="field">
-          <mat-label>Start withdrawing at minimum balance</mat-label>
+          <mat-label>Start withdrawing at balance</mat-label>
           <span matSuffix>$&nbsp;</span>
           <input
             formControlName="startWithdrawingBalance"
             type="number"
             matInput
             maxlength="9"
+            autocomplete="off"
           >
         </mat-form-field>
 
         <mat-form-field class="field">
-          <mat-label>Stop depositing at maximum balance</mat-label>
+          <mat-label>Stop depositing at balance</mat-label>
           <span matSuffix>$&nbsp;</span>
           <input
             formControlName="stopDepositingBalance"
             type="number"
             matInput
             maxlength="9"
+            autocomplete="off"
+          >
+        </mat-form-field>
+        <mat-form-field class="field">
+          <mat-label>Years to forecast</mat-label>
+          <input
+            formControlName="yearsToForecast"
+            type="number"
+            matInput
+            maxlength="2"
+            autocomplete="off"
           >
         </mat-form-field>
       </div>
+
     </mat-card-content>
   </mat-card>
 
   <div class="buttons">
-    <button type="submit" mat-raised-button color="primary">Apply</button>
+    <button type="submit" mat-raised-button color="primary">Apply & Calculate</button>
+    <button type="button" mat-raised-button (click)="resetDefaults()">Reset Defaults</button>
   </div>
 </form>

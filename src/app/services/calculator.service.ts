@@ -19,6 +19,18 @@ export class CalculatorService {
   public MAX_BALANCE = 1_000_000;
   public MAX_WITHDRAWAL = 2_500_000;
   public MAX_DAILY_WITHDRAWAL = 50_000;
+  public MAX_YEARS_FORECAST = 10;
+
+  public defaults = {
+    dateStart: new Date(),
+    initialDeposit: 1_000,
+    regularDeposit: 200,
+    depositCycle: "TWO_WEEKS",
+    withdrawCycle: "WEEK",
+    startWithdrawingBalance: 50_000,
+    stopDepositingBalance: 1_000_000,
+    yearsToForecast: 1,
+  }
 
   private _dateStart: Date;
   private _initialDeposit: number;
@@ -27,17 +39,31 @@ export class CalculatorService {
   private _withdrawCycle: keyof typeof CycleEnum;
   private _startWithdrawingBalance: number;
   private _stopDepositingBalance: number;
+  private _yearsToForecast: number;
 
   private _dailyData: IDailyData[];
 
   constructor() {
-    this._dateStart = storeLoadDate(StorageKeys.DATE_START);
-    this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.MIN_DEPOSIT);
-    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.MIN_DEPOSIT);
-    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, "TWO_WEEKS") as keyof typeof CycleEnum;
-    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, "WEEK") as keyof typeof CycleEnum;
-    this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, 50_000);
-    this._stopDepositingBalance = storeLoadNumber(StorageKeys.STOP_DEPOSITING_BALANCE, 1_000_000);
+    this._dateStart = storeLoadDate(StorageKeys.DATE_START, this.defaults.dateStart);
+    this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.defaults.initialDeposit);
+    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.defaults.regularDeposit);
+    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as keyof typeof CycleEnum;
+    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as keyof typeof CycleEnum;
+    this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, this.defaults.startWithdrawingBalance);
+    this._stopDepositingBalance = storeLoadNumber(StorageKeys.STOP_DEPOSITING_BALANCE, this.defaults.stopDepositingBalance);
+    this._yearsToForecast = storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast);
+    this._dailyData = [];
+  }
+
+  public resetDefaults(): void {
+    this._dateStart = this.defaults.dateStart;
+    this._initialDeposit = this.defaults.initialDeposit;
+    this._regularDeposit = this.defaults.regularDeposit
+    this._depositCycle = this.defaults.depositCycle as keyof typeof CycleEnum;
+    this._withdrawCycle = this.defaults.withdrawCycle as keyof typeof CycleEnum;
+    this._startWithdrawingBalance = this.defaults.startWithdrawingBalance;
+    this._stopDepositingBalance = this.defaults.stopDepositingBalance;
+    this._yearsToForecast = this.defaults.yearsToForecast;
     this._dailyData = [];
   }
 
@@ -67,6 +93,10 @@ export class CalculatorService {
 
   public getStopDepositingBalance(): number {
     return this._stopDepositingBalance;
+  }
+
+  public getYearsToForecast(): number {
+    return this._yearsToForecast;
   }
 
   public getDailyData(): IDailyData[] {
@@ -135,6 +165,14 @@ export class CalculatorService {
       this._stopDepositingBalance = this.MIN_DEPOSIT;
     }
     storeSave(StorageKeys.STOP_DEPOSITING_BALANCE, this._stopDepositingBalance);
+  }
+
+  public setYearsToForecast(value: number): void {
+    this._yearsToForecast = value ?? 1;
+    if (this._yearsToForecast > this.MAX_YEARS_FORECAST) {
+      this._yearsToForecast = this.MAX_YEARS_FORECAST;
+    }
+    storeSave(StorageKeys.YEARS_TO_FORECAST, this._yearsToForecast);
   }
 
   public roundNumber(value: number, precision: number = 2): number {
@@ -247,7 +285,7 @@ export class CalculatorService {
     this._dailyData = [];
 
     const dateStart = this.getDateStart();
-    const daysToCalculate = 365 * 4;
+    const daysToCalculate = 365 * this.getYearsToForecast();
 
     const total = {
       daysElapsed: 0,

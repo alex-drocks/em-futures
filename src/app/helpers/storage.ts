@@ -35,4 +35,8 @@ function storeLoadString(key: string, fallback?: string): string {
   return storedValue ? storedValue : fallback || "";
 }
 
-export {storeSave, storeDelete, storeLoadDate, storeLoadNumber, storeLoadString}
+function storeClearAll(): void {
+  localStorage.clear();
+}
+
+export {storeSave, storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeClearAll}

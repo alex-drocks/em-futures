@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
 import {CycleEnum, ISelectOption} from "../../app.definitions";
+import {storeClearAll} from "../../helpers/storage";
 
 
 @Component({
@@ -29,13 +30,10 @@ export class FormComponent implements OnInit {
       withdrawCycle: new FormControl(this.withdrawCycleId),
       startWithdrawingBalance: new FormControl(this.startWithdrawingBalance),
       stopDepositingBalance: new FormControl(this.stopDepositingBalance),
+      yearsToForecast: new FormControl(this.yearsToForecast),
     });
 
     this.calculator.calculateDailyData();
-  }
-
-  get minimumDeposit(): number {
-    return this.calculator.MIN_DEPOSIT;
   }
 
   get dateStart(): Date {
@@ -66,6 +64,10 @@ export class FormComponent implements OnInit {
     return this.calculator.getStopDepositingBalance();
   }
 
+  get yearsToForecast(): number {
+    return this.calculator.getYearsToForecast();
+  }
+
   get depositCycleName(): string {
     return CycleEnum[this.depositCycleId];
   }
@@ -82,10 +84,18 @@ export class FormComponent implements OnInit {
     this.calculator.setWithdrawCycle(this.form.value.withdrawCycle);
     this.calculator.setStartWithdrawingBalance(this.form.value.startWithdrawingBalance);
     this.calculator.setStopDepositingBalance(this.form.value.stopDepositingBalance);
+    this.calculator.setYearsToForecast(this.form.value.yearsToForecast);
 
     this.calculator.calculateDailyData();
 
     this.forceRefreshFormDisplayedValues();
+  }
+
+  resetDefaults(): void {
+    storeClearAll();
+    this.calculator.resetDefaults();
+    this.forceRefreshFormDisplayedValues();
+    this.calculator.calculateDailyData();
   }
 
   private forceRefreshFormDisplayedValues(): void {
@@ -99,6 +109,7 @@ export class FormComponent implements OnInit {
         withdrawCycle: this.calculator.getWithdrawCycle(),
         startWithdrawingBalance: this.calculator.getStartWithdrawingBalance(),
         stopDepositingBalance: this.calculator.getStopDepositingBalance(),
+        yearsToForecast: this.calculator.getYearsToForecast(),
       },
       {emitEvent: false}
     );
