@@ -9,6 +9,7 @@ import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 })
 export class DepositPieChartComponent implements OnChanges {
   @Input() deposits!: number;
+  @Input() compounds!: number;
   @Input() withdrawals!: number;
 
   public pieChartData!: ChartData<'pie', number[], string | string[]>;
@@ -33,10 +34,10 @@ export class DepositPieChartComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.pieChartData = {
-      labels: ["Deposits", "Withdrawals"],
+      labels: ["Deposits", "Compounds", "Withdrawals"],
       datasets: [{
-        data: [this.deposits, this.withdrawals],
-        backgroundColor: ["#e8bc5c", "#2ebe79"],
+        data: [this.deposits, this.compounds, this.withdrawals],
+        backgroundColor: ["#379af9", "#e8bc5c", "#2ebe79"],
       }],
     }
   }

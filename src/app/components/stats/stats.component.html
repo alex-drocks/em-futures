@@ -2,18 +2,19 @@
   <mat-card-header>
     <mat-card-title>Your Estimated Results</mat-card-title>
     <mat-card-subtitle>
-      On the last forecasted day of your investing plan, the results would be as follows.
+      When your investment plan concludes, the results will be as follows.
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="charts-container">
     <app-result-bar-chart
       [balance]="balance"
-      [compounds]="compounds"
       [deposits]="deposits"
+      [compounds]="compounds"
       [withdrawals]="withdrawals"
     ></app-result-bar-chart>
     <app-deposit-pie-chart
       [deposits]="deposits"
+      [compounds]="compounds"
       [withdrawals]="withdrawals"
     ></app-deposit-pie-chart>
   </mat-card-content>
