@@ -2,20 +2,25 @@
   <mat-card-header>
     <mat-card-title>Your Estimated Results</mat-card-title>
     <mat-card-subtitle>
-      When your investment plan concludes, the results will be as follows.
+      Here are the results for your investment plan.
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="charts-container">
-    <app-result-bar-chart
-      [balance]="balance"
-      [deposits]="deposits"
-      [compounds]="compounds"
-      [withdrawals]="withdrawals"
-    ></app-result-bar-chart>
-    <app-deposit-pie-chart
-      [deposits]="deposits"
-      [compounds]="compounds"
-      [withdrawals]="withdrawals"
-    ></app-deposit-pie-chart>
+    <div class="row">
+      <app-time-line-chart></app-time-line-chart>
+    </div>
+    <div class="row">
+      <app-result-bar-chart
+        [balance]="balance"
+        [deposits]="deposits"
+        [compounds]="compounds"
+        [withdrawals]="withdrawals"
+      ></app-result-bar-chart>
+      <app-deposit-pie-chart
+        [deposits]="deposits"
+        [compounds]="compounds"
+        [withdrawals]="withdrawals"
+      ></app-deposit-pie-chart>
+    </div>
   </mat-card-content>
 </mat-card>

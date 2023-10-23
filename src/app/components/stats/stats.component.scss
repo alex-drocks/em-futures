@@ -6,9 +6,18 @@
 
   .charts-container {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
     gap: 2rem;
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      flex-grow: 1;
+      flex-shrink: 1;
+      gap: 2rem;
+    }
   }
 }

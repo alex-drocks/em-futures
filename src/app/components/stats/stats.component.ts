@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {CalculatorService} from "../../services/calculator.service";
-import { IDailyData} from "../../app.definitions";
+import {IDailyData} from "../../app.definitions";
 
 @Component({
   selector: 'app-stats',
@@ -10,6 +10,10 @@ import { IDailyData} from "../../app.definitions";
 export class StatsComponent {
 
   constructor(private calculator: CalculatorService) {
+  }
+
+  public get dailyData(): IDailyData[] {
+    return this.calculator.getDailyData();
   }
 
   public get lastCalculatedDay(): IDailyData {
@@ -31,10 +35,6 @@ export class StatsComponent {
 
   public get balance(): number {
     return this.lastCalculatedDay.newBalance;
-  }
-
-  public get netCost(): number {
-    return this.calculator.roundNumber(this.deposits - this.withdrawals);
   }
 
 }

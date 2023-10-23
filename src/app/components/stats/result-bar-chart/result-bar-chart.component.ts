@@ -19,7 +19,7 @@ export class ResultBarChartComponent implements OnChanges {
     responsive: true,
     indexAxis: 'y',
   };
-  public barChartLegend = true;
+  public barChartLegend = false;
 
   constructor(private readonly calculator: CalculatorService) {
   }
@@ -30,6 +30,7 @@ export class ResultBarChartComponent implements OnChanges {
         "Deposits (Invested Capital)",
         "Compounds (Earned Yield)",
         "Withdrawals (Cashed Out)",
+        "Balance (TVL)",
       ],
       datasets: [
         {
@@ -37,52 +38,52 @@ export class ResultBarChartComponent implements OnChanges {
             this.deposits,
             this.compounds,
             this.withdrawals,
+            this.balance,
           ],
-          label: 'Total',
-          backgroundColor: '#1565c0',
+          label: 'Results at the end of your investment plan',
+          backgroundColor: '#1565C0FF',
           hidden: false,
         },
-        {
-          data: [
-            this.deposits / this.calculator.getYearsToForecast(),
-            this.compounds / this.calculator.getYearsToForecast(),
-            this.withdrawals / this.calculator.getYearsToForecast(),
-          ],
-          label: 'Yearly average',
-          backgroundColor: '#198bd0',
-          hidden: true,
-        },
-        {
-          data: [
-            this.deposits / this.calculator.getYearsToForecast() / 12,
-            this.compounds / this.calculator.getYearsToForecast() / 12,
-            this.withdrawals / this.calculator.getYearsToForecast() / 12,
-          ],
-          label: 'Monthly average',
-          backgroundColor: '#0da0f4',
-          hidden: true,
-        },
-        {
-          data: [
-            this.deposits / this.calculator.getYearsToForecast() / 12 / 4,
-            this.compounds / this.calculator.getYearsToForecast() / 12 / 4,
-            this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4,
-          ],
-          label: 'Weekly average',
-          backgroundColor: '#3db4ff',
-          hidden: true,
-        },
-        {
-          data: [
-            this.deposits / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-            this.compounds / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-            this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-          ],
-          label: 'Daily average',
-          backgroundColor: '#66c0ff',
-          hidden: true,
-        },
-
+        // {
+        //   data: [
+        //     this.deposits / this.calculator.getYearsToForecast(),
+        //     this.compounds / this.calculator.getYearsToForecast(),
+        //     this.withdrawals / this.calculator.getYearsToForecast(),
+        //   ],
+        //   label: 'Yearly average',
+        //   backgroundColor: '#198bd0',
+        //   hidden: true,
+        // },
+        // {
+        //   data: [
+        //     this.deposits / this.calculator.getYearsToForecast() / 12,
+        //     this.compounds / this.calculator.getYearsToForecast() / 12,
+        //     this.withdrawals / this.calculator.getYearsToForecast() / 12,
+        //   ],
+        //   label: 'Monthly average',
+        //   backgroundColor: '#0da0f4',
+        //   hidden: true,
+        // },
+        // {
+        //   data: [
+        //     this.deposits / this.calculator.getYearsToForecast() / 12 / 4,
+        //     this.compounds / this.calculator.getYearsToForecast() / 12 / 4,
+        //     this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4,
+        //   ],
+        //   label: 'Weekly average',
+        //   backgroundColor: '#3db4ff',
+        //   hidden: true,
+        // },
+        // {
+        //   data: [
+        //     this.deposits / this.calculator.getYearsToForecast() / 12 / 4 / 30,
+        //     this.compounds / this.calculator.getYearsToForecast() / 12 / 4 / 30,
+        //     this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4 / 30,
+        //   ],
+        //   label: 'Daily average',
+        //   backgroundColor: '#66c0ff',
+        //   hidden: true,
+        // },
       ]
     }
   }

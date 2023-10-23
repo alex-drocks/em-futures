@@ -24,6 +24,7 @@ import { CalculationsTableComponent } from './components/calculations-table/calc
 import { NgChartsModule } from 'ng2-charts';
 import { ResultBarChartComponent } from './components/stats/result-bar-chart/result-bar-chart.component';
 import { DepositPieChartComponent } from './components/stats/deposit-pie-chart/deposit-pie-chart.component';
+import { TimeLineChartComponent } from './components/stats/time-line-chart/time-line-chart.component';
 
 
 export const MY_DATE_FORMATS = {
@@ -46,6 +47,7 @@ export const MY_DATE_FORMATS = {
     CalculationsTableComponent,
     ResultBarChartComponent,
     DepositPieChartComponent,
+    TimeLineChartComponent,
   ],
   imports: [
     BrowserModule,
