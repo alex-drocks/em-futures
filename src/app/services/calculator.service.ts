@@ -234,16 +234,21 @@ export class CalculatorService {
     return daysElapsed % daysForCycle === 0;
   }
 
-  public shouldWithdraw(balance: number, daysElapsed: number, totalWithdrawals: number, rewards: number): boolean {
-    if (balance < this.getStartWithdrawingBalance() || this.exceedsMaxWithdrawals(totalWithdrawals, rewards)) {
-      return false;
-    }
+  public canWithdraw(balance: number, totalWithdrawals: number, rewardsAvailable: number) {
+    return balance >= this.getStartWithdrawingBalance() && !this.exceedsMaxWithdrawals(totalWithdrawals, rewardsAvailable)
+  }
+
+  public isWithdrawCycleDay(daysElapsed: number): boolean {
     const withdrawCycle = this.getWithdrawCycle();
     return this.isCycleDay(daysElapsed, withdrawCycle);
   }
 
-  public shouldDeposit(balance: number, daysElapsed: number, rewards: number): boolean {
-    if (daysElapsed <= 0 || balance >= this.getStopDepositingBalance() || this.exceedsMaxBalance(balance, rewards)) {
+  public canDeposit(balance: number, rewardsAvailable: number): boolean {
+    return balance < this.getStopDepositingBalance() && !this.exceedsMaxBalance(balance, rewardsAvailable)
+  }
+
+  public isDepositCycleDay(daysElapsed: number): boolean {
+    if (daysElapsed <= 0) {
       return false;
     }
     const depositCycle = this.getDepositCycle();
@@ -288,6 +293,8 @@ export class CalculatorService {
 
     const dateStart = this.getDateStart();
     const daysToCalculate = 365 * this.getYearsToForecast();
+    let prevDepositDate: dayjs.Dayjs;
+    let prevWithdrawDate: dayjs.Dayjs;
 
     const total = {
       daysElapsed: 0,
@@ -323,17 +330,22 @@ export class CalculatorService {
         rewardsAvailable = total.rewardsAvailable;
       }
 
-      const shouldWithdraw = this.shouldWithdraw(currentBalance, total.daysElapsed, total.withdrawals, rewardsAvailable);
+      const canWithdraw = this.canWithdraw(currentBalance, total.withdrawals, rewardsAvailable);
+      const isWithdrawCycleDay = this.isWithdrawCycleDay(total.daysElapsed);
+      const shouldWithdraw = canWithdraw && isWithdrawCycleDay;
       if (shouldWithdraw) {
         userAction = UserActionEnum.WITHDRAW;
         withdrawnToday = rewardsAvailable;
         total.rewardsAvailable = 0;
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
+        prevWithdrawDate = date;
       }
 
-      const shouldDeposit = this.shouldDeposit(currentBalance, total.daysElapsed, rewardsAvailable);
-      if (!shouldWithdraw && shouldDeposit) {
+      const canDeposit = this.canDeposit(currentBalance, rewardsAvailable);
+      const isDepositCycleDay = this.isDepositCycleDay(total.daysElapsed);
+      const shouldDeposit = canDeposit && isDepositCycleDay;
+      if (shouldDeposit && !shouldWithdraw) {
         userAction = UserActionEnum.DEPOSIT;
         depositedToday = this.getRegularDeposit();
         compoundedToday = rewardsAvailable;
@@ -341,6 +353,7 @@ export class CalculatorService {
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
         total.rewards += compoundedToday;
+        prevDepositDate = date;
       }
 
       this._dailyData.push({
