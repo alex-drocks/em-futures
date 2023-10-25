@@ -62,11 +62,12 @@ export interface IDailyData {
   date: string;
   balance: number;
   rewardsPercent: DailyRewardsPercent;
-  rewardsToday: number;
+  rewardsUnlockedToday: number;
   rewardsAvailable: number;
   totalWithdrawn: number;
   totalDeposited: number;
   totalCompounded: number;
+  totalRewardsAvailable: number;
   actionMade: UserActionEnum;
   withdrawnToday: number;
   depositedToday: number;

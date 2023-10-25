@@ -4,6 +4,13 @@
   gap: 0.5rem;
   width: 100%;
 
+  ::ng-deep cdk-accordion-item#accordion-header--1 {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+  }
+
   .accordion {
     flex-grow: 1;
     display: flex;
@@ -26,8 +33,6 @@
       }
 
       .accordion-item-header {
-        position: sticky;
-        top: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -52,7 +57,7 @@
             justify-content: flex-end;
           }
 
-          &.accordion-item-chevron {
+          &.chevron-col {
             font-size: 0.85em;
             color: #999;
           }
@@ -60,10 +65,15 @@
           &.no-grow {
             flex-grow: 0;
           }
+
+          &.bold {
+            font-weight: 500;
+          }
         }
 
         &.column-names {
           font-weight: 500;
+          background-color: whitesmoke;
 
           mat-icon {
             visibility: hidden;
@@ -83,6 +93,59 @@
 
     .accordion-item-body {
       padding: 16px 28px;
+    }
+  }
+
+  @media (max-width: 1130px) {
+    cdk-accordion-item .accordion-item-column {
+      &.yield-today-col,
+      &.tot-withdraw-col,
+      &.tot-deposit-col,
+      &.tot-compound-col {
+        display: none !important;
+      }
+    }
+  }
+
+  @media (max-width: 830px) {
+    cdk-accordion-item .accordion-item-column {
+      &.deposited-col,
+      &.compounded-col,
+      &.withdrawn-col {
+        display: none !important;
+      }
+    }
+  }
+
+  @media (max-width: 475px) {
+    cdk-accordion-item .accordion-item-column {
+      &.yield-percent-col {
+        display: none !important;
+      }
+    }
+  }
+
+  @media (max-width: 405px) {
+    cdk-accordion-item .accordion-item-column {
+      &.day-col {
+        display: none !important;
+      }
+    }
+  }
+
+  @media (max-width: 350px) {
+    cdk-accordion-item .accordion-item-column {
+      &.difference-col {
+        display: none !important;
+      }
+    }
+  }
+
+  @media (max-width: 305px) {
+    cdk-accordion-item .accordion-item-column {
+      &.yield-avail-col {
+        display: none !important;
+      }
     }
   }
 

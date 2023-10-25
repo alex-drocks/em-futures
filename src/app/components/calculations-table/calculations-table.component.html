@@ -16,27 +16,27 @@
         [attr.aria-expanded]="accordionItem.expanded"
         [attr.aria-controls]="'accordion-body-' + -1">
         <div class="accordion-item-header column-names" (click)="accordionItem.toggle()">
-          <span class="accordion-item-column accordion-item-chevron align-start no-grow">
+          <span class="accordion-item-column chevron-col align-start no-grow">
             <mat-icon
               aria-hidden="false"
               aria-label="Expand icon"
               [fontIcon]="'event'"
             ></mat-icon>
           </span>
-          <span class="accordion-item-column align-start">Day</span>
-          <span class="accordion-item-column align-start">Date</span>
-          <span class="accordion-item-column align-end">Locked<br>Balance</span>
-          <span class="accordion-item-column align-end">Yield<br>(%)</span>
-          <span class="accordion-item-column align-end">Yield<br>Today</span>
-          <span class="accordion-item-column align-end">Yield<br>Available</span>
-          <span class="accordion-item-column align-end">User<br>Action</span>
-          <span class="accordion-item-column align-end">Withdrawn<br>Today</span>
-          <span class="accordion-item-column align-end">Deposited<br>Today</span>
-          <span class="accordion-item-column align-end">Compounded<br>Today</span>
-          <span class="accordion-item-column align-end">Balance<br>Change</span>
-          <span class="accordion-item-column align-end">Total<br>Withdrawn</span>
-          <span class="accordion-item-column align-end">Total<br>Deposited</span>
-          <span class="accordion-item-column align-end">Total<br>Compounded</span>
+          <span class="accordion-item-column align-start day-col">Day</span>
+          <span class="accordion-item-column align-start date-col">Date</span>
+          <span class="accordion-item-column align-end balance-col">Balance<br>(TVL)</span>
+          <span class="accordion-item-column align-end yield-percent-col">Yield<br>(%)</span>
+          <span class="accordion-item-column align-end yield-today-col">Yield<br>Today</span>
+          <span class="accordion-item-column align-end yield-avail-col">Yield<br>Available</span>
+          <span class="accordion-item-column align-end action-col">User<br>Action</span>
+          <span class="accordion-item-column align-end withdrawn-col">Withdrawn<br>Today</span>
+          <span class="accordion-item-column align-end deposited-col">Deposited<br>Today</span>
+          <span class="accordion-item-column align-end compounded-col">Compounded<br>Today</span>
+          <span class="accordion-item-column align-end difference-col">Balance<br>Change</span>
+          <span class="accordion-item-column align-end tot-withdraw-col">Total<br>Withdrawn</span>
+          <span class="accordion-item-column align-end tot-deposit-col">Total<br>Deposited</span>
+          <span class="accordion-item-column align-end tot-compound-col">Total<br>Compounded</span>
         </div>
       </cdk-accordion-item>
       <cdk-accordion-item
@@ -49,29 +49,29 @@
         [attr.aria-expanded]="accordionItem.expanded"
         [attr.aria-controls]="'accordion-body-' + index">
         <div class="accordion-item-header" (click)="accordionItem.toggle()">
-          <span class="accordion-item-column accordion-item-chevron align-start no-grow">
-            <mat-icon
-              aria-hidden="false"
-              aria-label="Expand icon"
-              [fontIcon]="accordionItem.expanded ? 'expand_more' : 'chevron_right' "
-            ></mat-icon>
+          <span class="accordion-item-column chevron-col align-start no-grow">
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Expand icon"
+                [fontIcon]="accordionItem.expanded ? 'expand_more' : 'chevron_right' "
+              ></mat-icon>
           </span>
-          <span class="accordion-item-column align-start">{{ index }}</span>
-          <span class="accordion-item-column align-start">{{ item.date }}</span>
-          <span class="accordion-item-column align-end">{{ item.balance }}$</span>
-          <span class="accordion-item-column align-end">{{ item.rewardsPercent }}%</span>
-          <span class="accordion-item-column align-end">{{ item.rewardsToday }}$</span>
-          <span class="accordion-item-column align-end">{{ item.rewardsAvailable }}$</span>
-          <span class="accordion-item-column align-end">{{ item.actionMade }}</span>
-          <span class="accordion-item-column align-end">{{ item.withdrawnToday }}$</span>
-          <span class="accordion-item-column align-end">{{ item.depositedToday }}$</span>
-          <span class="accordion-item-column align-end">{{ item.compoundedToday }}$</span>
-          <span class="accordion-item-column align-end">
+          <span class="accordion-item-column align-start day-col">{{ index }}</span>
+          <span class="accordion-item-column align-start date-col">{{ item.date }}</span>
+          <span class="accordion-item-column align-end balance-col bold">{{ item.balance }}$</span>
+          <span class="accordion-item-column align-end yield-percent-col">{{ item.rewardsPercent }}%</span>
+          <span class="accordion-item-column align-end yield-today-col">{{ item.rewardsUnlockedToday }}$</span>
+          <span class="accordion-item-column align-end yield-avail-col">{{ item.rewardsAvailable }}$</span>
+          <span class="accordion-item-column align-end action-col">{{ item.actionMade }}</span>
+          <span class="accordion-item-column align-end withdrawn-col">{{ item.withdrawnToday }}$</span>
+          <span class="accordion-item-column align-end deposited-col">{{ item.depositedToday }}$</span>
+          <span class="accordion-item-column align-end compounded-col">{{ item.compoundedToday }}$</span>
+          <span class="accordion-item-column align-end difference-col bold">
             {{ item.balanceDifference >= 0 ? "+" : null }}{{ item.balanceDifference }}$
           </span>
-          <span class="accordion-item-column align-end">{{ item.totalWithdrawn }}$</span>
-          <span class="accordion-item-column align-end">{{ item.totalDeposited }}$</span>
-          <span class="accordion-item-column align-end">{{ item.totalCompounded }}$</span>
+          <span class="accordion-item-column align-end tot-withdraw-col">{{ item.totalWithdrawn }}$</span>
+          <span class="accordion-item-column align-end tot-deposit-col">{{ item.totalDeposited }}$</span>
+          <span class="accordion-item-column align-end tot-compound-col">{{ item.totalCompounded }}$</span>
         </div>
         <div
           class="accordion-item-body"
@@ -79,7 +79,21 @@
           [style.display]="accordionItem.expanded ? '' : 'none'"
           [attr.id]="'accordion-body-' + index"
           [attr.aria-labelledby]="'accordion-header-' + index">
-          Balance {{item["balance"]}}$
+          On {{item.date}}, you had a balance of {{item.balance}}$ and {{item.actionMade === "Hold"
+          ? "held passively to let your rewards accumulate"
+          : " made a " + item.actionMade + " of " + (item.depositedToday || item.withdrawnToday) + "$"}}.
+          Your balance at the end of the day was {{item.newBalance !== item.balance
+          ? (item.newBalance + "$")
+          : "unchanged"}}.
+          <br>
+          <br>
+          Available rewards to compound or withdraw before taking action: {{item.rewardsAvailable}}$
+          <br>
+          <br>
+          Balance: {{item.balance}}$ + {{item.balanceDifference}}$ = {{item.newBalance}}$
+          <br>
+          <br>
+          Available rewards to compound or withdraw at the end of the day: {{item.totalRewardsAvailable}}$
         </div>
       </cdk-accordion-item>
     </cdk-accordion>
