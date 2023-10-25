@@ -40,14 +40,14 @@ export enum CycleEnum {
 }
 
 export enum CycleTranslations {
-  DAY = "Day",
+  DAY = "day",
   TWO_DAY = "2 days",
   THREE_DAYS = "3 days",
   FIVE_DAYS = "5 days",
-  WEEK = "Week",
+  WEEK = "week",
   TWO_WEEKS = "2 weeks",
   THREE_WEEKS = "3 weeks",
-  MONTH = "Month",
+  MONTH = "month",
   TWO_MONTHS = "2 months",
   THREE_MONTHS = "3 months",
   NEVER = "Never",

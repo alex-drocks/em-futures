@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import DatalabelsPlugin from 'chartjs-plugin-datalabels';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
+import {colors} from "../../../helpers/colors";
 
 @Component({
   selector: 'app-deposit-pie-chart',
@@ -34,10 +35,10 @@ export class DepositPieChartComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.pieChartData = {
-      labels: ["Total Deposits", "Total Compounds", "Total Withdrawals"],
+      labels: ["Total Deposits", "Total Withdrawals", "Total Compounds"],
       datasets: [{
         data: [this.deposits, this.compounds, this.withdrawals],
-        backgroundColor: ["#fc1c19", "#e8bc5c", "#2ebe79"],
+        backgroundColor: [colors.DEPOSIT_RED, colors.WITHDRAWALS_GREEN, colors.COMPOUNDS_BLUE],
       }],
     }
   }

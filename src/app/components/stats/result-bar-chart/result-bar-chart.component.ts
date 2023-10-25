@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 import {CalculatorService} from "../../../services/calculator.service";
+import {colors} from "../../../helpers/colors";
 
 @Component({
   selector: 'app-result-bar-chart',
@@ -20,6 +21,12 @@ export class ResultBarChartComponent implements OnChanges {
     indexAxis: 'y',
   };
   public barChartLegend = false;
+  public colors = [
+    colors.DEPOSIT_RED,
+    colors.WITHDRAWALS_GREEN,
+    colors.BALANCE_ORANGE,
+    colors.COMPOUNDS_BLUE,
+  ];
 
   constructor(private readonly calculator: CalculatorService) {
   }
@@ -27,63 +34,23 @@ export class ResultBarChartComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.barChartData = {
       labels: [
-        "Deposits (Invested Capital)",
-        "Compounds (Earned Yield)",
-        "Withdrawals (Cashed Out)",
+        "Deposits (Invested)",
+        "Withdrawals (Banked)",
         "Balance (TVL)",
+        "Compounds (Yield)",
       ],
       datasets: [
         {
           data: [
             this.deposits,
-            this.compounds,
             this.withdrawals,
             this.balance,
+            this.compounds,
           ],
           label: 'Results at the end of your investment plan',
-          backgroundColor: '#1565C0FF',
+          backgroundColor: this.colors,
           hidden: false,
         },
-        // {
-        //   data: [
-        //     this.deposits / this.calculator.getYearsToForecast(),
-        //     this.compounds / this.calculator.getYearsToForecast(),
-        //     this.withdrawals / this.calculator.getYearsToForecast(),
-        //   ],
-        //   label: 'Yearly average',
-        //   backgroundColor: '#198bd0',
-        //   hidden: true,
-        // },
-        // {
-        //   data: [
-        //     this.deposits / this.calculator.getYearsToForecast() / 12,
-        //     this.compounds / this.calculator.getYearsToForecast() / 12,
-        //     this.withdrawals / this.calculator.getYearsToForecast() / 12,
-        //   ],
-        //   label: 'Monthly average',
-        //   backgroundColor: '#0da0f4',
-        //   hidden: true,
-        // },
-        // {
-        //   data: [
-        //     this.deposits / this.calculator.getYearsToForecast() / 12 / 4,
-        //     this.compounds / this.calculator.getYearsToForecast() / 12 / 4,
-        //     this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4,
-        //   ],
-        //   label: 'Weekly average',
-        //   backgroundColor: '#3db4ff',
-        //   hidden: true,
-        // },
-        // {
-        //   data: [
-        //     this.deposits / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-        //     this.compounds / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-        //     this.withdrawals / this.calculator.getYearsToForecast() / 12 / 4 / 30,
-        //   ],
-        //   label: 'Daily average',
-        //   backgroundColor: '#66c0ff',
-        //   hidden: true,
-        // },
       ]
     }
   }

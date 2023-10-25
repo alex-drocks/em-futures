@@ -4,6 +4,7 @@ import Annotation from 'chartjs-plugin-annotation';
 import {IDailyData} from "../../../app.definitions";
 import {CalculatorService} from "../../../services/calculator.service";
 import {Subscription} from "rxjs";
+import {colors} from "../../../helpers/colors";
 
 @Component({
   selector: 'app-time-line-chart',
@@ -31,8 +32,7 @@ export class TimeLineChartComponent implements OnInit {
       },
     },
     scales: {
-      x: {
-      },
+      x: {},
       y: {
         position: 'left',
         beginAtZero: false
@@ -66,7 +66,6 @@ export class TimeLineChartComponent implements OnInit {
       },
     },
   };
-  public colors = ["#1565C0", "#fc1c19", "#1bde8d", "#e8bc5c"];
 
   constructor(private readonly calculator: CalculatorService) {
     Chart.register(Annotation);
@@ -90,27 +89,14 @@ export class TimeLineChartComponent implements OnInit {
       labels: this.dailyData.map(daily => daily.date),
       datasets: [
         {
-          data: this.mapDataToPoints("newBalance") as any,
-          label: 'Balance (TVL)',
-          backgroundColor: this.colors[0],
-          borderColor: this.colors[0],
-          pointBackgroundColor: this.colors[0],
-          pointBorderColor: this.colors[0],
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: this.colors[0],
-          fill: false,
-          pointRadius: 0,
-          spanGaps: true,
-        },
-        {
           data: this.mapDataToPoints("totalDeposited") as any,
           label: 'Deposits (Invested)',
-          backgroundColor: this.colors[1],
-          borderColor: this.colors[1],
-          pointBackgroundColor: this.colors[1],
-          pointBorderColor: this.colors[1],
+          backgroundColor: colors.DEPOSIT_RED,
+          borderColor: colors.DEPOSIT_RED,
+          pointBackgroundColor: colors.DEPOSIT_RED,
+          pointBorderColor: colors.DEPOSIT_RED,
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: this.colors[1],
+          pointHoverBorderColor: colors.DEPOSIT_RED,
           fill: false,
           pointRadius: 0,
           spanGaps: true,
@@ -118,12 +104,25 @@ export class TimeLineChartComponent implements OnInit {
         {
           data: this.mapDataToPoints("totalWithdrawn") as any,
           label: 'Withdrawals (Cashed out)',
-          backgroundColor: this.colors[2],
-          borderColor: this.colors[2],
-          pointBackgroundColor: this.colors[2],
-          pointBorderColor: this.colors[2],
+          backgroundColor: colors.WITHDRAWALS_GREEN,
+          borderColor: colors.WITHDRAWALS_GREEN,
+          pointBackgroundColor: colors.WITHDRAWALS_GREEN,
+          pointBorderColor: colors.WITHDRAWALS_GREEN,
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: this.colors[2],
+          pointHoverBorderColor: colors.WITHDRAWALS_GREEN,
+          fill: false,
+          pointRadius: 0,
+          spanGaps: true,
+        },
+        {
+          data: this.mapDataToPoints("newBalance") as any,
+          label: 'Balance (TVL)',
+          backgroundColor: colors.BALANCE_ORANGE,
+          borderColor: colors.BALANCE_ORANGE,
+          pointBackgroundColor: colors.BALANCE_ORANGE,
+          pointBorderColor: colors.BALANCE_ORANGE,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: colors.BALANCE_ORANGE,
           fill: false,
           pointRadius: 0,
           spanGaps: true,
@@ -131,12 +130,25 @@ export class TimeLineChartComponent implements OnInit {
         {
           data: this.mapDataToPoints("totalCompounded") as any,
           label: 'Compounds (Earned Yield)',
-          backgroundColor: this.colors[3],
-          borderColor: this.colors[3],
-          pointBackgroundColor: this.colors[3],
-          pointBorderColor: this.colors[3],
+          backgroundColor: colors.COMPOUNDS_BLUE,
+          borderColor: colors.COMPOUNDS_BLUE,
+          pointBackgroundColor: colors.COMPOUNDS_BLUE,
+          pointBorderColor: colors.COMPOUNDS_BLUE,
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: this.colors[3],
+          pointHoverBorderColor: colors.COMPOUNDS_BLUE,
+          fill: false,
+          pointRadius: 0,
+          spanGaps: true,
+        },
+        {
+          data: this.mapDataToPoints(["totalWithdrawn", "totalDeposited"]) as any,
+          label: 'ROI (Return On Investment)',
+          backgroundColor: colors.ROI_BLUE,
+          borderColor: colors.ROI_BLUE,
+          pointBackgroundColor: colors.ROI_BLUE,
+          pointBorderColor: colors.ROI_BLUE,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: colors.ROI_BLUE,
           fill: false,
           pointRadius: 0,
           spanGaps: true,
@@ -145,7 +157,21 @@ export class TimeLineChartComponent implements OnInit {
     };
   }
 
-  private mapDataToPoints(prop: keyof IDailyData): { x: string, y: number }[] {
-    return this.dailyData.map((item: IDailyData) => ({x: item.date, y: item[prop] as number}))
+  private mapDataToPoints(prop: keyof IDailyData | Array<keyof IDailyData>): { x: string, y: number }[] {
+    if (typeof prop === "string") {
+      return this.dailyData.map((item: IDailyData) => ({
+        x: item.date,
+        y: item[prop] as number
+      }));
+    }
+    if (typeof prop === "object" && Array.isArray(prop)) {
+      // @ts-ignore
+      const calculate = (item: IDailyData) => (item[prop[0]] - item[prop[1]]);
+      return this.dailyData.map((item: IDailyData) => ({
+        x: item.date,
+        y: calculate(item) as number
+      }));
+    }
+    return [];
   }
 }

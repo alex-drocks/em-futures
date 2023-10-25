@@ -4,10 +4,9 @@
 >
   <mat-card class="card">
     <mat-card-header>
-      <mat-card-title>Your First Deposit</mat-card-title>
+      <mat-card-title>First Deposit</mat-card-title>
       <mat-card-subtitle>
-        I started on {{dateStart | date:"longDate"}} with a balance of {{initialDeposit}}$ deposited in my Futures
-        wallet.
+        I opened my Futures account on {{dateStart | date:"longDate"}} with a deposit of {{initialDeposit}}$.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -42,11 +41,10 @@
 
   <mat-card class="card">
     <mat-card-header>
-      <mat-card-title>Your Investing Plan</mat-card-title>
+      <mat-card-title>Investment Plan</mat-card-title>
       <mat-card-subtitle>
-        I want to deposit {{regularDeposit}}$ every {{depositCycleName}} to compound my accumulated rewards. Then, I
-        want to withdraw my rewards every {{withdrawCycleName}} after I deposited. But, until I have
-        reached a minimum balance of {{startWithdrawingBalance}}$, I only want to compound my rewards.
+        I will deposit {{regularDeposit}}$ every {{depositCycleName}}. Then, I
+        will withdraw rewards every {{withdrawCycleName}} after my last deposit.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
