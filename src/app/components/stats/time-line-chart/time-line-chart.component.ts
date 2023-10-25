@@ -66,7 +66,7 @@ export class TimeLineChartComponent implements OnInit {
       },
     },
   };
-  public colors = ["#1565C0", "#379af9", "#1bde8d", "#e8bc5c"];
+  public colors = ["#1565C0", "#fc1c19", "#1bde8d", "#e8bc5c"];
 
   constructor(private readonly calculator: CalculatorService) {
     Chart.register(Annotation);

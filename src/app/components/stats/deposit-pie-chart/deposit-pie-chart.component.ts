@@ -37,7 +37,7 @@ export class DepositPieChartComponent implements OnChanges {
       labels: ["Total Deposits", "Total Compounds", "Total Withdrawals"],
       datasets: [{
         data: [this.deposits, this.compounds, this.withdrawals],
-        backgroundColor: ["#379af9", "#e8bc5c", "#2ebe79"],
+        backgroundColor: ["#fc1c19", "#e8bc5c", "#2ebe79"],
       }],
     }
   }

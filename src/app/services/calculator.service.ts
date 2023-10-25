@@ -25,20 +25,20 @@ export class CalculatorService {
 
   public defaults = {
     dateStart: new Date(),
-    initialDeposit: 1_000,
+    initialDeposit: 1_500,
     regularDeposit: 200,
-    depositCycle: "TWO_WEEKS",
-    withdrawCycle: "WEEK",
-    startWithdrawingBalance: 50_000,
+    depositCycle: CycleEnum.THREE_WEEKS,
+    withdrawCycle: CycleEnum.WEEK,
+    startWithdrawingBalance: 5_000,
     stopDepositingBalance: 1_000_000,
-    yearsToForecast: 1,
+    yearsToForecast: 3,
   }
 
   private _dateStart: Date;
   private _initialDeposit: number;
   private _regularDeposit: number;
-  private _depositCycle: keyof typeof CycleEnum;
-  private _withdrawCycle: keyof typeof CycleEnum;
+  private _depositCycle: CycleEnum;
+  private _withdrawCycle: CycleEnum;
   private _startWithdrawingBalance: number;
   private _stopDepositingBalance: number;
   private _yearsToForecast: number;
@@ -49,8 +49,8 @@ export class CalculatorService {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START, this.defaults.dateStart);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.defaults.initialDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.defaults.regularDeposit);
-    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as keyof typeof CycleEnum;
-    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as keyof typeof CycleEnum;
+    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as CycleEnum;
+    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as CycleEnum;
     this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, this.defaults.startWithdrawingBalance);
     this._stopDepositingBalance = storeLoadNumber(StorageKeys.STOP_DEPOSITING_BALANCE, this.defaults.stopDepositingBalance);
     this._yearsToForecast = storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast);
@@ -61,8 +61,8 @@ export class CalculatorService {
     this._dateStart = this.defaults.dateStart;
     this._initialDeposit = this.defaults.initialDeposit;
     this._regularDeposit = this.defaults.regularDeposit
-    this._depositCycle = this.defaults.depositCycle as keyof typeof CycleEnum;
-    this._withdrawCycle = this.defaults.withdrawCycle as keyof typeof CycleEnum;
+    this._depositCycle = this.defaults.depositCycle;
+    this._withdrawCycle = this.defaults.withdrawCycle;
     this._startWithdrawingBalance = this.defaults.startWithdrawingBalance;
     this._stopDepositingBalance = this.defaults.stopDepositingBalance;
     this._yearsToForecast = this.defaults.yearsToForecast;
@@ -81,11 +81,11 @@ export class CalculatorService {
     return this._regularDeposit;
   }
 
-  public getDepositCycle(): keyof typeof CycleEnum {
+  public getDepositCycle(): CycleEnum {
     return this._depositCycle;
   }
 
-  public getWithdrawCycle(): keyof typeof CycleEnum {
+  public getWithdrawCycle(): CycleEnum {
     return this._withdrawCycle;
   }
 
@@ -110,13 +110,13 @@ export class CalculatorService {
       this._dateStart = new Date(value);
       storeSave(StorageKeys.DATE_START, this._dateStart);
     } else {
-      this._dateStart = new Date();
+      this._dateStart = this.defaults.dateStart;
       storeDelete(StorageKeys.DATE_START);
     }
   }
 
   public setInitialDeposit(value: number): void {
-    this._initialDeposit = value ?? this.MIN_DEPOSIT;
+    this._initialDeposit = value ?? this.defaults.initialDeposit;
     if (this._initialDeposit < this.MIN_DEPOSIT) {
       this._initialDeposit = this.MIN_DEPOSIT;
     }
@@ -127,7 +127,7 @@ export class CalculatorService {
   }
 
   public setRegularDeposit(value: number): void {
-    this._regularDeposit = value ?? this.MIN_DEPOSIT;
+    this._regularDeposit = value ?? this.defaults.regularDeposit;
     if (this._regularDeposit < this.MIN_DEPOSIT) {
       this._regularDeposit = this.MIN_DEPOSIT;
     }
@@ -137,18 +137,18 @@ export class CalculatorService {
     storeSave(StorageKeys.REGULAR_DEPOSIT, this._regularDeposit);
   }
 
-  public setDepositCycle(value: keyof typeof CycleEnum): void {
-    this._depositCycle = value ?? "TWO_WEEKS";
+  public setDepositCycle(value: CycleEnum): void {
+    this._depositCycle = value ?? this.defaults.depositCycle;
     storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
   }
 
-  public setWithdrawCycle(value: keyof typeof CycleEnum): void {
-    this._withdrawCycle = value ?? "WEEK";
+  public setWithdrawCycle(value: CycleEnum): void {
+    this._withdrawCycle = value ?? this.defaults.withdrawCycle;
     storeSave(StorageKeys.WITHDRAW_CYCLE, this._withdrawCycle);
   }
 
   public setStartWithdrawingBalance(value: number): void {
-    this._startWithdrawingBalance = value ?? 20_000;
+    this._startWithdrawingBalance = value ?? this.defaults.startWithdrawingBalance;
     if (this._startWithdrawingBalance < this.MIN_DEPOSIT) {
       this._startWithdrawingBalance = 200;
     }
@@ -159,7 +159,7 @@ export class CalculatorService {
   }
 
   public setStopDepositingBalance(value: number): void {
-    this._stopDepositingBalance = value ?? 1_000_000;
+    this._stopDepositingBalance = value ?? this.defaults.stopDepositingBalance;
     if (this._stopDepositingBalance > this.MAX_BALANCE) {
       this._stopDepositingBalance = this.MAX_BALANCE;
     }
@@ -170,7 +170,7 @@ export class CalculatorService {
   }
 
   public setYearsToForecast(value: number): void {
-    this._yearsToForecast = value ?? 1;
+    this._yearsToForecast = value ?? this.defaults.yearsToForecast;
     if (this._yearsToForecast > this.MAX_YEARS_FORECAST) {
       this._yearsToForecast = this.MAX_YEARS_FORECAST;
     }
@@ -210,6 +210,36 @@ export class CalculatorService {
     }
   }
 
+  public isWithdrawCycleDay(daysElapsed: number, prevDepositDay: number, prevWithdrawDay: number): boolean {
+    if (!daysElapsed || (!prevDepositDay && !prevWithdrawDay)) {
+      return false;
+    }
+
+    const withdrawCycle = this.getWithdrawCycle();
+    const daysForCycle = this.cycleEnumToDays(withdrawCycle);
+    if (daysForCycle === null) {
+      return false;
+    }
+
+    const daysSinceLastAction = daysElapsed - (prevDepositDay || prevWithdrawDay);
+    return daysSinceLastAction === daysForCycle;
+  }
+
+  public isDepositCycleDay(daysElapsed: number, prevDepositDay: number, prevWithdrawDay: number): boolean {
+    if (!daysElapsed) {
+      return false;
+    }
+
+    const depositCycle = this.getDepositCycle();
+    const daysForCycle = this.cycleEnumToDays(depositCycle);
+    if (daysForCycle === null) {
+      return false;
+    }
+
+    const daysSinceLastAction = daysElapsed - (prevWithdrawDay || prevDepositDay);
+    return daysSinceLastAction === daysForCycle;
+  }
+
   public exceedsMaxWithdrawals(totalWithdrawals: number, rewards: number): boolean {
     if (totalWithdrawals > this.MAX_WITHDRAWAL) {
       return true;
@@ -226,33 +256,12 @@ export class CalculatorService {
     return forecastedBalance > this.MAX_BALANCE;
   }
 
-  public isCycleDay(daysElapsed: number, cycle: keyof typeof CycleEnum): boolean {
-    const daysForCycle = this.cycleEnumToDays(CycleEnum[cycle]);
-    if (daysForCycle === null) {
-      return false;
-    }
-    return daysElapsed % daysForCycle === 0;
-  }
-
-  public canWithdraw(balance: number, totalWithdrawals: number, rewardsAvailable: number) {
-    return balance >= this.getStartWithdrawingBalance() && !this.exceedsMaxWithdrawals(totalWithdrawals, rewardsAvailable)
-  }
-
-  public isWithdrawCycleDay(daysElapsed: number): boolean {
-    const withdrawCycle = this.getWithdrawCycle();
-    return this.isCycleDay(daysElapsed, withdrawCycle);
-  }
-
   public canDeposit(balance: number, rewardsAvailable: number): boolean {
     return balance < this.getStopDepositingBalance() && !this.exceedsMaxBalance(balance, rewardsAvailable)
   }
 
-  public isDepositCycleDay(daysElapsed: number): boolean {
-    if (daysElapsed <= 0) {
-      return false;
-    }
-    const depositCycle = this.getDepositCycle();
-    return this.isCycleDay(daysElapsed, depositCycle);
+  public canWithdraw(balance: number, totalWithdrawals: number, rewardsAvailable: number) {
+    return balance >= this.getStartWithdrawingBalance() && !this.exceedsMaxWithdrawals(totalWithdrawals, rewardsAvailable)
   }
 
   public getDailyRewardsPercent(totalCompoundedRewards: number, totalDeposited: number): DailyRewardsPercent {
@@ -276,10 +285,6 @@ export class CalculatorService {
     return dailyPercent / 100;
   }
 
-  public getDailyUnlocked(balance: number, dailyRate: number): number {
-    return balance * dailyRate;
-  }
-
   public getTotalUnlocked(balance: number, totalUnlocked: number, dailyUnlocked: number): number {
     let newTotalUnlocked = totalUnlocked + dailyUnlocked;
     if (newTotalUnlocked > this.MAX_DAILY_WITHDRAWAL || newTotalUnlocked > balance) {
@@ -289,13 +294,12 @@ export class CalculatorService {
   }
 
   public calculateDailyData(): void {
+    console.time("calculate");
+
     this._dailyData = [];
 
     const dateStart = this.getDateStart();
     const daysToCalculate = 365 * this.getYearsToForecast();
-    let prevDepositDate: dayjs.Dayjs;
-    let prevWithdrawDate: dayjs.Dayjs;
-
     const total = {
       daysElapsed: 0,
       balance: 0,
@@ -304,6 +308,8 @@ export class CalculatorService {
       rewards: 0,
       deposits: this.getInitialDeposit(),
     }
+    let prevDepositDay: number = 0;
+    let prevWithdrawDay: number = 0;
 
     for (let index = 0; index < daysToCalculate; index++) {
       total.daysElapsed = index;
@@ -331,7 +337,7 @@ export class CalculatorService {
       }
 
       const canWithdraw = this.canWithdraw(currentBalance, total.withdrawals, rewardsAvailable);
-      const isWithdrawCycleDay = this.isWithdrawCycleDay(total.daysElapsed);
+      const isWithdrawCycleDay = this.isWithdrawCycleDay(total.daysElapsed, prevDepositDay, prevWithdrawDay);
       const shouldWithdraw = canWithdraw && isWithdrawCycleDay;
       if (shouldWithdraw) {
         userAction = UserActionEnum.WITHDRAW;
@@ -339,11 +345,11 @@ export class CalculatorService {
         total.rewardsAvailable = 0;
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
-        prevWithdrawDate = date;
+        prevWithdrawDay = total.daysElapsed;
       }
 
       const canDeposit = this.canDeposit(currentBalance, rewardsAvailable);
-      const isDepositCycleDay = this.isDepositCycleDay(total.daysElapsed);
+      const isDepositCycleDay = this.isDepositCycleDay(total.daysElapsed, prevDepositDay, prevWithdrawDay);
       const shouldDeposit = canDeposit && isDepositCycleDay;
       if (shouldDeposit && !shouldWithdraw) {
         userAction = UserActionEnum.DEPOSIT;
@@ -353,7 +359,7 @@ export class CalculatorService {
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
         total.rewards += compoundedToday;
-        prevDepositDate = date;
+        prevDepositDay = total.daysElapsed
       }
 
       this._dailyData.push({
@@ -372,9 +378,10 @@ export class CalculatorService {
         balanceDifference: this.roundNumber(depositedToday + compoundedToday - withdrawnToday),
         newBalance: this.roundNumber(total.balance),
       });
-
-      this.calculationEmitter.emit();
     }
+
+    this.calculationEmitter.emit();
+    console.timeEnd("calculate");
   }
 
 }

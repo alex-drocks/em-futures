@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
-import {CycleEnum, ISelectOption} from "../../app.definitions";
+import {CycleEnum, CycleTranslations, ISelectOption} from "../../app.definitions";
 import {storeClearAll} from "../../helpers/storage";
 
 
@@ -19,15 +19,15 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.depositCycleOptions = this.mapEnumToSelectOptions(CycleEnum, "Every ");
-    this.withdrawCycleOptions = this.mapEnumToSelectOptions(CycleEnum, "Every ");
+    this.depositCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "Every ");
+    this.withdrawCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "Every ");
 
     this.form = new FormGroup({
       dateStart: new FormControl(this.dateStart.toISOString()),
       initialDeposit: new FormControl(this.initialDeposit),
       regularDeposit: new FormControl(this.regularDeposit),
-      depositCycle: new FormControl(this.depositCycleId),
-      withdrawCycle: new FormControl(this.withdrawCycleId),
+      depositCycle: new FormControl(this.depositCycleKey),
+      withdrawCycle: new FormControl(this.withdrawCycleKey),
       startWithdrawingBalance: new FormControl(this.startWithdrawingBalance),
       stopDepositingBalance: new FormControl(this.stopDepositingBalance),
       yearsToForecast: new FormControl(this.yearsToForecast),
@@ -48,11 +48,11 @@ export class FormComponent implements OnInit {
     return this.calculator.getRegularDeposit();
   }
 
-  get depositCycleId(): keyof typeof CycleEnum {
+  get depositCycleKey(): CycleEnum {
     return this.calculator.getDepositCycle();
   }
 
-  get withdrawCycleId(): keyof typeof CycleEnum {
+  get withdrawCycleKey(): CycleEnum {
     return this.calculator.getWithdrawCycle();
   }
 
@@ -68,12 +68,12 @@ export class FormComponent implements OnInit {
     return this.calculator.getYearsToForecast();
   }
 
-  get depositCycleName(): string {
-    return CycleEnum[this.depositCycleId];
+  get depositCycleName(): CycleTranslations {
+    return CycleTranslations[this.depositCycleKey];
   }
 
-  get withdrawCycleName(): string {
-    return CycleEnum[this.withdrawCycleId];
+  get withdrawCycleName(): CycleTranslations {
+    return CycleTranslations[this.withdrawCycleKey]
   }
 
   public applyFormValues(): void {
@@ -115,10 +115,10 @@ export class FormComponent implements OnInit {
     );
   }
 
-  private mapEnumToSelectOptions(enumObj: Record<string, string>, prefix: string = "", suffix: string = ""): ISelectOption[] {
-    return Object.keys(enumObj).map((key: string) => ({
+  private mapCycleEnumToSelectOptions(cycleEnum: typeof CycleEnum, prefix: string = "", suffix: string = ""): ISelectOption[] {
+    return Object.keys(cycleEnum).map((key: string) => ({
       id: key,
-      name: key === "NEVER" ? enumObj[key] : `${prefix}${enumObj[key]}${suffix}`,
+      name: key === "NEVER" ? CycleTranslations[key] : `${prefix}${CycleTranslations[key as keyof typeof CycleTranslations]}${suffix}`,
     }));
   }
 

@@ -26,16 +26,30 @@ export enum UserActionEnum {
 }
 
 export enum CycleEnum {
+  DAY = "DAY",
+  TWO_DAY = "TWO_DAY",
+  THREE_DAYS = "THREE_DAYS",
+  FIVE_DAYS = "FIVE_DAYS",
+  WEEK = "WEEK",
+  TWO_WEEKS = "TWO_WEEKS",
+  THREE_WEEKS = "THREE_WEEKS",
+  MONTH = "MONTH",
+  TWO_MONTHS = "TWO_MONTHS",
+  THREE_MONTHS = "THREE_MONTHS",
+  NEVER = "NEVER",
+}
+
+export enum CycleTranslations {
   DAY = "Day",
-  TWO_DAY = "2 Days",
-  THREE_DAYS = "3 Days",
-  FIVE_DAYS = "5 Days",
+  TWO_DAY = "2 days",
+  THREE_DAYS = "3 days",
+  FIVE_DAYS = "5 days",
   WEEK = "Week",
-  TWO_WEEKS = "2 Weeks",
-  THREE_WEEKS = "3 Weeks",
+  TWO_WEEKS = "2 weeks",
+  THREE_WEEKS = "3 weeks",
   MONTH = "Month",
-  TWO_MONTHS = "2 Months",
-  THREE_MONTHS = "3 Months",
+  TWO_MONTHS = "2 months",
+  THREE_MONTHS = "3 months",
   NEVER = "Never",
 }
 
