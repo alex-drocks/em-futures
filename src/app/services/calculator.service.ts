@@ -1,3 +1,4 @@
+// https://bscscan.com/address/0x5B24f7645eec47EDd997bF8faDF3E340518af11B#code
 import {EventEmitter, Injectable} from '@angular/core';
 import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
 import * as dayjs from "dayjs";
