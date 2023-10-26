@@ -204,9 +204,8 @@ export class CalculatorService {
       case CycleEnum.THREE_MONTHS:
         return 90;
       case CycleEnum.NEVER:
-        return null;
       default:
-        return 0;
+        return null;
     }
   }
 
@@ -240,28 +239,44 @@ export class CalculatorService {
     return daysSinceLastAction === daysForCycle;
   }
 
-  public exceedsMaxWithdrawals(totalWithdrawals: number, rewards: number): boolean {
-    if (totalWithdrawals > this.MAX_WITHDRAWAL) {
-      return true;
-    }
-    const forecastedWithdrawals = totalWithdrawals + rewards;
-    return forecastedWithdrawals > this.MAX_WITHDRAWAL;
+  public isMaxWithdrawalsReached(totalWithdrawals: number): boolean {
+    return totalWithdrawals >= this.MAX_WITHDRAWAL
   }
 
-  public exceedsMaxBalance(balance: number, rewards: number): boolean {
-    if (balance > this.MAX_BALANCE) {
-      return true;
-    }
-    const forecastedBalance = balance + this.getRegularDeposit() + rewards;
-    return forecastedBalance > this.MAX_BALANCE;
+  public isMaxBalanceReached(balance: number): boolean {
+    return balance >= this.MAX_BALANCE;
   }
 
-  public canDeposit(balance: number, rewardsAvailable: number): boolean {
-    return balance < this.getStopDepositingBalance() && !this.exceedsMaxBalance(balance, rewardsAvailable)
+  public postWithdrawalExceedsMax(totalWithdrawals: number, rewardsAvailableToWithdraw: number): boolean {
+    const postWithdrawalSum = totalWithdrawals + rewardsAvailableToWithdraw;
+    return this.isMaxWithdrawalsReached(postWithdrawalSum)
   }
 
-  public canWithdraw(balance: number, totalWithdrawals: number, rewardsAvailable: number) {
-    return balance >= this.getStartWithdrawingBalance() && !this.exceedsMaxWithdrawals(totalWithdrawals, rewardsAvailable)
+  public postDepositExceedsMaxBalance(balance: number, rewardsAvailableToCompound: number): boolean {
+    const postDepositSum = balance + rewardsAvailableToCompound + this.getRegularDeposit();
+    return this.isMaxBalanceReached(postDepositSum);
+  }
+
+  public isStopDepositBalanceReached(balance: number): boolean {
+    return balance >= this.getStopDepositingBalance();
+  }
+
+  public isStartWithdrawingBalanceReached(balance: number): boolean {
+    return balance >= this.getStartWithdrawingBalance();
+  }
+
+  public canDeposit(balance: number, rewardsAvailableToCompound: number): boolean {
+    const isLowerBalanceThanUserLimit = !this.isStopDepositBalanceReached(balance);
+    const isLowerBalanceThanSystemLimit = !this.isMaxBalanceReached(balance);
+    const isLowerPostDepositThanSystemLimit = !this.postDepositExceedsMaxBalance(balance, rewardsAvailableToCompound);
+    return isLowerBalanceThanUserLimit && isLowerBalanceThanSystemLimit && isLowerPostDepositThanSystemLimit;
+  }
+
+  public canWithdraw(balance: number, totalWithdrawals: number, rewardsAvailableToWithdraw: number) {
+    const isHigherBalanceThanUserMinimum = this.isStartWithdrawingBalanceReached(balance);
+    const isLowerWithdrawalsThanSystemLimit = !this.isMaxWithdrawalsReached(totalWithdrawals);
+    const isLowerPostWithdrawalsThanSystemLimit = !this.postWithdrawalExceedsMax(totalWithdrawals, rewardsAvailableToWithdraw);
+    return isHigherBalanceThanUserMinimum && isLowerWithdrawalsThanSystemLimit && isLowerPostWithdrawalsThanSystemLimit;
   }
 
   public getDailyRewardsPercent(totalCompoundedRewards: number, totalDeposited: number): DailyRewardsPercent {
