@@ -280,21 +280,25 @@ export class CalculatorService {
     return isHigherBalanceThanUserMinimum && isLowerWithdrawalsThanSystemLimit && isLowerPostWithdrawalsThanSystemLimit;
   }
 
-  public getDailyRewardsPercent(totalCompoundedRewards: number, totalDeposited: number): DailyRewardsPercent {
-    const compoundedSpread = totalCompoundedRewards - totalDeposited;
-    if (compoundedSpread >= 50_000 && compoundedSpread <= 249_999) {
-      return DailyRewardsPercent.PERCENT_0_450;
-    } else if (compoundedSpread >= 250_000 && compoundedSpread <= 499_999) {
-      return DailyRewardsPercent.PERCENT_0_425;
-    } else if (compoundedSpread >= 500_000 && compoundedSpread <= 749_999) {
-      return DailyRewardsPercent.PERCENT_0_375;
-    } else if (compoundedSpread >= 750_000 && compoundedSpread <= 999_999) {
-      return DailyRewardsPercent.PERCENT_0_325;
-    } else if (compoundedSpread >= 1_000_000) {
-      return DailyRewardsPercent.PERCENT_0_250;
-    } else {
+  public getDailyRewardsPercent(totalCompounded: number, totalDeposited: number): DailyRewardsPercent {
+    const compoundSurplus = totalCompounded - totalDeposited;
+
+    if (compoundSurplus < 50_000) {
       return DailyRewardsPercent.PERCENT_0_500;
+    } else if (compoundSurplus >= 50_000 && compoundSurplus < 250_000) {
+      return DailyRewardsPercent.PERCENT_0_450;
+    } else if (compoundSurplus >= 250_000 && compoundSurplus < 500_000) {
+      return DailyRewardsPercent.PERCENT_0_425;
+    } else if (compoundSurplus >= 500_000 && compoundSurplus < 750_000) {
+      return DailyRewardsPercent.PERCENT_0_375;
+    } else if (compoundSurplus >= 750_000 && compoundSurplus < 1_000_000) {
+      return DailyRewardsPercent.PERCENT_0_325;
+    } else if (compoundSurplus >= 1_000_000) {
+      return DailyRewardsPercent.PERCENT_0_250;
     }
+
+    // This should never be reached unless the logic changes.
+    throw new Error("Unhandled value of compoundSurplus");
   }
 
   public getDailyRewardsRate(dailyPercent: DailyRewardsPercent): number {

@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import {CalculatorService} from './calculator.service'; // Adjust the path accordingly
-import {CycleEnum} from '../app.definitions';
+import {CycleEnum, DailyRewardsPercent} from '../app.definitions';
 
 describe('CalculatorService', () => {
   let service: CalculatorService;
@@ -272,6 +272,44 @@ describe('CalculatorService', () => {
     it('should return false with a real function call', () => {
       const result = service.canWithdraw(service.getStartWithdrawingBalance(), service.MAX_WITHDRAWAL, 2);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('#getDailyRewardsPercent', () => {
+    it('should return PERCENT_0_500 for compoundSurplus < 50_000', () => {
+      const totalCompounded = 10_000;
+      const totalDeposited = 49_999;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_500);
+    });
+
+    it('should return PERCENT_0_450 for compoundSurplus in range [50_000, 250_000)', () => {
+      const totalCompounded = 200_000;
+      const totalDeposited = 50_000;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_450);
+    });
+
+    it('should return PERCENT_0_425 for compoundSurplus in range [250_000, 500_000)', () => {
+      const totalCompounded = 450_000;
+      const totalDeposited = 200_000;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_425);
+    });
+
+    it('should return PERCENT_0_375 for compoundSurplus in range [500_000, 750_000)', () => {
+      const totalCompounded = 700_000;
+      const totalDeposited = 200_000;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_375);
+    });
+
+    it('should return PERCENT_0_325 for compoundSurplus in range [750_000, 1_000_000)', () => {
+      const totalCompounded = 900_000;
+      const totalDeposited = 150_000;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_325);
+    });
+
+    it('should return PERCENT_0_250 for compoundSurplus >= 1_000_000', () => {
+      const totalCompounded = 1_500_000;
+      const totalDeposited = 500_000;
+      expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_250);
     });
   });
 
