@@ -118,7 +118,7 @@ export class FormComponent implements OnInit {
   private mapCycleEnumToSelectOptions(cycleEnum: typeof CycleEnum, prefix: string = "", suffix: string = ""): ISelectOption[] {
     return Object.keys(cycleEnum).map((key: string) => ({
       id: key,
-      name: key === "NEVER" ? CycleTranslations[key] : `${prefix}${CycleTranslations[key as keyof typeof CycleTranslations]}${suffix}`,
+      name: `${prefix}${CycleTranslations[key as keyof typeof CycleTranslations]}${suffix}`,
     }));
   }
 

@@ -36,7 +36,6 @@ export enum CycleEnum {
   MONTH = "MONTH",
   TWO_MONTHS = "TWO_MONTHS",
   THREE_MONTHS = "THREE_MONTHS",
-  NEVER = "NEVER",
 }
 
 export enum CycleTranslations {
@@ -50,7 +49,6 @@ export enum CycleTranslations {
   MONTH = "month",
   TWO_MONTHS = "2 months",
   THREE_MONTHS = "3 months",
-  NEVER = "Never",
 }
 
 export interface ISelectOption {

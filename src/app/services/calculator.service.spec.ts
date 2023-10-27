@@ -244,7 +244,7 @@ describe('CalculatorService', () => {
     it('should return false if total withdrawals exceed system max withdrawals', () => {
       spyOn(service, 'isStartWithdrawingBalanceReached').and.returnValue(true);
       spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(true);
-      const result = service.canWithdraw(service.getStartWithdrawingBalance(), service.MAX_WITHDRAWAL + 1, 0);
+      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 1 + service.MAX_WITHDRAWAL, 0);
       expect(result).toBe(false);
     });
 
@@ -252,7 +252,7 @@ describe('CalculatorService', () => {
       spyOn(service, 'isStartWithdrawingBalanceReached').and.returnValue(true);
       spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(false);
       spyOn(service, 'postWithdrawalExceedsMax').and.returnValue(true);
-      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 1000, 1500);
+      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 1500, 1000);
       expect(result).toBe(false);
     });
 
@@ -260,22 +260,22 @@ describe('CalculatorService', () => {
       spyOn(service, 'isStartWithdrawingBalanceReached').and.returnValue(true);
       spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(false);
       spyOn(service, 'postWithdrawalExceedsMax').and.returnValue(false);
-      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 1000, 500);
+      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 500, 1000);
       expect(result).toBe(true);
     });
 
     it('should return true with a real function call', () => {
-      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 1000, 500);
+      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 500, 1000);
       expect(result).toBe(true);
     });
 
     it('should return false with a real function call', () => {
-      const result = service.canWithdraw(service.getStartWithdrawingBalance(), service.MAX_WITHDRAWAL, 2);
+      const result = service.canWithdraw(service.getStartWithdrawingBalance(), 2, service.MAX_WITHDRAWAL);
       expect(result).toBe(false);
     });
   });
 
-  describe('#getDailyRewardsPercent', () => {
+  describe('getDailyRewardsPercent', () => {
     it('should return PERCENT_0_500 for compoundSurplus < 50_000', () => {
       const totalCompounded = 10_000;
       const totalDeposited = 49_999;
