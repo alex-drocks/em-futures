@@ -93,9 +93,17 @@
 
     .accordion-item-body {
       padding: 16px 28px;
+      display: flex;
+      column-gap: 6rem;
+      row-gap: 2rem;
+      flex-wrap: wrap;
 
       h3 {
         margin: 0;
+      }
+
+      p {
+        max-width: 680px;
       }
     }
   }

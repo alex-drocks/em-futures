@@ -113,6 +113,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          hidden: true,
         },
         {
           data: this.mapDataToPoints("totalWithdrawn") as any,
@@ -152,6 +153,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          hidden: true,
         }
       ],
     };

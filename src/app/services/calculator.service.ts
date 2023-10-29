@@ -11,7 +11,7 @@ import {round} from "../helpers/utils";
 export class CalculatorService {
   public calculationEmitter: EventEmitter<void> = new EventEmitter();
 
-  public DATE_FORMAT = "YY-MM-DD";
+  public DATE_FORMAT = "YYYY-MM-DD";
   public MIN_DEPOSIT = 200;
   public MAX_BALANCE = 1_000_000;
   public MAX_WITHDRAWAL = 2_500_000;

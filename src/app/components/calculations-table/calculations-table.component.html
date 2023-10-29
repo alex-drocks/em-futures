@@ -78,19 +78,37 @@
           role="region"
           [style.display]="accordionItem.expanded ? '' : 'none'"
           [attr.id]="'accordion-body-' + index"
-          [attr.aria-labelledby]="'accordion-header-' + index">
-          <!--          <div class="summary">-->
-          <!--            <h3>Summary:</h3>-->
-          <!--            <p>-->
-          <!--              On {{item.date}},-->
-          <!--              you {{item.actionMade === "Hold" ? "held your balance" : item.actionMade + "ed"}}-->
-          <!--              {{item.actionMade !== "Hold" ? (item.depositedToday || item.withdrawnToday) + "$" : ""}} and ended the day-->
-          <!--              with {{item.newBalance}}$.-->
-          <!--            </p>-->
-          <!--          </div>-->
+          [attr.aria-labelledby]="'accordion-header-' + index"
+        >
+          <div class="text-summary" *ngIf="accordionItem.expanded">
+            <h3>Summary:</h3>
+            <p>
+              On <strong>{{ item.date }}</strong>, Day <strong>{{ index }}</strong>, you started with a balance of
+              <strong>{{ item.balance }}$</strong>.
+              Your earnings rate for the day was <strong>{{ item.rewardsPercent }}%</strong>, which resulted in earnings
+              of <strong>{{ item.rewardsUnlockedToday }}$</strong> for the day.
+              This brought your available earnings to <strong>{{ item.rewardsAvailable }}$</strong>.
+            </p>
+            <p>
+              On this day, you
+              <strong>{{ item.actionMade === "Hold" ? "held your balance" : item.actionMade + " " + (item.depositedToday || item.withdrawnToday) + "$"}}</strong>.
+              This action resulted in a balance change of
+              <strong>{{ item.balanceDifference >= 0 ? "+" : "" }}{{ item.balanceDifference }}$</strong>,
+              bringing your balance to <strong>{{ item.newBalance }}$</strong> at the end of the day.
+            </p>
+            <p>
+              Cumulatively, you have deposited <strong>{{ item.totalDeposited }}$</strong>, withdrawn
+              <strong>{{ item.totalWithdrawn }}$</strong>, and compounded <strong>{{ item.totalCompounded }}$</strong>
+              till this date.
+              Your realized profit stands at <strong>{{ item.realizedProfit }}$</strong>
+              (<strong>{{ item.realizedProfitPercent }}%</strong>),
+              and your unrealized profit is <strong>{{ item.unrealizedProfit }}$</strong>
+              (<strong>{{ item.unrealizedProfitPercent }}%</strong>).
+            </p>
+          </div>
 
-          <div class="rewards-info" style="margin-top: 1rem;">
-            <h3>Rewards Information</h3>
+          <div class="rewards-info">
+            <h3>Rewards Information:</h3>
             <table>
               <tr>
                 <td>Daily earnings rate:</td>
@@ -101,13 +119,13 @@
                 <td>{{item.rewardsUnlockedToday}}$</td>
               </tr>
               <tr>
-                <td>Earnings available to claim or withdraw:</td>
+                <td>Accumulated earnings available:</td>
                 <td>{{item.rewardsAvailable}}$</td>
               </tr>
             </table>
           </div>
 
-          <div class="balance-breakdown" style="margin-top: 1rem;">
+          <div class="balance-breakdown">
             <h3>Balance Breakdown:</h3>
             <table>
               <tr>
@@ -129,7 +147,7 @@
             </table>
           </div>
 
-          <div class="return-on-investment" style="margin-top: 1rem;">
+          <div class="return-on-investment">
             <h3>Return on Investment:</h3>
             <table>
               <tr>
