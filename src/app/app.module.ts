@@ -20,11 +20,12 @@ import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
 import {CdkAccordionModule} from "@angular/cdk/accordion";
 import {MatIconModule} from "@angular/material/icon";
-import { CalculationsTableComponent } from './components/calculations-table/calculations-table.component';
-import { NgChartsModule } from 'ng2-charts';
-import { ResultBarChartComponent } from './components/stats/result-bar-chart/result-bar-chart.component';
-import { DepositPieChartComponent } from './components/stats/deposit-pie-chart/deposit-pie-chart.component';
-import { TimeLineChartComponent } from './components/stats/time-line-chart/time-line-chart.component';
+import {CalculationsTableComponent} from './components/calculations-table/calculations-table.component';
+import {NgChartsModule} from 'ng2-charts';
+import {ResultBarChartComponent} from './components/stats/result-bar-chart/result-bar-chart.component';
+import {DepositPieChartComponent} from './components/stats/deposit-pie-chart/deposit-pie-chart.component';
+import {TimeLineChartComponent} from './components/stats/time-line-chart/time-line-chart.component';
+import {NgOptimizedImage} from "@angular/common";
 
 
 export const MY_DATE_FORMATS = {
@@ -63,6 +64,7 @@ export const MY_DATE_FORMATS = {
     CdkAccordionModule,
     MatIconModule,
     NgChartsModule,
+    NgOptimizedImage,
   ],
   providers: [
     {

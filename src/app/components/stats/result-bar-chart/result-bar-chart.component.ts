@@ -21,34 +21,36 @@ export class ResultBarChartComponent implements OnChanges {
     indexAxis: 'y',
   };
   public barChartLegend = false;
-  public colors = [
-    colors.DEPOSIT_RED,
-    colors.WITHDRAWALS_GREEN,
-    colors.BALANCE_ORANGE,
-    colors.COMPOUNDS_BLUE,
-  ];
 
-  constructor(private readonly calculator: CalculatorService) {
+  constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.barChartData = {
       labels: [
         "Deposits (Invested)",
-        "Withdrawals (Banked)",
-        "Balance (TVL)",
-        "Compounds (Yield)",
+        "Compounded Earnings",
+        "Withdrawals (Cashed out)",
+        "Balance (Locked Value)",
+        "ROI (Return On Investment)",
       ],
       datasets: [
         {
           data: [
             this.deposits,
+            this.compounds,
             this.withdrawals,
             this.balance,
-            this.compounds,
+            this.withdrawals - this.deposits,
           ],
-          label: 'Results at the end of your investment plan',
-          backgroundColor: this.colors,
+          backgroundColor: [
+            colors.DEPOSIT_RED,
+            colors.COMPOUNDS_BLUE,
+            colors.WITHDRAWALS_GREEN,
+            colors.BALANCE_ORANGE,
+            colors.ROI_BLUE,
+          ],
+          label: "$",
           hidden: false,
         },
       ]

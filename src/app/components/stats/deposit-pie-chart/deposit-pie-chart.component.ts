@@ -35,10 +35,23 @@ export class DepositPieChartComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.pieChartData = {
-      labels: ["Total Deposits", "Total Withdrawals", "Total Compounds"],
+      labels: [
+        "Total Deposits",
+        "Total Compounds",
+        "Total Withdrawals",
+      ],
       datasets: [{
-        data: [this.deposits, this.withdrawals, this.compounds],
-        backgroundColor: [colors.DEPOSIT_RED, colors.WITHDRAWALS_GREEN, colors.COMPOUNDS_BLUE],
+        data: [
+          this.deposits,
+          this.compounds,
+          this.withdrawals,
+        ],
+        backgroundColor: [
+          colors.DEPOSIT_RED,
+          colors.COMPOUNDS_BLUE,
+          colors.WITHDRAWALS_GREEN,
+        ],
+        label: "$",
       }],
     }
   }

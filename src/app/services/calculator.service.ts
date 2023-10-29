@@ -361,6 +361,11 @@ export class CalculatorService {
         }
       }
 
+      const realizedProfit = total.withdrawals - total.deposits;
+      const realizedProfitPercent = (realizedProfit / total.deposits) * 100;
+      const unrealizedProfit = (total.withdrawals + total.balance + total.rewardsAvailable) - total.deposits;
+      const unrealizedProfitPercent = (unrealizedProfit / total.deposits) * 100;
+
       this._dailyData.push({
         date: date.format(this.DATE_FORMAT),
         balance: this.roundNumber(currentBalance),
@@ -377,6 +382,10 @@ export class CalculatorService {
         withdrawnToday: this.roundNumber(withdrawnToday),
         balanceDifference: this.roundNumber(depositedToday + compoundedToday - withdrawnToday),
         newBalance: this.roundNumber(total.balance),
+        realizedProfit: this.roundNumber(realizedProfit),
+        realizedProfitPercent: this.roundNumber(realizedProfitPercent),
+        unrealizedProfit: this.roundNumber(unrealizedProfit),
+        unrealizedProfitPercent: this.roundNumber(unrealizedProfitPercent),
       });
     }
 

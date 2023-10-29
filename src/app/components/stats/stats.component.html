@@ -1,14 +1,25 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>Stats</mat-card-title>
+    <mat-card-title>Investment Growth Chart</mat-card-title>
     <mat-card-subtitle>
-      Based on your investment plan.
+      Value of your investment over time
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="charts-container">
     <div class="row">
       <app-time-line-chart></app-time-line-chart>
     </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>End-of-Plan Investment Value</mat-card-title>
+    <mat-card-subtitle>
+      Breakdown of investment value at the conclusion of the plan
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="charts-container">
     <div class="row">
       <app-result-bar-chart
         [balance]="balance"

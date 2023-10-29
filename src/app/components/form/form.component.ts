@@ -19,8 +19,8 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.depositCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "Every ");
-    this.withdrawCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "Every ");
+    this.depositCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
+    this.withdrawCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
 
     this.form = new FormGroup({
       dateStart: new FormControl(this.dateStart.toISOString()),

@@ -2,7 +2,7 @@
   <mat-card-header>
     <mat-card-title>Account Growth</mat-card-title>
     <mat-card-subtitle>
-      Detailed calculations based on your investment plan.
+      Calculations based on your investment plan.
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -25,10 +25,10 @@
           </span>
           <span class="accordion-item-column align-start day-col">Day</span>
           <span class="accordion-item-column align-start date-col">Date</span>
-          <span class="accordion-item-column align-end balance-col">Balance<br>(TVL)</span>
-          <span class="accordion-item-column align-end yield-percent-col">Yield<br>(%)</span>
-          <span class="accordion-item-column align-end yield-today-col">Yield<br>Today</span>
-          <span class="accordion-item-column align-end yield-avail-col">Yield<br>Available</span>
+          <span class="accordion-item-column align-end balance-col">Balance<br>(Locked Value)</span>
+          <span class="accordion-item-column align-end yield-percent-col">Earnings<br>(Daily %)</span>
+          <span class="accordion-item-column align-end yield-today-col">Earnings<br>Today</span>
+          <span class="accordion-item-column align-end yield-avail-col">Earnings<br>Available</span>
           <span class="accordion-item-column align-end action-col">User<br>Action</span>
           <span class="accordion-item-column align-end withdrawn-col">Withdrawn<br>Today</span>
           <span class="accordion-item-column align-end deposited-col">Deposited<br>Today</span>
@@ -79,21 +79,85 @@
           [style.display]="accordionItem.expanded ? '' : 'none'"
           [attr.id]="'accordion-body-' + index"
           [attr.aria-labelledby]="'accordion-header-' + index">
-          On {{item.date}}, you had a balance of {{item.balance}}$ and {{item.actionMade === "Hold"
-          ? "held passively to let your rewards accumulate"
-          : " made a " + item.actionMade + " of " + (item.depositedToday || item.withdrawnToday) + "$"}}.
-          Your balance at the end of the day was {{item.newBalance !== item.balance
-          ? (item.newBalance + "$")
-          : "unchanged"}}.
-          <br>
-          <br>
-          Available rewards to compound or withdraw before taking action: {{item.rewardsAvailable}}$
-          <br>
-          <br>
-          Balance: {{item.balance}}$ + {{item.balanceDifference}}$ = {{item.newBalance}}$
-          <br>
-          <br>
-          Available rewards to compound or withdraw at the end of the day: {{item.totalRewardsAvailable}}$
+          <!--          <div class="summary">-->
+          <!--            <h3>Summary:</h3>-->
+          <!--            <p>-->
+          <!--              On {{item.date}},-->
+          <!--              you {{item.actionMade === "Hold" ? "held your balance" : item.actionMade + "ed"}}-->
+          <!--              {{item.actionMade !== "Hold" ? (item.depositedToday || item.withdrawnToday) + "$" : ""}} and ended the day-->
+          <!--              with {{item.newBalance}}$.-->
+          <!--            </p>-->
+          <!--          </div>-->
+
+          <div class="rewards-info" style="margin-top: 1rem;">
+            <h3>Rewards Information</h3>
+            <table>
+              <tr>
+                <td>Daily earnings rate:</td>
+                <td>{{item.rewardsPercent}}%</td>
+              </tr>
+              <tr>
+                <td>Earnings unlocked today:</td>
+                <td>{{item.rewardsUnlockedToday}}$</td>
+              </tr>
+              <tr>
+                <td>Earnings available to claim or withdraw:</td>
+                <td>{{item.rewardsAvailable}}$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="balance-breakdown" style="margin-top: 1rem;">
+            <h3>Balance Breakdown:</h3>
+            <table>
+              <tr>
+                <td>Balance at start of day:</td>
+                <td>{{item.balance}}$</td>
+              </tr>
+              <tr>
+                <td>Action you made:</td>
+                <td>{{item.actionMade === "Hold" ? "Held balance" : item.actionMade + "ed " + (item.depositedToday || item.withdrawnToday) + "$"}}</td>
+              </tr>
+              <tr>
+                <td>Balance at end of day:</td>
+                <td>{{item.newBalance}}$</td>
+              </tr>
+              <tr>
+                <td>Balance change today:</td>
+                <td>{{item.balanceDifference}}$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="return-on-investment" style="margin-top: 1rem;">
+            <h3>Return on Investment:</h3>
+            <table>
+              <tr>
+                <td>Total Deposited:</td>
+                <td>{{item.totalDeposited}}$</td>
+              </tr>
+              <tr>
+                <td>Total Withdrawn:</td>
+                <td>{{item.totalWithdrawn}}$</td>
+              </tr>
+              <tr>
+                <td>Realized Profit:</td>
+                <td>{{item.realizedProfit}}$</td>
+              </tr>
+              <tr>
+                <td>Realized Profit Percent:</td>
+                <td>{{item.realizedProfitPercent}}%</td>
+              </tr>
+              <tr>
+                <td>Unrealized Profit:</td>
+                <td>{{item.unrealizedProfit}}$</td>
+              </tr>
+              <tr>
+                <td>Unrealized Profit Percent:</td>
+                <td>{{item.unrealizedProfitPercent}}%</td>
+              </tr>
+            </table>
+          </div>
         </div>
       </cdk-accordion-item>
     </cdk-accordion>

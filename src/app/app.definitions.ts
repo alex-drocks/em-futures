@@ -39,14 +39,14 @@ export enum CycleEnum {
 }
 
 export enum CycleTranslations {
-  DAY = "day",
+  DAY = "1 day",
   TWO_DAY = "2 days",
   THREE_DAYS = "3 days",
   FIVE_DAYS = "5 days",
-  WEEK = "week",
+  WEEK = "1 week",
   TWO_WEEKS = "2 weeks",
   THREE_WEEKS = "3 weeks",
-  MONTH = "month",
+  MONTH = "1 month",
   TWO_MONTHS = "2 months",
   THREE_MONTHS = "3 months",
 }
@@ -72,4 +72,8 @@ export interface IDailyData {
   compoundedToday: number;
   balanceDifference: number;
   newBalance: number;
+  realizedProfit: number;
+  realizedProfitPercent: number;
+  unrealizedProfit: number;
+  unrealizedProfitPercent: number;
 }

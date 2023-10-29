@@ -16,6 +16,17 @@
     font-weight: bold;
     font-size: 2rem;
     margin: 1rem 0;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+
+    h2 {
+      margin: 0;
+    }
   }
 
 }
