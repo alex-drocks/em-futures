@@ -2,7 +2,14 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
 import * as dayjs from "dayjs";
-import {CycleEnum, DailyRewardsPercent, IDailyData, StorageKeys, UserActionEnum} from "../app.definitions";
+import {
+  CycleEnum,
+  CycleEnumDayValues,
+  DailyRewardsPercent,
+  IDailyData,
+  StorageKeys,
+  UserActionEnum
+} from "../app.definitions";
 import {round} from "../helpers/utils";
 
 @Injectable({
@@ -20,13 +27,13 @@ export class CalculatorService {
 
   public defaults = {
     dateStart: new Date(),
-    initialDeposit: 1_500,
+    initialDeposit: 1_000,
     regularDeposit: 200,
     depositCycle: CycleEnum.THREE_WEEKS,
     withdrawCycle: CycleEnum.WEEK,
-    startWithdrawingBalance: 8_000,
+    startWithdrawingBalance: 50_000,
     stopDepositingBalance: 1_000_000,
-    yearsToForecast: 2.5,
+    yearsToForecast: 3,
   }
 
   private _dateStart: Date;
@@ -177,30 +184,7 @@ export class CalculatorService {
   }
 
   public cycleEnumToDays(cycle: CycleEnum): number {
-    switch (cycle) {
-      case CycleEnum.DAY:
-        return 1;
-      case CycleEnum.TWO_DAY:
-        return 2;
-      case CycleEnum.THREE_DAYS:
-        return 3;
-      case CycleEnum.FIVE_DAYS:
-        return 5;
-      case CycleEnum.WEEK:
-        return 7;
-      case CycleEnum.TWO_WEEKS:
-        return 14;
-      case CycleEnum.THREE_WEEKS:
-        return 21;
-      case CycleEnum.MONTH:
-        return 30;
-      case CycleEnum.TWO_MONTHS:
-        return 60;
-      case CycleEnum.THREE_MONTHS:
-        return 90;
-      default:
-        throw new Error("Invalid cycle enum");
-    }
+    return CycleEnumDayValues[cycle];
   }
 
   public isMaxWithdrawalsReached(totalWithdrawals: number): boolean {
@@ -229,18 +213,12 @@ export class CalculatorService {
     return balance >= this.getStartWithdrawingBalance();
   }
 
-  public canDeposit(balance: number, rewardsAvailableToCompound: number): boolean {
-    const isLowerBalanceThanUserLimit = !this.isStopDepositBalanceReached(balance);
-    const isLowerBalanceThanSystemLimit = !this.isMaxBalanceReached(balance);
-    const isLowerPostDepositThanSystemLimit = !this.postDepositExceedsMaxBalance(balance, rewardsAvailableToCompound);
-    return isLowerBalanceThanUserLimit && isLowerBalanceThanSystemLimit && isLowerPostDepositThanSystemLimit;
+  public canDeposit(balance: number): boolean {
+    return !this.isMaxBalanceReached(balance);
   }
 
-  public canWithdraw(balance: number, rewardsAvailableToWithdraw: number, totalWithdrawals: number): boolean {
-    const isHigherBalanceThanUserMinimum = this.isStartWithdrawingBalanceReached(balance);
-    const isLowerWithdrawalsThanSystemLimit = !this.isMaxWithdrawalsReached(totalWithdrawals);
-    const isLowerPostWithdrawalsThanSystemLimit = !this.postWithdrawalExceedsMax(totalWithdrawals, rewardsAvailableToWithdraw);
-    return isHigherBalanceThanUserMinimum && isLowerWithdrawalsThanSystemLimit && isLowerPostWithdrawalsThanSystemLimit;
+  public canWithdraw(totalWithdrawals: number, startWithdrawingFlag: boolean): boolean {
+    return !this.isMaxWithdrawalsReached(totalWithdrawals) && startWithdrawingFlag;
   }
 
   public getDailyRewardsPercent(totalCompounded: number, totalDeposited: number): DailyRewardsPercent {
@@ -269,11 +247,8 @@ export class CalculatorService {
   }
 
   public getTotalUnlocked(balance: number, totalUnlocked: number, dailyUnlocked: number): number {
-    let newTotalUnlocked = totalUnlocked + dailyUnlocked;
-    if (newTotalUnlocked > this.MAX_DAILY_WITHDRAWAL || newTotalUnlocked > balance) {
-      newTotalUnlocked = this.MAX_DAILY_WITHDRAWAL;
-    }
-    return newTotalUnlocked;
+    const newTotalUnlocked = totalUnlocked + dailyUnlocked;
+    return Math.min(newTotalUnlocked, balance, this.MAX_DAILY_WITHDRAWAL);
   }
 
   public calculateDailyData(): void {
@@ -294,6 +269,7 @@ export class CalculatorService {
       deposits: this.getInitialDeposit(),
     }
 
+    let startWithdrawingFlag = false;
     let nextDepositDay = depositDays;
     let nextWithdrawDay = depositDays + withdrawDays;
 
@@ -322,10 +298,15 @@ export class CalculatorService {
         rewardsAvailable = total.rewardsAvailable;
       }
 
+      if (!startWithdrawingFlag) {
+        startWithdrawingFlag = this.isStartWithdrawingBalanceReached(currentBalance);
+      }
+
       const depositCompoundRewards = () => {
         userAction = UserActionEnum.DEPOSIT;
         depositedToday = this.getRegularDeposit();
-        compoundedToday = rewardsAvailable;
+        const exceedingLimit = (total.balance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
+        compoundedToday = exceedingLimit > 0 ? (rewardsAvailable - exceedingLimit) : rewardsAvailable;
         total.rewardsAvailable = 0;
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
@@ -334,14 +315,15 @@ export class CalculatorService {
 
       const withdrawClaimRewards = () => {
         userAction = UserActionEnum.WITHDRAW;
-        withdrawnToday = rewardsAvailable;
+        const exceedingLimit = (rewardsAvailable + total.withdrawals) - this.MAX_WITHDRAWAL;
+        withdrawnToday = exceedingLimit > 0 ? (rewardsAvailable - exceedingLimit) : rewardsAvailable;
         total.rewardsAvailable = 0;
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
       }
 
-      const canDeposit = this.canDeposit(currentBalance, rewardsAvailable);
-      const canWithdraw = this.canWithdraw(currentBalance, rewardsAvailable, total.withdrawals);
+      const canDeposit = this.canDeposit(currentBalance);
+      const canWithdraw = this.canWithdraw(total.withdrawals, startWithdrawingFlag);
 
       if (canDeposit && total.daysElapsed === nextDepositDay) {
         depositCompoundRewards();

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../services/calculator.service";
-import {CycleEnum, CycleTranslations, ISelectOption} from "../../app.definitions";
+import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../../app.definitions";
 import {storeClearAll} from "../../helpers/storage";
 
 
@@ -72,8 +72,16 @@ export class FormComponent implements OnInit {
     return CycleTranslations[this.depositCycleKey];
   }
 
+  get depositCycleDays(): CycleEnumDayValues {
+    return CycleEnumDayValues[this.depositCycleKey];
+  }
+
   get withdrawCycleName(): CycleTranslations {
     return CycleTranslations[this.withdrawCycleKey]
+  }
+
+  get withdrawCycleDays(): CycleEnumDayValues {
+    return CycleEnumDayValues[this.withdrawCycleKey];
   }
 
   public applyFormValues(): void {

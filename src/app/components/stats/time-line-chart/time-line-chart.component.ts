@@ -16,72 +16,92 @@ export class TimeLineChartComponent implements OnInit {
 
   public lineChartType: ChartType = 'line';
   public lineChartData!: ChartConfiguration['data'];
-  public lineChartOptions: ChartConfiguration['options'] = {
-    normalized: true,
-    parsing: false,
-    animation: false,
-    maintainAspectRatio: false,
-    interaction: {
-      mode: 'nearest',
-      axis: 'x',
-      intersect: false
-    },
-    elements: {
-      line: {
-        cubicInterpolationMode: "default"
-      },
-    },
-    scales: {
-      x: {},
-      y: {
-        position: 'left',
-        beginAtZero: false
-      },
-    },
-    plugins: {
-      legend: {display: true},
-      decimation: {
-        enabled: true,
-        algorithm: 'min-max',
-      },
-      annotation: {
-        annotations: [
-          // {
-          //   type: 'line',
-          //   scaleID: 'x',
-          //   value: 'March',
-          //   borderColor: 'orange',
-          //   borderWidth: 2,
-          //   label: {
-          //     display: true,
-          //     position: 'center',
-          //     color: 'orange',
-          //     content: 'LineAnno',
-          //     font: {
-          //       weight: 'bold',
-          //     },
-          //   },
-          // },
-        ],
-      },
-    },
-  };
+  public lineChartOptions: ChartConfiguration['options'];
 
   constructor(private readonly calculator: CalculatorService) {
     Chart.register(Annotation);
   }
 
   ngOnInit() {
+    this.setChartOptions();
     this.setChartData();
     this.subscription = this.calculator.calculationEmitter.subscribe(() => {
+      this.setChartOptions();
       this.setChartData();
-    })
-
-    console.log();
+    });
   }
 
   public get dailyData(): IDailyData[] {
     return this.calculator.getDailyData();
+  }
+
+  private setChartOptions(): void {
+    this.lineChartOptions = {
+      normalized: true,
+      parsing: false,
+      animation: false,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+      },
+      elements: {
+        line: {
+          cubicInterpolationMode: "default"
+        },
+      },
+      scales: {
+        x: {},
+        y: {
+          position: 'left',
+          beginAtZero: false
+        },
+      },
+      plugins: {
+        legend: {display: true},
+        decimation: {
+          enabled: true,
+          algorithm: 'min-max',
+        },
+        annotation: {
+          annotations: [
+            {
+              type: 'line',
+              scaleID: 'x',
+              value: this.dailyData.find(d => d.newBalance >= this.calculator.getStartWithdrawingBalance())?.date,
+              borderColor: colors.BALANCE_ORANGE,
+              borderWidth: 1,
+              label: {
+                display: true,
+                position: "start",
+                color: colors.BALANCE_ORANGE,
+                content: 'Withdraw balance reached',
+                font: {
+                  weight: 'bold',
+                },
+              },
+            },
+            // {
+            //   type: 'line',
+            //   scaleID: 'x',
+            //   value: this.dailyData.find(d => d.newBalance >= this.calculator.getStopDepositingBalance())?.date,
+            //   borderColor: colors.DEPOSIT_RED,
+            //   borderWidth: 1,
+            //   label: {
+            //     display: true,
+            //     position: "start",
+            //     color: colors.DEPOSIT_RED,
+            //     content: 'Max. balance',
+            //     font: {
+            //       weight: 'bold',
+            //     },
+            //   },
+            // },
+          ],
+        },
+      },
+    };
   }
 
   private setChartData(): void {
@@ -102,22 +122,8 @@ export class TimeLineChartComponent implements OnInit {
           spanGaps: true,
         },
         {
-          data: this.mapDataToPoints("totalCompounded") as any,
-          label: 'Compounded Earnings',
-          backgroundColor: colors.COMPOUNDS_BLUE,
-          borderColor: colors.COMPOUNDS_BLUE,
-          pointBackgroundColor: colors.COMPOUNDS_BLUE,
-          pointBorderColor: colors.COMPOUNDS_BLUE,
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: colors.COMPOUNDS_BLUE,
-          fill: false,
-          pointRadius: 0,
-          spanGaps: true,
-          hidden: true,
-        },
-        {
           data: this.mapDataToPoints("totalWithdrawn") as any,
-          label: 'Withdrawals (Cashed out)',
+          label: 'Withdrawals',
           backgroundColor: colors.WITHDRAWALS_GREEN,
           borderColor: colors.WITHDRAWALS_GREEN,
           pointBackgroundColor: colors.WITHDRAWALS_GREEN,
@@ -142,8 +148,36 @@ export class TimeLineChartComponent implements OnInit {
           spanGaps: true,
         },
         {
-          data: this.mapDataToPoints(["totalWithdrawn", "totalDeposited"]) as any,
-          label: 'ROI (Return On Investment)',
+          data: this.mapDataToPoints("unrealizedProfit") as any,
+          label: 'Unrealized Profit',
+          backgroundColor: colors.ROI_BLUE,
+          borderColor: colors.ROI_BLUE,
+          pointBackgroundColor: colors.ROI_BLUE,
+          pointBorderColor: colors.ROI_BLUE,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: colors.ROI_BLUE,
+          fill: false,
+          pointRadius: 0,
+          spanGaps: true,
+          hidden: false,
+        },
+        {
+          data: this.mapDataToPoints("totalCompounded") as any,
+          label: 'Compounded Earnings',
+          backgroundColor: colors.COMPOUNDS_BLUE,
+          borderColor: colors.COMPOUNDS_BLUE,
+          pointBackgroundColor: colors.COMPOUNDS_BLUE,
+          pointBorderColor: colors.COMPOUNDS_BLUE,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: colors.COMPOUNDS_BLUE,
+          fill: false,
+          pointRadius: 0,
+          spanGaps: true,
+          hidden: true,
+        },
+        {
+          data: this.mapDataToPoints("realizedProfit") as any,
+          label: 'Realized Profit',
           backgroundColor: colors.ROI_BLUE,
           borderColor: colors.ROI_BLUE,
           pointBackgroundColor: colors.ROI_BLUE,
@@ -154,7 +188,7 @@ export class TimeLineChartComponent implements OnInit {
           pointRadius: 0,
           spanGaps: true,
           hidden: true,
-        }
+        },
       ],
     };
   }

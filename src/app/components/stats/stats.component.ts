@@ -37,4 +37,12 @@ export class StatsComponent {
     return this.lastCalculatedDay.newBalance;
   }
 
+  public get realizedProfit(): number {
+    return this.lastCalculatedDay.realizedProfit;
+  }
+
+  public get unrealizedProfit(): number {
+    return this.lastCalculatedDay.unrealizedProfit;
+  }
+
 }
