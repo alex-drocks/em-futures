@@ -108,6 +108,12 @@
     }
   }
 
+  @media (max-width: 1200px) {
+    .mat-mdc-card-content {
+      padding: 0;
+    }
+  }
+
   @media (max-width: 1130px) {
     cdk-accordion-item .accordion-item-column {
       &.yield-today-col,

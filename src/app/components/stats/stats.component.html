@@ -1,25 +1,107 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>Investment Growth Chart</mat-card-title>
+    <mat-card-title>Return On Investment</mat-card-title>
     <mat-card-subtitle>
-      Value of your investment over time
+      End-of-Plan key stats
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content class="charts-container">
+  <mat-card-content class="card-content-container no-wrap roi-container">
     <div class="row">
-      <app-time-line-chart></app-time-line-chart>
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon" matTooltip="Total Value Locked">
+            <mat-icon class="large">balance</mat-icon>
+          </div>
+          <div class="label-value">
+            <div>Balance (TVL)</div>
+            <strong>{{balance | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value">
+            <div>Cost</div>
+            <strong>{{deposits | currency}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon" matTooltip="Realized + Unrealized profit">
+            <mat-icon class="large">paid</mat-icon>
+          </div>
+          <div class="label-value">
+            <div>Total Profit</div>
+            <strong>{{totalProfit | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value">
+            <div>Percent</div>
+            <strong>{{totalProfitPercent}}%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon">
+            <mat-icon class="large" matTooltip="Withdrawals - Deposits">account_balance</mat-icon>
+          </div>
+          <div class="label-value">
+            <div>Realized Profit</div>
+            <strong>{{realizedProfit | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value">
+            <div>Percent</div>
+            <strong>{{realizedProfitPercent}}%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon">
+            <mat-icon class="large" matTooltip="Balance + Pending Rewards">request_quote</mat-icon>
+          </div>
+          <div class="label-value">
+            <div>Unrealized Profit</div>
+            <strong>{{unrealizedProfit | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value">
+            <div>Percent</div>
+            <strong>{{unrealizedProfitPercent}}%</strong>
+          </div>
+        </div>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
 
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>End-of-Plan Investment Value</mat-card-title>
+    <mat-card-title>Investment Growth Chart</mat-card-title>
+    <mat-card-subtitle>
+      Value of your investment over time
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="card-content-container no-wrap">
+    <app-time-line-chart></app-time-line-chart>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>End-of-Plan Value</mat-card-title>
     <mat-card-subtitle>
       Breakdown of investment value at the conclusion of the plan
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content class="charts-container">
+  <mat-card-content class="card-content-container">
     <div class="row">
       <app-result-bar-chart
         [balance]="balance"

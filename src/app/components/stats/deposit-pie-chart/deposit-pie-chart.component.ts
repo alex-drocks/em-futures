@@ -23,13 +23,13 @@ export class DepositPieChartComponent implements OnChanges {
         display: true,
         position: 'top',
       },
-      datalabels: {
-        formatter: (value: any, ctx: any) => {
-          if (ctx.chart.data.labels) {
-            return ctx.chart.data.labels[ctx.dataIndex];
-          }
-        },
-      },
+      // datalabels: {
+      //   formatter: (value: any, ctx: any) => {
+      //     if (ctx.chart.data.labels) {
+      //       return ctx.chart.data.labels[ctx.dataIndex];
+      //     }
+      //   },
+      // },
     },
   };
 
@@ -37,18 +37,18 @@ export class DepositPieChartComponent implements OnChanges {
     this.pieChartData = {
       labels: [
         "Total Deposits",
-        "Total Compounds",
+        // "Total Compounds",
         "Total Withdrawals",
       ],
       datasets: [{
         data: [
           this.deposits,
-          this.compounds,
+          // this.compounds,
           this.withdrawals,
         ],
         backgroundColor: [
           colors.DEPOSIT_RED,
-          colors.COMPOUNDS_BLUE,
+          // colors.COMPOUNDS_BLUE,
           colors.WITHDRAWALS_GREEN,
         ],
         label: "$",

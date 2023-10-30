@@ -1,23 +1,63 @@
 :host {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  column-gap: 0.5rem;
+  row-gap: 2rem;
   width: 100%;
 
-  .charts-container {
+  .card-content-container {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    flex-shrink: 1;
     gap: 2rem;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .roi-container {
+    justify-content: space-evenly;
 
     .row {
+      justify-content: space-between;
+    }
+  }
+
+  .stat-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // Two equal-width columns
+    gap: 16px;
+    max-width: 34ch;
+    margin: 1rem 0;
+  }
+
+  .stat-container {
+    display: flex;
+    justify-content: space-between;
+    gap: .25rem;
+
+    &.left .label-value {
+      width: 14ch;
+    }
+
+    .icon {
       display: flex;
-      flex-wrap: wrap;
-      flex-grow: 1;
-      flex-shrink: 1;
-      gap: 2rem;
+      align-items: flex-end;
+      justify-content: center;
+
+      mat-icon.small {
+        font-size: 17px;
+        height: 17px;
+        width: 17px;
+      }
+
+      mat-icon.large {
+        font-size: 38px;
+        height: 38px;
+        width: 38px;
+      }
     }
   }
 }

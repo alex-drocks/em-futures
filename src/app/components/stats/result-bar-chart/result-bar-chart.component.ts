@@ -19,7 +19,8 @@ export class ResultBarChartComponent implements OnChanges {
   public barChartType: ChartType = 'bar';
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    indexAxis: 'y',
+    maintainAspectRatio: false,
+    indexAxis: 'x',
   };
   public barChartLegend = false;
 
@@ -29,11 +30,11 @@ export class ResultBarChartComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.barChartData = {
       labels: [
-        "Deposits (Invested)",
-        "Compounded Earnings",
+        "Deposits (Cost)",
+        "Compounds",
         "Withdrawals",
-        "Balance (Locked Value)",
-        "Realized Profit",
+        "Balance (TVL)",
+        // "Realized Profit",
       ],
       datasets: [
         {
@@ -42,14 +43,14 @@ export class ResultBarChartComponent implements OnChanges {
             this.compounds,
             this.withdrawals,
             this.balance,
-            this.realizedProfit,
+            // this.realizedProfit,
           ],
           backgroundColor: [
             colors.DEPOSIT_RED,
             colors.COMPOUNDS_BLUE,
             colors.WITHDRAWALS_GREEN,
             colors.BALANCE_ORANGE,
-            colors.ROI_BLUE,
+            // colors.ROI_BLUE,
           ],
           label: "$",
           hidden: false,

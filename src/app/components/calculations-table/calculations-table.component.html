@@ -1,6 +1,6 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>Account Growth</mat-card-title>
+    <mat-card-title>Investment Growth Table</mat-card-title>
     <mat-card-subtitle>
       Calculations based on your investment plan.
     </mat-card-subtitle>
@@ -58,20 +58,20 @@
           </span>
           <span class="accordion-item-column align-start day-col">{{ index }}</span>
           <span class="accordion-item-column align-start date-col">{{ item.date }}</span>
-          <span class="accordion-item-column align-end balance-col bold">{{ item.balance }}$</span>
+          <span class="accordion-item-column align-end balance-col bold">{{ item.balance | currency }}</span>
           <span class="accordion-item-column align-end yield-percent-col">{{ item.rewardsPercent }}%</span>
-          <span class="accordion-item-column align-end yield-today-col">{{ item.rewardsUnlockedToday }}$</span>
-          <span class="accordion-item-column align-end yield-avail-col">{{ item.rewardsAvailable }}$</span>
+          <span class="accordion-item-column align-end yield-today-col">{{ item.rewardsUnlockedToday | currency }}</span>
+          <span class="accordion-item-column align-end yield-avail-col">{{ item.rewardsAvailable | currency }}</span>
           <span class="accordion-item-column align-end action-col">{{ item.actionMade }}</span>
-          <span class="accordion-item-column align-end withdrawn-col">{{ item.withdrawnToday }}$</span>
-          <span class="accordion-item-column align-end deposited-col">{{ item.depositedToday }}$</span>
-          <span class="accordion-item-column align-end compounded-col">{{ item.compoundedToday }}$</span>
+          <span class="accordion-item-column align-end withdrawn-col">{{ item.withdrawnToday | currency }}</span>
+          <span class="accordion-item-column align-end deposited-col">{{ item.depositedToday | currency }}</span>
+          <span class="accordion-item-column align-end compounded-col">{{ item.compoundedToday | currency }}</span>
           <span class="accordion-item-column align-end difference-col bold">
-            {{ item.balanceDifference >= 0 ? "+" : null }}{{ item.balanceDifference }}$
+            {{ item.balanceDifference >= 0 ? "+" : null }}{{ item.balanceDifference | currency }}
           </span>
-          <span class="accordion-item-column align-end tot-withdraw-col">{{ item.totalWithdrawn }}$</span>
-          <span class="accordion-item-column align-end tot-deposit-col">{{ item.totalDeposited }}$</span>
-          <span class="accordion-item-column align-end tot-compound-col">{{ item.totalCompounded }}$</span>
+          <span class="accordion-item-column align-end tot-withdraw-col">{{ item.totalWithdrawn | currency }}</span>
+          <span class="accordion-item-column align-end tot-deposit-col">{{ item.totalDeposited | currency }}</span>
+          <span class="accordion-item-column align-end tot-compound-col">{{ item.totalCompounded | currency }}</span>
         </div>
         <div
           class="accordion-item-body"
@@ -84,25 +84,25 @@
             <h3>Summary:</h3>
             <p>
               On <strong>{{ item.date }}</strong>, Day <strong>{{ index }}</strong>, you started with a balance of
-              <strong>{{ item.balance }}$</strong>.
+              <strong>{{ item.balance | currency }}</strong>.
               Your earnings rate for the day was <strong>{{ item.rewardsPercent }}%</strong>, which resulted in earnings
-              of <strong>{{ item.rewardsUnlockedToday }}$</strong> for the day.
-              This brought your available earnings to <strong>{{ item.rewardsAvailable }}$</strong>.
+              of <strong>{{ item.rewardsUnlockedToday | currency }}</strong> for the day.
+              This brought your available earnings to <strong>{{ item.rewardsAvailable | currency}}</strong>.
             </p>
             <p>
               On this day, you
-              <strong>{{ item.actionMade === "Hold" ? "held your balance" : item.actionMade + " " + (item.depositedToday || item.withdrawnToday) + "$"}}</strong>.
+              <strong>{{ item.actionMade === "Hold" ? "held your balance" : item.actionMade + " " + ((item.depositedToday || item.withdrawnToday) | currency)}}</strong>.
               This action resulted in a balance change of
-              <strong>{{ item.balanceDifference >= 0 ? "+" : "" }}{{ item.balanceDifference }}$</strong>,
-              bringing your balance to <strong>{{ item.newBalance }}$</strong> at the end of the day.
+              <strong>{{ item.balanceDifference >= 0 ? "+" : "" }}{{ item.balanceDifference | currency}}</strong>,
+              bringing your balance to <strong>{{ item.newBalance | currency }}</strong> at the end of the day.
             </p>
             <p>
-              Cumulatively, you have deposited <strong>{{ item.totalDeposited }}$</strong>, withdrawn
-              <strong>{{ item.totalWithdrawn }}$</strong>, and compounded <strong>{{ item.totalCompounded }}$</strong>
+              Cumulatively, you have deposited <strong>{{ item.totalDeposited | currency }}</strong>, withdrawn
+              <strong>{{ item.totalWithdrawn | currency }}</strong>, and compounded <strong>{{ item.totalCompounded | currency }}</strong>
               till this date.
-              Your realized profit stands at <strong>{{ item.realizedProfit }}$</strong>
+              Your realized profit stands at <strong>{{ item.realizedProfit | currency }}</strong>
               (<strong>{{ item.realizedProfitPercent }}%</strong>),
-              and your unrealized profit is <strong>{{ item.unrealizedProfit }}$</strong>
+              and your unrealized profit is <strong>{{ item.unrealizedProfit | currency }}</strong>
               (<strong>{{ item.unrealizedProfitPercent }}%</strong>).
             </p>
           </div>
@@ -116,11 +116,11 @@
               </tr>
               <tr>
                 <td>Earnings unlocked today:</td>
-                <td>{{item.rewardsUnlockedToday}}$</td>
+                <td>{{item.rewardsUnlockedToday | currency}}</td>
               </tr>
               <tr>
                 <td>Accumulated earnings available:</td>
-                <td>{{item.rewardsAvailable}}$</td>
+                <td>{{item.rewardsAvailable | currency}}</td>
               </tr>
             </table>
           </div>
@@ -130,19 +130,19 @@
             <table>
               <tr>
                 <td>Balance at start of day:</td>
-                <td>{{item.balance}}$</td>
+                <td>{{item.balance | currency}}</td>
               </tr>
               <tr>
                 <td>Action you made:</td>
-                <td>{{item.actionMade === "Hold" ? "Held balance" : item.actionMade + "ed " + (item.depositedToday || item.withdrawnToday) + "$"}}</td>
+                <td>{{item.actionMade === "Hold" ? "Held balance" : item.actionMade + "ed " + ((item.depositedToday || item.withdrawnToday) | currency)}}</td>
               </tr>
               <tr>
                 <td>Balance at end of day:</td>
-                <td>{{item.newBalance}}$</td>
+                <td>{{item.newBalance | currency}}</td>
               </tr>
               <tr>
                 <td>Balance change today:</td>
-                <td>{{item.balanceDifference}}$</td>
+                <td>{{item.balanceDifference | currency}}</td>
               </tr>
             </table>
           </div>
@@ -152,15 +152,15 @@
             <table>
               <tr>
                 <td>Total Deposited:</td>
-                <td>{{item.totalDeposited}}$</td>
+                <td>{{item.totalDeposited | currency}}</td>
               </tr>
               <tr>
                 <td>Total Withdrawn:</td>
-                <td>{{item.totalWithdrawn}}$</td>
+                <td>{{item.totalWithdrawn | currency}}</td>
               </tr>
               <tr>
                 <td>Realized Profit:</td>
-                <td>{{item.realizedProfit}}$</td>
+                <td>{{item.realizedProfit | currency}}</td>
               </tr>
               <tr>
                 <td>Realized Profit Percent:</td>
@@ -168,7 +168,7 @@
               </tr>
               <tr>
                 <td>Unrealized Profit:</td>
-                <td>{{item.unrealizedProfit}}$</td>
+                <td>{{item.unrealizedProfit | currency}}</td>
               </tr>
               <tr>
                 <td>Unrealized Profit Percent:</td>

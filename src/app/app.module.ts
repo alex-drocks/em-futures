@@ -26,6 +26,8 @@ import {ResultBarChartComponent} from './components/stats/result-bar-chart/resul
 import {DepositPieChartComponent} from './components/stats/deposit-pie-chart/deposit-pie-chart.component';
 import {TimeLineChartComponent} from './components/stats/time-line-chart/time-line-chart.component';
 import {NgOptimizedImage} from "@angular/common";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 
 export const MY_DATE_FORMATS = {
@@ -65,6 +67,8 @@ export const MY_DATE_FORMATS = {
     MatIconModule,
     NgChartsModule,
     NgOptimizedImage,
+    MatTooltipModule,
+    MatGridListModule,
   ],
   providers: [
     {

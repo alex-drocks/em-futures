@@ -345,7 +345,7 @@ export class CalculatorService {
 
       const realizedProfit = total.withdrawals - total.deposits;
       const realizedProfitPercent = (realizedProfit / total.deposits) * 100;
-      const unrealizedProfit = (total.withdrawals + total.balance + total.rewardsAvailable) - total.deposits;
+      const unrealizedProfit = (total.balance + total.rewardsAvailable) - total.deposits;
       const unrealizedProfitPercent = (unrealizedProfit / total.deposits) * 100;
 
       this._dailyData.push({

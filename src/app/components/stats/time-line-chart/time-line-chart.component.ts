@@ -40,6 +40,7 @@ export class TimeLineChartComponent implements OnInit {
       normalized: true,
       parsing: false,
       animation: false,
+      responsive: true,
       maintainAspectRatio: false,
       interaction: {
         mode: 'nearest',
@@ -66,22 +67,22 @@ export class TimeLineChartComponent implements OnInit {
         },
         annotation: {
           annotations: [
-            {
-              type: 'line',
-              scaleID: 'x',
-              value: this.dailyData.find(d => d.newBalance >= this.calculator.getStartWithdrawingBalance())?.date,
-              borderColor: colors.BALANCE_ORANGE,
-              borderWidth: 1,
-              label: {
-                display: true,
-                position: "start",
-                color: colors.BALANCE_ORANGE,
-                content: 'Withdraw balance reached',
-                font: {
-                  weight: 'bold',
-                },
-              },
-            },
+            // {
+            //   type: 'line',
+            //   scaleID: 'x',
+            //   value: this.dailyData.find(d => d.newBalance >= this.calculator.getStartWithdrawingBalance())?.date,
+            //   borderColor: colors.BALANCE_ORANGE,
+            //   borderWidth: 1,
+            //   label: {
+            //     display: true,
+            //     position: "start",
+            //     color: colors.BALANCE_ORANGE,
+            //     content: 'Withdraw balance reached',
+            //     font: {
+            //       weight: 'bold',
+            //     },
+            //   },
+            // },
             // {
             //   type: 'line',
             //   scaleID: 'x',
@@ -110,7 +111,7 @@ export class TimeLineChartComponent implements OnInit {
       datasets: [
         {
           data: this.mapDataToPoints("totalDeposited") as any,
-          label: 'Deposits (Invested)',
+          label: 'Deposits (Cost)',
           backgroundColor: colors.DEPOSIT_RED,
           borderColor: colors.DEPOSIT_RED,
           pointBackgroundColor: colors.DEPOSIT_RED,
@@ -123,7 +124,7 @@ export class TimeLineChartComponent implements OnInit {
         },
         {
           data: this.mapDataToPoints("totalWithdrawn") as any,
-          label: 'Withdrawals',
+          label: 'Withdrawals (Banked)',
           backgroundColor: colors.WITHDRAWALS_GREEN,
           borderColor: colors.WITHDRAWALS_GREEN,
           pointBackgroundColor: colors.WITHDRAWALS_GREEN,

@@ -45,4 +45,20 @@ export class StatsComponent {
     return this.lastCalculatedDay.unrealizedProfit;
   }
 
+  public get unrealizedProfitPercent(): number {
+    return this.lastCalculatedDay.unrealizedProfitPercent;
+  }
+
+  public get realizedProfitPercent(): number {
+    return this.lastCalculatedDay.realizedProfitPercent;
+  }
+
+  public get totalProfit(): number {
+    return this.realizedProfit + this.unrealizedProfit;
+  }
+
+  public get totalProfitPercent(): number {
+    return this.calculator.roundNumber(this.realizedProfitPercent + this.unrealizedProfitPercent);
+  }
+
 }
