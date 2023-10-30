@@ -21,6 +21,10 @@ export class StatsComponent {
     return dailyData[dailyData.length - 1];
   }
 
+  public get date(): string {
+    return this.lastCalculatedDay.date;
+  }
+
   public get deposits(): number {
     return this.lastCalculatedDay.totalDeposited;
   }
