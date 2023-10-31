@@ -15,4 +15,8 @@ export class CalculationsTableComponent {
   public get dailyData(): IDailyData[] {
     return this.calculator.getDailyData();
   }
+
+  public trackByDate(index: number, item: IDailyData): string {
+    return item.date;
+  }
 }
