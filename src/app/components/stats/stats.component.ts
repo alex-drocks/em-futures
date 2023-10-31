@@ -65,4 +65,8 @@ export class StatsComponent {
     return this.calculator.roundNumber(this.realizedProfitPercent + this.unrealizedProfitPercent);
   }
 
+  public get totalPayouts(): number {
+    return this.lastCalculatedDay.totalPayouts;
+  }
+
 }

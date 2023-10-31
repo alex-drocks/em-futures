@@ -120,18 +120,18 @@ describe('CalculatorService', () => {
   });
 
   describe('isMaxWithdrawalsReached', () => {
-    it('should return true when total withdrawals equal MAX_WITHDRAWAL', () => {
-      const result = service.isMaxWithdrawalsReached(service.MAX_WITHDRAWAL);
+    it('should return true when total withdrawals equal MAX_PAYOUTS', () => {
+      const result = service.isMaxPayoutsReached(service.MAX_PAYOUTS);
       expect(result).toBe(true);
     });
 
-    it('should return true when total withdrawals exceed MAX_WITHDRAWAL', () => {
-      const result = service.isMaxWithdrawalsReached(service.MAX_WITHDRAWAL + 1);
+    it('should return true when total withdrawals exceed MAX_PAYOUTS', () => {
+      const result = service.isMaxPayoutsReached(service.MAX_PAYOUTS + 1);
       expect(result).toBe(true);
     });
 
-    it('should return false when total withdrawals are below MAX_WITHDRAWAL', () => {
-      const result = service.isMaxWithdrawalsReached(service.MAX_WITHDRAWAL - 1);
+    it('should return false when total withdrawals are below MAX_PAYOUTS', () => {
+      const result = service.isMaxPayoutsReached(service.MAX_PAYOUTS - 1);
       expect(result).toBe(false);
     });
   });
@@ -149,43 +149,6 @@ describe('CalculatorService', () => {
 
     it('should return false when balance is below MAX_BALANCE', () => {
       const result = service.isMaxBalanceReached(service.MAX_BALANCE - 1);
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('postWithdrawalExceedsMax', () => {
-    it('should return true when post-withdrawal sum equals MAX_WITHDRAWAL', () => {
-      const result = service.postWithdrawalExceedsMax(service.MAX_WITHDRAWAL, 0);
-      expect(result).toBe(true);
-    });
-
-    it('should return true when post-withdrawal sum exceeds MAX_WITHDRAWAL', () => {
-      const result = service.postWithdrawalExceedsMax(service.MAX_WITHDRAWAL - 1, 2);
-      expect(result).toBe(true);
-    });
-
-    it('should return false when post-withdrawal sum is below MAX_WITHDRAWAL', () => {
-      const result = service.postWithdrawalExceedsMax(service.MAX_WITHDRAWAL - 2, 1);
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('postDepositExceedsMaxBalance', () => {
-    it('should return true when post-deposit sum equals MAX_BALANCE', () => {
-      const balance = service.MAX_BALANCE - service.getRegularDeposit();
-      const result = service.postDepositExceedsMaxBalance(balance, 0);
-      expect(result).toBe(true);
-    });
-
-    it('should return true when post-deposit sum exceeds MAX_BALANCE', () => {
-      const balance = service.MAX_BALANCE - service.getRegularDeposit();
-      const result = service.postDepositExceedsMaxBalance(balance, 1);
-      expect(result).toBe(true);
-    });
-
-    it('should return false when post-deposit sum is below MAX_BALANCE', () => {
-      const balance = service.MAX_BALANCE - service.getRegularDeposit() - 2;
-      const result = service.postDepositExceedsMaxBalance(balance, 1);
       expect(result).toBe(false);
     });
   });
@@ -225,35 +188,6 @@ describe('CalculatorService', () => {
       const totalCompounded = 1_500_000;
       const totalDeposited = 500_000;
       expect(service.getDailyRewardsPercent(totalCompounded, totalDeposited)).toEqual(DailyRewardsPercent.PERCENT_0_250);
-    });
-  });
-
-  describe("canDeposit", () => {
-    it('should return true when max balance is not reached', () => {
-      spyOn(service, 'isMaxBalanceReached').and.returnValue(false);
-      expect(service.canDeposit(1000)).toBeTrue();
-    });
-
-    it('should return false when max balance is reached', () => {
-      spyOn(service, 'isMaxBalanceReached').and.returnValue(true);
-      expect(service.canDeposit(1000)).toBeFalse();
-    });
-  });
-
-  describe("canWithdraw", () => {
-    it('should return true when max withdrawals are not reached and startWithdrawingFlag is true', () => {
-      spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(false);
-      expect(service.canWithdraw(10, true)).toBeTrue();
-    });
-
-    it('should return false when max withdrawals are reached', () => {
-      spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(true);
-      expect(service.canWithdraw(10, true)).toBeFalse();
-    });
-
-    it('should return false when startWithdrawingFlag is false', () => {
-      spyOn(service, 'isMaxWithdrawalsReached').and.returnValue(false);
-      expect(service.canWithdraw(10, false)).toBeFalse();
     });
   });
 

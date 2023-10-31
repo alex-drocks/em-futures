@@ -21,7 +21,7 @@ export class CalculatorService {
   public DATE_FORMAT = "YYYY-MM-DD";
   public MIN_DEPOSIT = 200;
   public MAX_BALANCE = 1_000_000;
-  public MAX_WITHDRAWAL = 2_500_000;
+  public MAX_PAYOUTS = 2_500_000;
   public MAX_DAILY_WITHDRAWAL = 50_000;
   public MAX_YEARS_FORECAST = 10;
 
@@ -31,7 +31,7 @@ export class CalculatorService {
     regularDeposit: 200,
     depositCycle: CycleEnum.THREE_WEEKS,
     withdrawCycle: CycleEnum.WEEK,
-    startWithdrawingBalance: 50_000,
+    startWithdrawingBalance: 75_000,
     stopDepositingBalance: 1_000_000,
     yearsToForecast: 3,
   }
@@ -187,22 +187,12 @@ export class CalculatorService {
     return CycleEnumDayValues[cycle];
   }
 
-  public isMaxWithdrawalsReached(totalWithdrawals: number): boolean {
-    return totalWithdrawals >= this.MAX_WITHDRAWAL
+  public isMaxPayoutsReached(totalPayouts: number): boolean {
+    return totalPayouts >= this.MAX_PAYOUTS;
   }
 
   public isMaxBalanceReached(balance: number): boolean {
     return balance >= this.MAX_BALANCE;
-  }
-
-  public postWithdrawalExceedsMax(totalWithdrawals: number, rewardsAvailableToWithdraw: number): boolean {
-    const postWithdrawalSum = totalWithdrawals + rewardsAvailableToWithdraw;
-    return this.isMaxWithdrawalsReached(postWithdrawalSum)
-  }
-
-  public postDepositExceedsMaxBalance(balance: number, rewardsAvailableToCompound: number): boolean {
-    const postDepositSum = balance + rewardsAvailableToCompound + this.getRegularDeposit();
-    return this.isMaxBalanceReached(postDepositSum);
   }
 
   public isStopDepositBalanceReached(balance: number): boolean {
@@ -211,14 +201,6 @@ export class CalculatorService {
 
   public isStartWithdrawingBalanceReached(balance: number): boolean {
     return balance >= this.getStartWithdrawingBalance();
-  }
-
-  public canDeposit(balance: number): boolean {
-    return !this.isMaxBalanceReached(balance);
-  }
-
-  public canWithdraw(totalWithdrawals: number, startWithdrawingFlag: boolean): boolean {
-    return !this.isMaxWithdrawalsReached(totalWithdrawals) && startWithdrawingFlag;
   }
 
   public getDailyRewardsPercent(totalCompounded: number, totalDeposited: number): DailyRewardsPercent {
@@ -267,6 +249,7 @@ export class CalculatorService {
       withdrawals: 0,
       rewards: 0,
       deposits: this.getInitialDeposit(),
+      payouts: 0,
     }
 
     let startWithdrawingFlag = false;
@@ -305,25 +288,28 @@ export class CalculatorService {
       const depositCompoundRewards = () => {
         userAction = UserActionEnum.DEPOSIT;
         depositedToday = this.getRegularDeposit();
-        const exceedingLimit = (total.balance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
-        compoundedToday = exceedingLimit > 0 ? (rewardsAvailable - exceedingLimit) : rewardsAvailable;
+        const exceeding = (total.balance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
+        compoundedToday = exceeding > 0 ? (rewardsAvailable - exceeding) : rewardsAvailable;
         total.rewardsAvailable = 0;
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
         total.rewards += compoundedToday;
+        total.payouts += compoundedToday;
       }
 
       const withdrawClaimRewards = () => {
         userAction = UserActionEnum.WITHDRAW;
-        const exceedingLimit = (rewardsAvailable + total.withdrawals) - this.MAX_WITHDRAWAL;
-        withdrawnToday = exceedingLimit > 0 ? (rewardsAvailable - exceedingLimit) : rewardsAvailable;
+        const exceeding = (total.payouts + rewardsAvailable) - this.MAX_PAYOUTS;
+        withdrawnToday = exceeding > 0 ? (rewardsAvailable - exceeding) : rewardsAvailable;
         total.rewardsAvailable = 0;
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
+        total.payouts += withdrawnToday;
       }
 
-      const canDeposit = this.canDeposit(currentBalance);
-      const canWithdraw = this.canWithdraw(total.withdrawals, startWithdrawingFlag);
+      const isMaxedPayout = this.isMaxPayoutsReached(total.payouts + total.rewardsAvailable);
+      const canDeposit = !isMaxedPayout && !this.isMaxBalanceReached(currentBalance);
+      const canWithdraw = !isMaxedPayout && startWithdrawingFlag;
 
       if (canDeposit && total.daysElapsed === nextDepositDay) {
         depositCompoundRewards();
@@ -357,6 +343,7 @@ export class CalculatorService {
         totalDeposited: this.roundNumber(total.deposits),
         totalCompounded: this.roundNumber(total.rewards),
         totalWithdrawn: this.roundNumber(total.withdrawals),
+        totalPayouts: this.roundNumber(total.payouts),
         totalRewardsAvailable: this.roundNumber(total.rewardsAvailable),
         actionMade: userAction,
         depositedToday: this.roundNumber(depositedToday),
