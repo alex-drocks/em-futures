@@ -55,8 +55,7 @@ export class TimeLineChartComponent implements OnInit {
       scales: {
         x: {},
         y: {
-          position: 'left',
-          beginAtZero: false
+          beginAtZero: false,
         },
       },
       plugins: {
@@ -105,6 +104,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: false,
         },
         {
@@ -119,6 +119,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: false,
         },
         {
@@ -133,6 +134,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: false,
         },
         {
@@ -147,6 +149,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: false,
         },
         {
@@ -161,6 +164,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: false,
         },
         {
@@ -175,6 +179,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: true,
         },
         {
@@ -189,6 +194,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
+          stepped: true,
           hidden: true,
         },
       ],

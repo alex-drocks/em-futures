@@ -14,6 +14,7 @@ export class ResultBarChartComponent implements OnChanges {
   @Input() deposits!: number;
   @Input() withdrawals!: number;
   @Input() realizedProfit!: number;
+  @Input() unrealizedProfit!: number;
   @Input() totalPayouts!: number;
 
   public barChartData!: ChartData<'bar'>;
@@ -35,8 +36,9 @@ export class ResultBarChartComponent implements OnChanges {
         "Compounds",
         "Withdrawals",
         "Claimed",
-        "Balance (Total Value)",
+        "Balance",
         "Realized Profit",
+        "Unrealized Profit",
       ],
       datasets: [
         {
@@ -47,6 +49,7 @@ export class ResultBarChartComponent implements OnChanges {
             this.totalPayouts,
             this.balance,
             this.realizedProfit,
+            this.unrealizedProfit,
           ],
           backgroundColor: [
             colors.DEPOSIT_RED,
@@ -55,6 +58,7 @@ export class ResultBarChartComponent implements OnChanges {
             colors.PAYOUTS_PURPLE,
             colors.BALANCE_ORANGE,
             colors.REALIZED_BLUE,
+            colors.UNREALIZED_TEAL,
           ],
           label: "$",
           hidden: false,

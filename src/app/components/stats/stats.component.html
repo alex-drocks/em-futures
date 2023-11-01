@@ -109,13 +109,28 @@
         [compounds]="compounds"
         [withdrawals]="withdrawals"
         [realizedProfit]="realizedProfit"
+        [unrealizedProfit]="unrealizedProfit"
         [totalPayouts]="totalPayouts"
       ></app-result-bar-chart>
-      <app-deposit-pie-chart
-        [deposits]="deposits"
-        [compounds]="compounds"
-        [withdrawals]="withdrawals"
-      ></app-deposit-pie-chart>
+      <!--      <app-deposit-pie-chart-->
+      <!--        [deposits]="deposits"-->
+      <!--        [compounds]="compounds"-->
+      <!--        [withdrawals]="withdrawals"-->
+      <!--      ></app-deposit-pie-chart>-->
     </div>
   </mat-card-content>
 </mat-card>
+
+<app-profit-bar-chart
+  [withdrawals]="withdrawals"
+  [deposits]="deposits"
+  [realizedProfit]="realizedProfit"
+  [dailyData]="dailyData"
+></app-profit-bar-chart>
+
+<app-claim-bar-chart
+  [withdrawals]="withdrawals"
+  [compounds]="compounds"
+  [totalPayouts]="totalPayouts"
+  [dailyData]="dailyData"
+></app-claim-bar-chart>

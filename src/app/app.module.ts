@@ -28,6 +28,8 @@ import {TimeLineChartComponent} from './components/stats/time-line-chart/time-li
 import {NgOptimizedImage} from "@angular/common";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatGridListModule} from "@angular/material/grid-list";
+import { ClaimBarChartComponent } from './components/stats/claim-bar-chart/claim-bar-chart.component';
+import { ProfitBarChartComponent } from './components/stats/profit-bar-chart/profit-bar-chart.component';
 
 
 export const MY_DATE_FORMATS = {
@@ -51,6 +53,8 @@ export const MY_DATE_FORMATS = {
     ResultBarChartComponent,
     DepositPieChartComponent,
     TimeLineChartComponent,
+    ClaimBarChartComponent,
+    ProfitBarChartComponent,
   ],
   imports: [
     BrowserModule,
