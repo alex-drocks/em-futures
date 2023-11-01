@@ -11,7 +11,7 @@ export class AppComponent {
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    this.showScrollBottom = window.scrollY > 830 && window.scrollY < 3000;
+    this.showScrollBottom = window.scrollY > 800 && !this.isScrolledToBottom();
     this.showScrollTop = window.scrollY >= 3000;
   }
 
@@ -21,5 +21,10 @@ export class AppComponent {
 
   public goToBottom(): void {
     window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  public isScrolledToBottom() {
+    const tolerance = 100;
+    return window.scrollY + window.innerHeight + tolerance >= document.body.scrollHeight;
   }
 }

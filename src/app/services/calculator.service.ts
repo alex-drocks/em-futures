@@ -253,18 +253,19 @@ export class CalculatorService {
     }
 
     let startWithdrawingFlag = false;
-    let nextDepositDay = depositDays;
-    let nextWithdrawDay = depositDays + withdrawDays;
+    let nextAction: UserActionEnum.DEPOSIT | UserActionEnum.WITHDRAW = UserActionEnum.DEPOSIT;
+    let nextActionDay = depositDays;
 
     for (let index = 0; index < daysToCalculate; index++) {
+      if (this.isMaxPayoutsReached(total.payouts)) {
+        break;
+      }
       total.daysElapsed = index;
-
       const date = dayjs(dateStart).add(total.daysElapsed, "day");
       const dailyRewardsPercent: DailyRewardsPercent = this.getDailyRewardsPercent(total.rewards, total.deposits);
       const dailyRate = this.getDailyRewardsRate(dailyRewardsPercent);
       const currentBalance = total.balance;
-
-      let userAction: UserActionEnum = UserActionEnum.HOLD;
+      let actionToday: UserActionEnum = UserActionEnum.HOLD;
       let rewardsToday = 0;
       let rewardsAvailable = 0;
       let depositedToday = 0;
@@ -274,59 +275,49 @@ export class CalculatorService {
       if (total.daysElapsed === 0) {
         depositedToday = total.deposits;
         total.balance = depositedToday;
-        userAction = UserActionEnum.INIT;
+        actionToday = UserActionEnum.INIT;
       } else {
         rewardsToday = currentBalance * dailyRate;
         total.rewardsAvailable = this.getTotalUnlocked(currentBalance, total.rewardsAvailable, rewardsToday);
         rewardsAvailable = total.rewardsAvailable;
-      }
-
-      if (!startWithdrawingFlag) {
-        startWithdrawingFlag = this.isStartWithdrawingBalanceReached(currentBalance);
+        if (!startWithdrawingFlag) {
+          startWithdrawingFlag = this.isStartWithdrawingBalanceReached(currentBalance);
+        }
       }
 
       const depositCompoundRewards = () => {
-        userAction = UserActionEnum.DEPOSIT;
+        actionToday = UserActionEnum.DEPOSIT;
         depositedToday = this.getRegularDeposit();
-        const exceeding = (total.balance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
-        compoundedToday = exceeding > 0 ? (rewardsAvailable - exceeding) : rewardsAvailable;
-        total.rewardsAvailable = 0;
+        const exceeding = (currentBalance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
+        compoundedToday = Math.min(rewardsAvailable - exceeding, rewardsAvailable);
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
         total.rewards += compoundedToday;
         total.payouts += compoundedToday;
+        total.rewardsAvailable = 0;
       }
 
       const withdrawClaimRewards = () => {
-        userAction = UserActionEnum.WITHDRAW;
+        actionToday = UserActionEnum.WITHDRAW;
         const exceeding = (total.payouts + rewardsAvailable) - this.MAX_PAYOUTS;
-        withdrawnToday = exceeding > 0 ? (rewardsAvailable - exceeding) : rewardsAvailable;
-        total.rewardsAvailable = 0;
+        withdrawnToday = Math.min(rewardsAvailable - exceeding, rewardsAvailable);
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
         total.payouts += withdrawnToday;
+        total.rewardsAvailable = 0;
       }
 
-      const isMaxedPayout = this.isMaxPayoutsReached(total.payouts + total.rewardsAvailable);
-      const canDeposit = !isMaxedPayout && !this.isMaxBalanceReached(currentBalance);
-      const canWithdraw = !isMaxedPayout && startWithdrawingFlag;
-
-      if (canDeposit && total.daysElapsed === nextDepositDay) {
-        depositCompoundRewards();
-        if (canWithdraw) {
-          nextDepositDay = nextWithdrawDay + depositDays;
-        } else {
-          nextDepositDay += depositDays;
-          nextWithdrawDay = nextDepositDay + withdrawDays;
+      const canDeposit = !this.isMaxBalanceReached(currentBalance);
+      const canWithdraw = startWithdrawingFlag;
+      if (total.daysElapsed === nextActionDay) {
+        if (nextAction === UserActionEnum.DEPOSIT && canDeposit) {
+          depositCompoundRewards();
+          nextAction = canWithdraw ? UserActionEnum.WITHDRAW : UserActionEnum.DEPOSIT;
+        } else if (nextAction === UserActionEnum.WITHDRAW && canWithdraw) {
+          withdrawClaimRewards();
+          nextAction = canDeposit ? UserActionEnum.DEPOSIT : UserActionEnum.WITHDRAW;
         }
-      } else if (canWithdraw && total.daysElapsed === nextWithdrawDay) {
-        withdrawClaimRewards();
-        if (canDeposit) {
-          nextWithdrawDay = nextDepositDay + withdrawDays;
-        } else {
-          nextWithdrawDay += withdrawDays;
-          nextDepositDay = nextWithdrawDay + depositDays;
-        }
+        nextActionDay += nextAction === UserActionEnum.DEPOSIT ? depositDays : withdrawDays;
       }
 
       const realizedProfit = total.withdrawals - total.deposits;
@@ -345,7 +336,7 @@ export class CalculatorService {
         totalWithdrawn: this.roundNumber(total.withdrawals),
         totalPayouts: this.roundNumber(total.payouts),
         totalRewardsAvailable: this.roundNumber(total.rewardsAvailable),
-        actionMade: userAction,
+        actionMade: actionToday,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
         withdrawnToday: this.roundNumber(withdrawnToday),

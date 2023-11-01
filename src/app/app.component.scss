@@ -31,13 +31,20 @@
 
   .go-to-button {
     position: fixed;
-    bottom: .75rem;
     right: .75rem;
     z-index: 1000;
     opacity: 0.85;
 
     &:hover {
       opacity: 1;
+    }
+
+    &.go-down {
+      bottom: .75rem;
+    }
+
+    &.go-up {
+      bottom: 4rem;
     }
   }
 }

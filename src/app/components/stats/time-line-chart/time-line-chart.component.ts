@@ -67,38 +67,22 @@ export class TimeLineChartComponent implements OnInit {
         },
         annotation: {
           annotations: [
-            // {
-            //   type: 'line',
-            //   scaleID: 'x',
-            //   value: this.dailyData.find(d => d.newBalance >= this.calculator.getStartWithdrawingBalance())?.date,
-            //   borderColor: colors.BALANCE_ORANGE,
-            //   borderWidth: 1,
-            //   label: {
-            //     display: true,
-            //     position: "start",
-            //     color: colors.BALANCE_ORANGE,
-            //     content: 'Withdraw balance reached',
-            //     font: {
-            //       weight: 'bold',
-            //     },
-            //   },
-            // },
-            // {
-            //   type: 'line',
-            //   scaleID: 'x',
-            //   value: this.dailyData.find(d => d.newBalance >= this.calculator.getStopDepositingBalance())?.date,
-            //   borderColor: colors.DEPOSIT_RED,
-            //   borderWidth: 1,
-            //   label: {
-            //     display: true,
-            //     position: "start",
-            //     color: colors.DEPOSIT_RED,
-            //     content: 'Max. balance',
-            //     font: {
-            //       weight: 'bold',
-            //     },
-            //   },
-            // },
+            {
+              type: 'line',
+              scaleID: 'x',
+              value: this.dailyData.find(d => d.totalPayouts >= this.calculator.MAX_PAYOUTS)?.date,
+              borderColor: colors.PAYOUTS_PURPLE,
+              borderWidth: 1,
+              label: {
+                display: true,
+                position: "start",
+                color: colors.PAYOUTS_PURPLE,
+                content: 'Max Payouts (Claimed)',
+                font: {
+                  weight: 'bold',
+                },
+              },
+            },
           ],
         },
       },
@@ -163,7 +147,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
-          hidden: true,
+          hidden: false,
         },
         {
           data: this.mapDataToPoints("totalCompounded") as any,
@@ -177,7 +161,7 @@ export class TimeLineChartComponent implements OnInit {
           fill: false,
           pointRadius: 0,
           spanGaps: true,
-          hidden: true,
+          hidden: false,
         },
         {
           data: this.mapDataToPoints("unrealizedProfit") as any,
