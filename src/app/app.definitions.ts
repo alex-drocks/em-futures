@@ -79,6 +79,7 @@ export interface ISelectOption {
 }
 
 export interface IDailyData {
+  day: number;
   date: string;
   balance: number;
   rewardsPercent: DailyRewardsPercent;

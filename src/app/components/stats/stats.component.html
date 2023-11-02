@@ -1,44 +1,26 @@
 <mat-card class="card">
   <mat-card-header>
-    <mat-card-title>Return On Investment</mat-card-title>
+    <mat-card-title>Key Stats</mat-card-title>
     <mat-card-subtitle>
-      Key stats at the end of forecasted years
+      At the end of the investment plan
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="card-content-container no-wrap roi-container">
     <div class="row">
       <div class="row stat-group">
         <div class="stat-container left">
-          <div class="icon" matTooltip="Total Value Locked">
-            <mat-icon class="large">balance</mat-icon>
+          <div class="icon">
+            <i class="iconsmind-Elephant large"></i>
           </div>
-          <div class="label-value">
+          <div class="label-value" matTooltip="Total Value Locked">
             <div>Balance (TVL)</div>
             <strong>{{balance | currency}}</strong>
           </div>
         </div>
         <div class="stat-container right">
-          <div class="label-value">
-            <div>Cost</div>
-            <strong>{{deposits | currency}}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="row stat-group">
-        <div class="stat-container left">
-          <div class="icon" matTooltip="Realized + Unrealized profit">
-            <mat-icon class="large">paid</mat-icon>
-          </div>
-          <div class="label-value">
-            <div>Total Profit</div>
-            <strong>{{totalProfit | currency}}</strong>
-          </div>
-        </div>
-        <div class="stat-container right">
-          <div class="label-value">
-            <div>Percent</div>
-            <strong>{{totalProfitPercent}}%</strong>
+          <div class="label-value" matTooltip="Total Withdrawn From Balance">
+            <div>Withdrawals</div>
+            <strong>{{withdrawals | currency}}</strong>
           </div>
         </div>
       </div>
@@ -46,15 +28,51 @@
       <div class="row stat-group">
         <div class="stat-container left">
           <div class="icon">
-            <mat-icon class="large" matTooltip="Withdrawals - Deposits">account_balance</mat-icon>
+            <i class="iconsmind-Coin large"></i>
           </div>
-          <div class="label-value">
+          <div class="label-value" matTooltip="Total Deposited (Cost)">
+            <div>Deposits</div>
+            <strong>{{deposits | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value" matTooltip="Total Earnings Compounded">
+            <div>Compounds</div>
+            <strong>{{compounds | currency}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon">
+            <i class="iconsmind-Mine large"></i>
+          </div>
+          <div class="label-value" matTooltip="Withdrawals + Compounds">
+            <div>Claimed</div>
+            <strong>{{totalPayouts | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value" matTooltip="Days Elapsed">
+            <div>Days</div>
+            <strong>{{totalDays}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left">
+          <div class="icon">
+            <i class="iconsmind-Bank large"></i>
+          </div>
+          <div class="label-value" matTooltip="Withdrawals - Deposits">
             <div>Realized Profit</div>
             <strong>{{realizedProfit | currency}}</strong>
           </div>
         </div>
         <div class="stat-container right">
-          <div class="label-value">
+          <div class="label-value" matTooltip="Realized Profit Percentage">
             <div>Percent</div>
             <strong>{{realizedProfitPercent}}%</strong>
           </div>
@@ -64,15 +82,15 @@
       <div class="row stat-group">
         <div class="stat-container left">
           <div class="icon">
-            <mat-icon class="large" matTooltip="Balance + Pending Rewards">request_quote</mat-icon>
+            <i class="iconsmind-Coins large"></i>
           </div>
-          <div class="label-value">
+          <div class="label-value" matTooltip="Balance + Pending Rewards">
             <div>Unrealized Profit</div>
             <strong>{{unrealizedProfit | currency}}</strong>
           </div>
         </div>
         <div class="stat-container right">
-          <div class="label-value">
+          <div class="label-value" matTooltip="Unrealized Profit Percentage">
             <div>Percent</div>
             <strong>{{unrealizedProfitPercent}}%</strong>
           </div>

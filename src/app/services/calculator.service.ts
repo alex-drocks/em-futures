@@ -333,6 +333,7 @@ export class CalculatorService {
       const unrealizedProfitPercent = (unrealizedProfit / total.deposits) * 100;
 
       this._dailyData.push({
+        day: total.daysElapsed,
         date: date.format(this.DATE_FORMAT),
         balance: this.roundNumber(currentBalance),
         rewardsPercent: dailyRewardsPercent,
