@@ -17,7 +17,7 @@
     gap: 2rem;
   }
 
-  .roi-container {
+  .key-stats {
     justify-content: space-evenly;
 
     .row {
@@ -27,7 +27,7 @@
 
   .stat-group {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); // Two equal-width columns
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     max-width: 34ch;
     margin: 1rem 0;

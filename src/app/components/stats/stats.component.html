@@ -5,50 +5,17 @@
       At the end of the investment plan
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content class="card-content-container no-wrap roi-container">
+  <mat-card-content class="card-content-container key-stats">
     <div class="row">
       <div class="row stat-group">
-        <div class="stat-container left">
-          <div class="icon">
-            <i class="iconsmind-Elephant large"></i>
-          </div>
-          <div class="label-value" matTooltip="Total Value Locked">
-            <div>Balance (TVL)</div>
-            <strong>{{balance | currency}}</strong>
-          </div>
-        </div>
-        <div class="stat-container right">
-          <div class="label-value" matTooltip="Total Withdrawn From Balance">
-            <div>Withdrawals</div>
-            <strong>{{withdrawals | currency}}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="row stat-group">
-        <div class="stat-container left">
-          <div class="icon">
-            <i class="iconsmind-Coin large"></i>
-          </div>
-          <div class="label-value" matTooltip="Total Deposited (Cost)">
-            <div>Deposits</div>
-            <strong>{{deposits | currency}}</strong>
-          </div>
-        </div>
-        <div class="stat-container right">
-          <div class="label-value" matTooltip="Total Yield Compounded">
-            <div>Compounds</div>
-            <strong>{{compounds | currency}}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="row stat-group">
-        <div class="stat-container left">
+        <div
+          class="stat-container left"
+          matTooltip="Withdrawals + Compounds ({{withdrawals | currency}} + {{compounds | currency}})"
+        >
           <div class="icon">
             <i class="iconsmind-Mine large"></i>
           </div>
-          <div class="label-value" matTooltip="Withdrawals + Compounds">
+          <div class="label-value">
             <div>Claimed</div>
             <strong>{{totalPayouts | currency}}</strong>
           </div>
@@ -62,11 +29,50 @@
       </div>
 
       <div class="row stat-group">
-        <div class="stat-container left">
+        <div class="stat-container left" matTooltip="Total Deposited (Cost)">
+          <div class="icon">
+            <i class="iconsmind-Coin large"></i>
+          </div>
+          <div class="label-value">
+            <div>Deposits</div>
+            <strong>{{deposits | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value" matTooltip="Total Withdrawn From Balance">
+            <div>Withdrawals</div>
+            <strong>{{withdrawals | currency}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div class="stat-container left" matTooltip="Total Value Locked">
+          <div class="icon">
+            <i class="iconsmind-Elephant large"></i>
+          </div>
+          <div class="label-value">
+            <div>Balance (TVL)</div>
+            <strong>{{balance | currency}}</strong>
+          </div>
+        </div>
+        <div class="stat-container right">
+          <div class="label-value" matTooltip="Total Yield Compounded">
+            <div>Compounds</div>
+            <strong>{{compounds | currency}}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row stat-group">
+        <div
+          class="stat-container left"
+          matTooltip="Withdrawals - Deposits ({{withdrawals | currency}} - {{deposits | currency}})"
+        >
           <div class="icon">
             <i class="iconsmind-Bank large"></i>
           </div>
-          <div class="label-value" matTooltip="Withdrawals - Deposits">
+          <div class="label-value">
             <div>Realized Profit</div>
             <strong>{{realizedProfit | currency}}</strong>
           </div>
@@ -80,11 +86,14 @@
       </div>
 
       <div class="row stat-group">
-        <div class="stat-container left">
+        <div
+          class="stat-container left"
+          matTooltip="Balance + Available Yield - Deposits ({{balance | currency}} + {{availableYield | currency}} - {{deposits | currency}}"
+        >
           <div class="icon">
             <i class="iconsmind-Coins large"></i>
           </div>
-          <div class="label-value" matTooltip="Balance + Available Yield">
+          <div class="label-value">
             <div>Unrealized Profit</div>
             <strong>{{unrealizedProfit | currency}}</strong>
           </div>
@@ -107,7 +116,7 @@
       Value of your investment over time
     </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content class="card-content-container no-wrap">
+  <mat-card-content class="card-content-container">
     <app-time-line-chart></app-time-line-chart>
   </mat-card-content>
 </mat-card>

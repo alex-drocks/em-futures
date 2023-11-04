@@ -73,4 +73,8 @@ export class StatsComponent {
     return this.lastCalculatedDay.totalPayouts;
   }
 
+  public get availableYield(): number {
+    return this.lastCalculatedDay.totalAvailable;
+  }
+
 }
