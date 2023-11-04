@@ -154,7 +154,7 @@ export class TimeLineChartComponent implements OnInit {
         },
         {
           data: this.mapDataToPoints("totalCompounded") as any,
-          label: 'Compounded Earnings',
+          label: 'Compounded Yield',
           backgroundColor: colors.COMPOUNDS_BLUE,
           borderColor: colors.COMPOUNDS_BLUE,
           pointBackgroundColor: colors.COMPOUNDS_BLUE,

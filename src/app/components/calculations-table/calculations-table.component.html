@@ -26,17 +26,17 @@
           <span class="accordion-item-column align-start day-col">Day</span>
           <span class="accordion-item-column align-start date-col">Date</span>
           <span class="accordion-item-column align-end balance-col">Balance<br>(Locked Value)</span>
-          <span class="accordion-item-column align-end yield-percent-col">Earnings<br>(Daily %)</span>
-          <span class="accordion-item-column align-end yield-today-col">Earnings<br>Today</span>
-          <span class="accordion-item-column align-end yield-avail-col">Earnings<br>Available</span>
-          <span class="accordion-item-column align-end action-col">User<br>Action</span>
-          <span class="accordion-item-column align-end withdrawn-col">Withdrawn<br>Today</span>
+          <span class="accordion-item-column align-end yield-percent-col">Yield<br>(Daily %)</span>
+          <span class="accordion-item-column align-end yield-today-col">Yield<br>Today</span>
+          <span class="accordion-item-column align-end yield-avail-col">Yield<br>Available</span>
+          <span class="accordion-item-column align-end action-col">Action</span>
           <span class="accordion-item-column align-end deposited-col">Deposited<br>Today</span>
           <span class="accordion-item-column align-end compounded-col">Compounded<br>Today</span>
+          <span class="accordion-item-column align-end withdrawn-col">Withdrawn<br>Today</span>
           <span class="accordion-item-column align-end difference-col">Balance<br>Change</span>
-          <span class="accordion-item-column align-end tot-withdraw-col">Total<br>Withdrawn</span>
           <span class="accordion-item-column align-end tot-deposit-col">Total<br>Deposited</span>
           <span class="accordion-item-column align-end tot-compound-col">Total<br>Compounded</span>
+          <span class="accordion-item-column align-end tot-withdraw-col">Total<br>Withdrawn</span>
           <span class="accordion-item-column align-end tot-claimed-col">Total<br>Claimed</span>
         </div>
       </cdk-accordion-item>
@@ -65,15 +65,15 @@
             class="accordion-item-column align-end yield-today-col">{{ item.rewardsUnlockedToday | currency }}</span>
           <span class="accordion-item-column align-end yield-avail-col">{{ item.rewardsAvailable | currency }}</span>
           <span class="accordion-item-column align-end action-col">{{ item.actionMade }}</span>
-          <span class="accordion-item-column align-end withdrawn-col">{{ item.withdrawnToday | currency }}</span>
           <span class="accordion-item-column align-end deposited-col">{{ item.depositedToday | currency }}</span>
           <span class="accordion-item-column align-end compounded-col">{{ item.compoundedToday | currency }}</span>
+          <span class="accordion-item-column align-end withdrawn-col">{{ item.withdrawnToday | currency }}</span>
           <span class="accordion-item-column align-end difference-col bold">
             {{ item.balanceDifference >= 0 ? "+" : null }}{{ item.balanceDifference | currency }}
           </span>
-          <span class="accordion-item-column align-end tot-withdraw-col">{{ item.totalWithdrawn | currency }}</span>
           <span class="accordion-item-column align-end tot-deposit-col">{{ item.totalDeposited | currency }}</span>
           <span class="accordion-item-column align-end tot-compound-col">{{ item.totalCompounded | currency }}</span>
+          <span class="accordion-item-column align-end tot-withdraw-col">{{ item.totalWithdrawn | currency }}</span>
           <span class="accordion-item-column align-end tot-claimed-col">{{ item.totalPayouts | currency }}</span>
         </div>
         <div
@@ -89,10 +89,10 @@
               <p>
                 On <strong>{{ item.date }}</strong>, Day <strong>{{ index }}</strong>, you started with a balance of
                 <strong>{{ item.balance | currency }}</strong>.
-                Your earnings rate for the day was <strong>{{ item.rewardsPercent }}%</strong>, which resulted in
-                earnings
+                Your yield rate for the day was <strong>{{ item.rewardsPercent }}%</strong>, which resulted in
+                yield
                 of <strong>{{ item.rewardsUnlockedToday | currency }}</strong> for the day.
-                This brought your available earnings to <strong>{{ item.rewardsAvailable | currency}}</strong>.
+                This brought your available yield to <strong>{{ item.rewardsAvailable | currency}}</strong>.
               </p>
               <p>
                 On this day, you
@@ -117,15 +117,15 @@
               <h3>Rewards Information:</h3>
               <table>
                 <tr>
-                  <td>Daily earnings rate:</td>
+                  <td>Daily yield rate:</td>
                   <td>{{item.rewardsPercent}}%</td>
                 </tr>
                 <tr>
-                  <td>Earnings unlocked today:</td>
+                  <td>Yield unlocked today:</td>
                   <td>{{item.rewardsUnlockedToday | currency}}</td>
                 </tr>
                 <tr>
-                  <td>Accumulated earnings available:</td>
+                  <td>Accumulated yield available:</td>
                   <td>{{item.rewardsAvailable | currency}}</td>
                 </tr>
                 <tr>
