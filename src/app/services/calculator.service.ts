@@ -5,7 +5,7 @@ import * as dayjs from "dayjs";
 import {
   CycleEnum,
   CycleEnumDayValues,
-  DailyRewardsPercent,
+  DailyYieldPercent,
   IDailyData,
   StorageKeys,
   UserActionEnum
@@ -32,7 +32,7 @@ export class CalculatorService {
     depositCycle: CycleEnum.THREE_WEEKS,
     withdrawCycle: CycleEnum.FIVE_DAYS,
     startWithdrawingBalance: 75_000,
-    yearsToForecast: 9,
+    yearsToForecast: 4,
   }
 
   private _dateStart: Date;
@@ -168,46 +168,46 @@ export class CalculatorService {
     return CycleEnumDayValues[cycle];
   }
 
-  public isMaxPayoutsReached(totalPayouts: number): boolean {
+  public isMaxPayouts(totalPayouts: number): boolean {
     return totalPayouts >= this.MAX_PAYOUTS;
   }
 
-  public isMaxBalanceReached(balance: number): boolean {
+  public isMaxBalance(balance: number): boolean {
     return balance >= this.MAX_BALANCE;
   }
 
-  public isStartWithdrawingBalanceReached(balance: number): boolean {
+  public isStartWithdrawingBalance(balance: number): boolean {
     return balance >= this.getStartWithdrawingBalance();
   }
 
-  public getDailyRewardsPercent(totalCompounded: number, totalDeposited: number): DailyRewardsPercent {
-    const compoundSurplus = totalCompounded - totalDeposited;
-
+  public getDailyYieldPercent(totalCompounds: number, totalDeposits: number): DailyYieldPercent {
+    const compoundSurplus = totalCompounds - totalDeposits;
     if (compoundSurplus < 50_000) {
-      return DailyRewardsPercent.PERCENT_0_500;
+      return DailyYieldPercent.PERCENT_0_500;
     } else if (compoundSurplus >= 50_000 && compoundSurplus < 250_000) {
-      return DailyRewardsPercent.PERCENT_0_450;
+      return DailyYieldPercent.PERCENT_0_450;
     } else if (compoundSurplus >= 250_000 && compoundSurplus < 500_000) {
-      return DailyRewardsPercent.PERCENT_0_425;
+      return DailyYieldPercent.PERCENT_0_425;
     } else if (compoundSurplus >= 500_000 && compoundSurplus < 750_000) {
-      return DailyRewardsPercent.PERCENT_0_375;
+      return DailyYieldPercent.PERCENT_0_375;
     } else if (compoundSurplus >= 750_000 && compoundSurplus < 1_000_000) {
-      return DailyRewardsPercent.PERCENT_0_325;
+      return DailyYieldPercent.PERCENT_0_325;
     } else if (compoundSurplus >= 1_000_000) {
-      return DailyRewardsPercent.PERCENT_0_250;
+      return DailyYieldPercent.PERCENT_0_250;
     }
-
-    // This should never be reached unless the logic changes.
     throw new Error("Unhandled value of compoundSurplus");
   }
 
-  public getDailyRewardsRate(dailyPercent: DailyRewardsPercent): number {
+  public getDailyYieldRate(dailyPercent: DailyYieldPercent): number {
     return dailyPercent / 100;
   }
 
-  public getTotalUnlocked(balance: number, totalUnlocked: number, dailyUnlocked: number): number {
-    const newTotalUnlocked = totalUnlocked + dailyUnlocked;
-    return Math.min(newTotalUnlocked, balance, this.MAX_DAILY_WITHDRAWAL);
+  public getUnlockedToday(balance: number, dailyYieldRate: number): number {
+    return balance * dailyYieldRate;
+  }
+
+  public getTotalAvailableToday(balance: number, available: number, dailyUnlocked: number): number {
+    return Math.min(balance, available + dailyUnlocked, this.MAX_DAILY_WITHDRAWAL);
   }
 
   public calculateDailyData(): void {
@@ -222,11 +222,11 @@ export class CalculatorService {
     const total = {
       daysElapsed: 0,
       balance: 0,
-      rewardsAvailable: 0,
+      available: 0,
       withdrawals: 0,
-      rewards: 0,
-      deposits: this.getInitialDeposit(),
+      compounds: 0,
       payouts: 0,
+      deposits: 0,
     }
 
     let startWithdrawingFlag = false;
@@ -234,93 +234,118 @@ export class CalculatorService {
     let nextActionDay = depositDays;
 
     for (let index = 0; index < daysToCalculate; index++) {
-      if (this.isMaxPayoutsReached(total.payouts)) {
-        break;
-      }
       total.daysElapsed = index;
       const date = dayjs(dateStart).add(total.daysElapsed, "day");
-      const dailyRewardsPercent: DailyRewardsPercent = this.getDailyRewardsPercent(total.rewards, total.deposits);
-      const dailyRate = this.getDailyRewardsRate(dailyRewardsPercent);
       const currentBalance = total.balance;
+      const dailyYieldPercent: DailyYieldPercent = this.getDailyYieldPercent(total.compounds, total.deposits);
+      const dailyYieldRate = this.getDailyYieldRate(dailyYieldPercent);
       let actionToday: UserActionEnum = UserActionEnum.HOLD;
-      let rewardsToday = 0;
-      let rewardsAvailable = 0;
+      let unlockedToday = 0;
+      let availableToday = 0;
       let depositedToday = 0;
       let compoundedToday = 0;
       let withdrawnToday = 0;
+      let realizedProfit = 0
+      let realizedProfitPercent = 0;
+      let unrealizedProfit = 0;
+      let unrealizedProfitPercent = 0;
 
-      if (total.daysElapsed === 0) {
-        depositedToday = total.deposits;
-        total.balance = depositedToday;
+      const initFirstDay = () => {
         actionToday = UserActionEnum.INIT;
-      } else {
-        rewardsToday = currentBalance * dailyRate;
-        total.rewardsAvailable = this.getTotalUnlocked(currentBalance, total.rewardsAvailable, rewardsToday);
-        rewardsAvailable = total.rewardsAvailable;
-        if (!startWithdrawingFlag) {
-          startWithdrawingFlag = this.isStartWithdrawingBalanceReached(currentBalance);
-        }
+        depositedToday = this.getInitialDeposit();
+        total.deposits = depositedToday;
+        total.balance = total.deposits;
       }
 
-      const depositCompoundRewards = () => {
+      const calculateAvailable = () => {
+        unlockedToday = this.getUnlockedToday(currentBalance, dailyYieldRate);
+        availableToday = this.getTotalAvailableToday(currentBalance, total.available, unlockedToday);
+        total.available = availableToday;
+      }
+
+      const depositCompoundAvailable = () => {
         actionToday = UserActionEnum.DEPOSIT;
         depositedToday = this.getRegularDeposit();
-        const exceeding = (currentBalance + depositedToday + rewardsAvailable) - this.MAX_BALANCE;
-        compoundedToday = Math.min(rewardsAvailable - exceeding, rewardsAvailable);
+        const exceeding = (currentBalance + depositedToday + availableToday) - this.MAX_BALANCE;
+        compoundedToday = Math.min(availableToday - exceeding, availableToday);
         total.balance += depositedToday + compoundedToday;
         total.deposits += depositedToday;
-        total.rewards += compoundedToday;
+        total.compounds += compoundedToday;
         total.payouts += compoundedToday;
-        total.rewardsAvailable = 0;
+        total.available = 0;
       }
 
-      const withdrawClaimRewards = () => {
+      const withdrawClaimAvailable = () => {
         actionToday = UserActionEnum.WITHDRAW;
-        withdrawnToday = Math.min(currentBalance, rewardsAvailable);
+        withdrawnToday = Math.min(currentBalance, availableToday);
         total.balance -= withdrawnToday;
         total.withdrawals += withdrawnToday;
         total.payouts = Math.min(this.MAX_PAYOUTS, total.payouts + withdrawnToday);
-        total.rewardsAvailable = 0;
+        total.available = 0;
       }
 
-      const canDeposit = !this.isMaxBalanceReached(currentBalance);
-      const canWithdraw = startWithdrawingFlag;
+      const calculateProfit = () => {
+        realizedProfit = total.withdrawals - total.deposits;
+        realizedProfitPercent = (realizedProfit / total.deposits) * 100;
+        unrealizedProfit = (total.balance + total.available) - total.deposits;
+        unrealizedProfitPercent = (unrealizedProfit / total.deposits) * 100;
+      }
 
-      if (this.isMaxPayoutsReached(total.payouts + currentBalance)) {
-        const shouldWithdraw = rewardsAvailable >= currentBalance || rewardsAvailable >= this.MAX_DAILY_WITHDRAWAL;
-        if (shouldWithdraw) {
-          withdrawClaimRewards();
-        }
+      if (this.isMaxPayouts(total.payouts)) {
+        break; // exit the loop when account is maxed
+      }
+
+      const isFirstDay = total.daysElapsed === 0;
+      if (isFirstDay) {
+        initFirstDay();
+
       } else {
-        if (total.daysElapsed === nextActionDay) {
-          if (nextAction === UserActionEnum.DEPOSIT && canDeposit) {
-            depositCompoundRewards();
-            nextAction = canWithdraw ? UserActionEnum.WITHDRAW : UserActionEnum.DEPOSIT;
-          } else if (nextAction === UserActionEnum.WITHDRAW && canWithdraw) {
-            withdrawClaimRewards();
-            nextAction = canDeposit ? UserActionEnum.DEPOSIT : UserActionEnum.WITHDRAW;
+        calculateAvailable();
+
+        const isWithdrawOnlyMode = this.isMaxPayouts(total.payouts + currentBalance);
+        if (isWithdrawOnlyMode) {
+          const shouldWithdraw = availableToday >= currentBalance || availableToday >= this.MAX_DAILY_WITHDRAWAL;
+          if (shouldWithdraw) {
+            withdrawClaimAvailable();
           }
-          nextActionDay += nextAction === UserActionEnum.DEPOSIT ? depositDays : withdrawDays;
+
+        } else {
+          if (total.daysElapsed === nextActionDay) {
+
+            if (!startWithdrawingFlag) {
+              startWithdrawingFlag = this.isStartWithdrawingBalance(currentBalance);
+            }
+
+            const canDeposit = !this.isMaxBalance(currentBalance);
+            const canWithdraw = currentBalance > 0 && startWithdrawingFlag;
+
+            if (nextAction === UserActionEnum.DEPOSIT && canDeposit) {
+              depositCompoundAvailable();
+              nextAction = canWithdraw ? UserActionEnum.WITHDRAW : UserActionEnum.DEPOSIT;
+            } else if (nextAction === UserActionEnum.WITHDRAW && canWithdraw) {
+              withdrawClaimAvailable();
+              nextAction = canDeposit ? UserActionEnum.DEPOSIT : UserActionEnum.WITHDRAW;
+            }
+            nextActionDay += nextAction === UserActionEnum.DEPOSIT ? depositDays : withdrawDays;
+
+          }
         }
       }
 
-      const realizedProfit = total.withdrawals - total.deposits;
-      const realizedProfitPercent = (realizedProfit / total.deposits) * 100;
-      const unrealizedProfit = (total.balance + total.rewardsAvailable) - total.deposits;
-      const unrealizedProfitPercent = (unrealizedProfit / total.deposits) * 100;
+      calculateProfit();
 
       this._dailyData.push({
         day: total.daysElapsed,
         date: date.format(this.DATE_FORMAT),
         balance: this.roundNumber(currentBalance),
-        rewardsPercent: dailyRewardsPercent,
-        rewardsUnlockedToday: this.roundNumber(rewardsToday),
-        rewardsAvailable: this.roundNumber(rewardsAvailable),
+        yieldPercent: dailyYieldPercent,
+        yieldUnlockedToday: this.roundNumber(unlockedToday),
+        availableToday: this.roundNumber(availableToday),
         totalDeposited: this.roundNumber(total.deposits),
-        totalCompounded: this.roundNumber(total.rewards),
+        totalCompounded: this.roundNumber(total.compounds),
         totalWithdrawn: this.roundNumber(total.withdrawals),
         totalPayouts: this.roundNumber(total.payouts),
-        totalRewardsAvailable: this.roundNumber(total.rewardsAvailable),
+        totalAvailable: this.roundNumber(total.available),
         actionMade: actionToday,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),

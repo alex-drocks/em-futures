@@ -44,8 +44,8 @@
       <mat-card-title>Investment Plan</mat-card-title>
       <mat-card-subtitle>
         Every {{depositCycleDays}} day{{depositCycleDays > 1 ? "s" : ""}}, I'll deposit ${{regularDeposit}} to compound
-        accumulated rewards, then {{withdrawCycleDays}} day{{withdrawCycleDays > 1 ? "s" : ""}} later, I'll withdraw the
-        rewards accumulated since the last deposit.
+        my yield, then {{withdrawCycleDays}} day{{withdrawCycleDays > 1 ? "s" : ""}} later, I'll withdraw the
+        yield accumulated since the last deposit.
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -72,6 +72,15 @@
         </mat-form-field>
 
         <mat-form-field class="field">
+          <mat-label>Withdraw Cycle (Claim)</mat-label>
+          <mat-select formControlName="withdrawCycle">
+            <mat-option *ngFor="let cycle of withdrawCycleOptions" [value]="cycle.id">
+              {{cycle.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="field">
           <mat-label>Start withdrawing at balance</mat-label>
           <span matSuffix>$&nbsp;</span>
           <input
@@ -81,15 +90,6 @@
             maxlength="9"
             autocomplete="off"
           >
-        </mat-form-field>
-
-        <mat-form-field class="field">
-          <mat-label>Withdraw Cycle (Claim)</mat-label>
-          <mat-select formControlName="withdrawCycle">
-            <mat-option *ngFor="let cycle of withdrawCycleOptions" [value]="cycle.id">
-              {{cycle.name}}
-            </mat-option>
-          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="field">

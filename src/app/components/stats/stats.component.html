@@ -84,7 +84,7 @@
           <div class="icon">
             <i class="iconsmind-Coins large"></i>
           </div>
-          <div class="label-value" matTooltip="Balance + Pending Rewards">
+          <div class="label-value" matTooltip="Balance + Available Yield">
             <div>Unrealized Profit</div>
             <strong>{{unrealizedProfit | currency}}</strong>
           </div>
@@ -112,32 +112,32 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="card">
-  <mat-card-header>
-    <mat-card-title>End-of-Plan Value</mat-card-title>
-    <mat-card-subtitle>
-      Breakdown of investment value at the conclusion of the plan
-    </mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content class="card-content-container">
-    <div class="row">
-      <app-result-bar-chart
-        [balance]="balance"
-        [deposits]="deposits"
-        [compounds]="compounds"
-        [withdrawals]="withdrawals"
-        [realizedProfit]="realizedProfit"
-        [unrealizedProfit]="unrealizedProfit"
-        [totalPayouts]="totalPayouts"
-      ></app-result-bar-chart>
-      <!--      <app-deposit-pie-chart-->
-      <!--        [deposits]="deposits"-->
-      <!--        [compounds]="compounds"-->
-      <!--        [withdrawals]="withdrawals"-->
-      <!--      ></app-deposit-pie-chart>-->
-    </div>
-  </mat-card-content>
-</mat-card>
+<!--<mat-card class="card">-->
+<!--  <mat-card-header>-->
+<!--    <mat-card-title>End-of-Plan Value</mat-card-title>-->
+<!--    <mat-card-subtitle>-->
+<!--      Breakdown of investment value at the conclusion of the plan-->
+<!--    </mat-card-subtitle>-->
+<!--  </mat-card-header>-->
+<!--  <mat-card-content class="card-content-container">-->
+<!--    <div class="row">-->
+<!--      <app-result-bar-chart-->
+<!--        [balance]="balance"-->
+<!--        [deposits]="deposits"-->
+<!--        [compounds]="compounds"-->
+<!--        [withdrawals]="withdrawals"-->
+<!--        [realizedProfit]="realizedProfit"-->
+<!--        [unrealizedProfit]="unrealizedProfit"-->
+<!--        [totalPayouts]="totalPayouts"-->
+<!--      ></app-result-bar-chart>-->
+<!--      <app-deposit-pie-chart-->
+<!--        [deposits]="deposits"-->
+<!--        [compounds]="compounds"-->
+<!--        [withdrawals]="withdrawals"-->
+<!--      ></app-deposit-pie-chart>-->
+<!--    </div>-->
+<!--  </mat-card-content>-->
+<!--</mat-card>-->
 
 <app-profit-bar-chart
   [withdrawals]="withdrawals"

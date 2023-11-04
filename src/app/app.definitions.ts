@@ -9,7 +9,7 @@ export enum StorageKeys {
   YEARS_TO_FORECAST = "YEARS_TO_FORECAST",
 }
 
-export enum DailyRewardsPercent {
+export enum DailyYieldPercent {
   PERCENT_0_500 = 0.5,
   PERCENT_0_450 = 0.45,
   PERCENT_0_425 = 0.425,
@@ -82,14 +82,14 @@ export interface IDailyData {
   day: number;
   date: string;
   balance: number;
-  rewardsPercent: DailyRewardsPercent;
-  rewardsUnlockedToday: number;
-  rewardsAvailable: number;
+  yieldPercent: DailyYieldPercent;
+  yieldUnlockedToday: number;
+  availableToday: number;
   totalWithdrawn: number;
   totalDeposited: number;
   totalCompounded: number;
   totalPayouts: number;
-  totalRewardsAvailable: number;
+  totalAvailable: number;
   actionMade: UserActionEnum;
   withdrawnToday: number;
   depositedToday: number;
