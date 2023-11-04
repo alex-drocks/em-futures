@@ -29,7 +29,6 @@ export class FormComponent implements OnInit {
       depositCycle: new FormControl(this.depositCycleKey),
       withdrawCycle: new FormControl(this.withdrawCycleKey),
       startWithdrawingBalance: new FormControl(this.startWithdrawingBalance),
-      stopDepositingBalance: new FormControl(this.stopDepositingBalance),
       yearsToForecast: new FormControl(this.yearsToForecast),
     });
 
@@ -60,10 +59,6 @@ export class FormComponent implements OnInit {
     return this.calculator.getStartWithdrawingBalance();
   }
 
-  get stopDepositingBalance(): number {
-    return this.calculator.getStopDepositingBalance();
-  }
-
   get yearsToForecast(): number {
     return this.calculator.getYearsToForecast();
   }
@@ -91,7 +86,6 @@ export class FormComponent implements OnInit {
     this.calculator.setDepositCycle(this.form.value.depositCycle);
     this.calculator.setWithdrawCycle(this.form.value.withdrawCycle);
     this.calculator.setStartWithdrawingBalance(this.form.value.startWithdrawingBalance);
-    this.calculator.setStopDepositingBalance(this.form.value.stopDepositingBalance);
     this.calculator.setYearsToForecast(this.form.value.yearsToForecast);
 
     this.calculator.calculateDailyData();
@@ -116,7 +110,6 @@ export class FormComponent implements OnInit {
         depositCycle: this.calculator.getDepositCycle(),
         withdrawCycle: this.calculator.getWithdrawCycle(),
         startWithdrawingBalance: this.calculator.getStartWithdrawingBalance(),
-        stopDepositingBalance: this.calculator.getStopDepositingBalance(),
         yearsToForecast: this.calculator.getYearsToForecast(),
       },
       {emitEvent: false}

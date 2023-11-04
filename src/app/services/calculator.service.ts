@@ -32,7 +32,6 @@ export class CalculatorService {
     depositCycle: CycleEnum.THREE_WEEKS,
     withdrawCycle: CycleEnum.FIVE_DAYS,
     startWithdrawingBalance: 75_000,
-    stopDepositingBalance: 1_000_000,
     yearsToForecast: 9,
   }
 
@@ -42,7 +41,6 @@ export class CalculatorService {
   private _depositCycle: CycleEnum;
   private _withdrawCycle: CycleEnum;
   private _startWithdrawingBalance: number;
-  private _stopDepositingBalance: number;
   private _yearsToForecast: number;
 
   private _dailyData: IDailyData[];
@@ -54,7 +52,6 @@ export class CalculatorService {
     this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as CycleEnum;
     this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as CycleEnum;
     this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, this.defaults.startWithdrawingBalance);
-    this._stopDepositingBalance = storeLoadNumber(StorageKeys.STOP_DEPOSITING_BALANCE, this.defaults.stopDepositingBalance);
     this._yearsToForecast = storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast);
     this._dailyData = [];
   }
@@ -66,7 +63,6 @@ export class CalculatorService {
     this._depositCycle = this.defaults.depositCycle;
     this._withdrawCycle = this.defaults.withdrawCycle;
     this._startWithdrawingBalance = this.defaults.startWithdrawingBalance;
-    this._stopDepositingBalance = this.defaults.stopDepositingBalance;
     this._yearsToForecast = this.defaults.yearsToForecast;
     this._dailyData = [];
   }
@@ -93,10 +89,6 @@ export class CalculatorService {
 
   public getStartWithdrawingBalance(): number {
     return this._startWithdrawingBalance;
-  }
-
-  public getStopDepositingBalance(): number {
-    return this._stopDepositingBalance;
   }
 
   public getYearsToForecast(): number {
@@ -160,17 +152,6 @@ export class CalculatorService {
     storeSave(StorageKeys.START_WITHDRAWING_BALANCE, this._startWithdrawingBalance);
   }
 
-  public setStopDepositingBalance(value: number): void {
-    this._stopDepositingBalance = value ?? this.defaults.stopDepositingBalance;
-    if (this._stopDepositingBalance > this.MAX_BALANCE) {
-      this._stopDepositingBalance = this.MAX_BALANCE;
-    }
-    if (this._stopDepositingBalance < this.MIN_DEPOSIT) {
-      this._stopDepositingBalance = this.MIN_DEPOSIT;
-    }
-    storeSave(StorageKeys.STOP_DEPOSITING_BALANCE, this._stopDepositingBalance);
-  }
-
   public setYearsToForecast(value: number): void {
     this._yearsToForecast = value ?? this.defaults.yearsToForecast;
     if (this._yearsToForecast > this.MAX_YEARS_FORECAST) {
@@ -193,10 +174,6 @@ export class CalculatorService {
 
   public isMaxBalanceReached(balance: number): boolean {
     return balance >= this.MAX_BALANCE;
-  }
-
-  public isStopDepositBalanceReached(balance: number): boolean {
-    return balance >= this.getStopDepositingBalance();
   }
 
   public isStartWithdrawingBalanceReached(balance: number): boolean {

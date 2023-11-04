@@ -24,7 +24,6 @@ describe('CalculatorService', () => {
       expect(service.getDepositCycle()).toEqual(service.defaults.depositCycle);
       expect(service.getWithdrawCycle()).toEqual(service.defaults.withdrawCycle);
       expect(service.getStartWithdrawingBalance()).toEqual(service.defaults.startWithdrawingBalance);
-      expect(service.getStopDepositingBalance()).toEqual(service.defaults.stopDepositingBalance);
       expect(service.getYearsToForecast()).toEqual(service.defaults.yearsToForecast);
     });
 
@@ -68,37 +67,12 @@ describe('CalculatorService', () => {
       expect(service.getStartWithdrawingBalance()).toEqual(service.MIN_DEPOSIT);
     });
 
-    it('should set stop depositing balance, respect boundaries ', () => {
-      const testValue = 500000;
-      service.setStopDepositingBalance(testValue);
-      expect(service.getStopDepositingBalance()).toEqual(testValue);
-      service.setStopDepositingBalance(1000001); // More than MAX_BALANCE
-      expect(service.getStopDepositingBalance()).toEqual(service.MAX_BALANCE);
-    });
-
     it('should set years to forecast, respect boundaries ', () => {
       const testValue = 5;
       service.setYearsToForecast(testValue);
       expect(service.getYearsToForecast()).toEqual(testValue);
       service.setYearsToForecast(11);
       expect(service.getYearsToForecast()).toEqual(service.MAX_YEARS_FORECAST);
-    });
-  });
-
-  describe('isStopDepositBalanceReached', () => {
-    it('should return true when balance is equal to stop depositing balance', () => {
-      spyOn(service, 'getStopDepositingBalance').and.returnValue(1000);
-      expect(service.isStopDepositBalanceReached(1000)).toBeTrue();
-    });
-
-    it('should return true when balance is greater than stop depositing balance', () => {
-      spyOn(service, 'getStopDepositingBalance').and.returnValue(1000);
-      expect(service.isStopDepositBalanceReached(1001)).toBeTrue();
-    });
-
-    it('should return false when balance is less than stop depositing balance', () => {
-      spyOn(service, 'getStopDepositingBalance').and.returnValue(1000);
-      expect(service.isStopDepositBalanceReached(999)).toBeFalse();
     });
   });
 
