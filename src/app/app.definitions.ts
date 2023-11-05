@@ -90,7 +90,7 @@ export interface IDailyData {
   totalCompounded: number;
   totalPayouts: number;
   totalAvailable: number;
-  actionMade: UserActionEnum;
+  action: UserActionEnum;
   withdrawnToday: number;
   depositedToday: number;
   compoundedToday: number;

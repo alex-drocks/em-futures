@@ -19,6 +19,7 @@ export class CalculatorService {
   public calculationEmitter: EventEmitter<void> = new EventEmitter();
 
   public DATE_FORMAT = "YYYY-MM-DD";
+  public BASE_YIELD = DailyYieldPercent.PERCENT_0_500;
   public MIN_DEPOSIT = 200;
   public MAX_BALANCE = 1_000_000;
   public MAX_PAYOUTS = 2_500_000;
@@ -346,7 +347,7 @@ export class CalculatorService {
         totalWithdrawn: this.roundNumber(total.withdrawals),
         totalPayouts: this.roundNumber(total.payouts),
         totalAvailable: this.roundNumber(total.available),
-        actionMade: actionToday,
+        action: actionToday,
         depositedToday: this.roundNumber(depositedToday),
         compoundedToday: this.roundNumber(compoundedToday),
         withdrawnToday: this.roundNumber(withdrawnToday),
