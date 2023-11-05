@@ -1,0 +1,34 @@
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Withdrawals Chart</mat-card-title>
+    <mat-card-subtitle>
+      Visualize your withdrawals over time
+    </mat-card-subtitle>
+
+    <mat-form-field>
+      <mat-label>Period</mat-label>
+      <mat-select [value]="groupByPeriod" (valueChange)="handleGroupByChange($event)">
+        <mat-option [value]="'YEARLY'">
+          Yearly
+        </mat-option>
+        <mat-option [value]="'MONTHLY'">
+          Monthly
+        </mat-option>
+        <mat-option [value]="'WEEKLY'">
+          Weekly
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-header>
+  <mat-card-content class="chart-container">
+
+    <canvas
+      baseChart
+      [type]="barChartType"
+      [datasets]="barChartData.datasets"
+      [labels]="barChartData.labels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend">
+    </canvas>
+  </mat-card-content>
+</mat-card>

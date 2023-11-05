@@ -1,5 +1,22 @@
 import {IDailyData} from "../app.definitions";
 import * as dayjs from "dayjs";
+import * as isoWeek from "dayjs/plugin/isoWeek";
+
+dayjs.extend(isoWeek);
+
+export function groupByYear(data: IDailyData[]): Record<string, IDailyData[]> {
+  return data.reduce((acc, currentData) => {
+    const year = dayjs(currentData.date).isoWeekYear();
+
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+
+    acc[year].push(currentData);
+
+    return acc;
+  }, {} as Record<string, IDailyData[]>);
+}
 
 export function groupByMonth(data: IDailyData[]): Record<string, IDailyData[]> {
   return data.reduce((acc, currentData) => {
@@ -10,6 +27,23 @@ export function groupByMonth(data: IDailyData[]): Record<string, IDailyData[]> {
     }
 
     acc[monthYear].push(currentData);
+
+    return acc;
+  }, {} as Record<string, IDailyData[]>);
+}
+
+export function groupByWeek(data: IDailyData[]): Record<string, IDailyData[]> {
+  return data.reduce((acc, currentData) => {
+    const year = dayjs(currentData.date).isoWeekYear();
+    const week = dayjs(currentData.date).isoWeek();
+
+    const weekYearKey = `${year}-W${week.toString().padStart(2, '0')}`;
+
+    if (!acc[weekYearKey]) {
+      acc[weekYearKey] = [];
+    }
+
+    acc[weekYearKey].push(currentData);
 
     return acc;
   }, {} as Record<string, IDailyData[]>);

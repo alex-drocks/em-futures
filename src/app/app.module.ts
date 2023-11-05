@@ -1,12 +1,7 @@
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  MatNativeDateModule,
-} from '@angular/material/core';
-import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule,} from '@angular/material/core';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -28,8 +23,9 @@ import {TimeLineChartComponent} from './components/stats/time-line-chart/time-li
 import {NgOptimizedImage} from "@angular/common";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatGridListModule} from "@angular/material/grid-list";
-import { ClaimBarChartComponent } from './components/stats/claim-bar-chart/claim-bar-chart.component';
-import { ProfitBarChartComponent } from './components/stats/profit-bar-chart/profit-bar-chart.component';
+import {ClaimBarChartComponent} from './components/stats/claim-bar-chart/claim-bar-chart.component';
+import {ProfitBarChartComponent} from './components/stats/profit-bar-chart/profit-bar-chart.component';
+import {WithdrawBarChartComponent} from './components/stats/withdraw-bar-chart/withdraw-bar-chart.component';
 
 
 export const MY_DATE_FORMATS = {
@@ -55,6 +51,7 @@ export const MY_DATE_FORMATS = {
     TimeLineChartComponent,
     ClaimBarChartComponent,
     ProfitBarChartComponent,
+    WithdrawBarChartComponent,
   ],
   imports: [
     BrowserModule,

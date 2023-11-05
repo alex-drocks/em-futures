@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 import {colors} from "../../../helpers/colors";
 import {IDailyData} from "../../../app.definitions";
@@ -9,10 +9,7 @@ import {groupByMonth} from "../../../helpers/groupBy";
   templateUrl: './claim-bar-chart.component.html',
   styleUrls: ['./claim-bar-chart.component.scss']
 })
-export class ClaimBarChartComponent {
-  @Input() compounds!: number;
-  @Input() withdrawals!: number;
-  @Input() totalPayouts!: number;
+export class ClaimBarChartComponent implements OnChanges {
   @Input() dailyData!: IDailyData[];
 
   public barChartData!: ChartData<'bar'>;

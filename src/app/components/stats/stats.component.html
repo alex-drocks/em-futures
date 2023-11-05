@@ -109,6 +109,10 @@
   </mat-card-content>
 </mat-card>
 
+<app-withdraw-bar-chart
+  [dailyData]="dailyData"
+></app-withdraw-bar-chart>
+
 <mat-card class="card">
   <mat-card-header>
     <mat-card-title>Investment Growth Chart</mat-card-title>
@@ -148,16 +152,6 @@
 <!--  </mat-card-content>-->
 <!--</mat-card>-->
 
-<app-profit-bar-chart
-  [withdrawals]="withdrawals"
-  [deposits]="deposits"
-  [realizedProfit]="realizedProfit"
-  [dailyData]="dailyData"
-></app-profit-bar-chart>
+<app-profit-bar-chart [dailyData]="dailyData"></app-profit-bar-chart>
 
-<app-claim-bar-chart
-  [withdrawals]="withdrawals"
-  [compounds]="compounds"
-  [totalPayouts]="totalPayouts"
-  [dailyData]="dailyData"
-></app-claim-bar-chart>
+<app-claim-bar-chart [dailyData]="dailyData"></app-claim-bar-chart>

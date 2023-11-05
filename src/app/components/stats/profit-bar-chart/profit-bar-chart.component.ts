@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {IDailyData} from "../../../app.definitions";
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 import {colors} from "../../../helpers/colors";
@@ -9,11 +9,7 @@ import {groupByMonth} from "../../../helpers/groupBy";
   templateUrl: './profit-bar-chart.component.html',
   styleUrls: ['./profit-bar-chart.component.scss']
 })
-export class ProfitBarChartComponent {
-  @Input() deposits!: number;
-  @Input() withdrawals!: number;
-  @Input() realizedProfit!: number;
-
+export class ProfitBarChartComponent implements OnChanges {
   @Input() dailyData!: IDailyData[];
 
   public barChartData!: ChartData<'bar'>;
