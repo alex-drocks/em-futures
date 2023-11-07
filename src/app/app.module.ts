@@ -26,6 +26,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {ClaimBarChartComponent} from './components/stats/claim-bar-chart/claim-bar-chart.component';
 import {ProfitBarChartComponent} from './components/stats/profit-bar-chart/profit-bar-chart.component';
 import {WithdrawBarChartComponent} from './components/stats/withdraw-bar-chart/withdraw-bar-chart.component';
+import { KeyStatsComponent } from './components/stats/key-stats/key-stats.component';
 
 
 export const MY_DATE_FORMATS = {
@@ -52,6 +53,7 @@ export const MY_DATE_FORMATS = {
     ClaimBarChartComponent,
     ProfitBarChartComponent,
     WithdrawBarChartComponent,
+    KeyStatsComponent,
   ],
   imports: [
     BrowserModule,

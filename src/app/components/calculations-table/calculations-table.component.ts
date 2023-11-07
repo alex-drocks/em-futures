@@ -75,7 +75,7 @@ export class CalculationsTableComponent implements OnDestroy {
         this.rows = this.dailyData.filter(data => data.action === UserActionEnum.WITHDRAW);
         break;
       case GroupByEnum.MAX_BALANCE:
-        this.rows = this.dailyData.filter(data => data.balance >= this.calculator.MAX_BALANCE - 50_000);
+        this.rows = this.dailyData.filter(data => data.balance >= this.calculator.MAX_BALANCE - 100_000);
         break;
       case GroupByEnum.MAX_DAILY_YIELD:
         this.rows = this.dailyData.filter(data => data.availableToday >= this.calculator.MAX_DAILY_WITHDRAWAL);

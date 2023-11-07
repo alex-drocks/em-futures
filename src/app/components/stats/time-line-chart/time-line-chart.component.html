@@ -1,7 +1,17 @@
-<canvas
-  baseChart
-  class="chart"
-  [data]="lineChartData"
-  [options]="lineChartOptions"
-  [type]="lineChartType"
-></canvas>
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Investment Growth Chart</mat-card-title>
+    <mat-card-subtitle>
+      Value of your investment over time
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="card-content-container">
+    <canvas
+      baseChart
+      class="chart"
+      [data]="lineChartData"
+      [options]="lineChartOptions"
+      [type]="lineChartType"
+    ></canvas>
+  </mat-card-content>
+</mat-card>

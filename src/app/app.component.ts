@@ -11,8 +11,8 @@ export class AppComponent {
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    this.showScrollBottom = window.scrollY > 800 && !this.isScrolledToBottom();
-    this.showScrollTop = window.scrollY >= 3000;
+    this.showScrollBottom = window.scrollY > 100 && !this.isScrolledToBottom();
+    this.showScrollTop = window.scrollY >= 2500;
   }
 
   public goToTop(): void {
