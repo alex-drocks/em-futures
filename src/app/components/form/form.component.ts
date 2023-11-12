@@ -19,6 +19,8 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.calculator.loadInitialState();
+
     this.depositCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
     this.withdrawCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
 

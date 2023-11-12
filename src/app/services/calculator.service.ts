@@ -36,17 +36,19 @@ export class CalculatorService {
     yearsToForecast: 4,
   }
 
-  private _dateStart: Date;
-  private _initialDeposit: number;
-  private _regularDeposit: number;
-  private _depositCycle: CycleEnum;
-  private _withdrawCycle: CycleEnum;
-  private _startWithdrawingBalance: number;
-  private _yearsToForecast: number;
-
-  private _dailyData: IDailyData[];
+  private _dateStart: Date = this.defaults.dateStart;
+  private _initialDeposit: number = this.defaults.initialDeposit;
+  private _regularDeposit: number = this.defaults.regularDeposit;
+  private _depositCycle: CycleEnum = this.defaults.depositCycle;
+  private _withdrawCycle: CycleEnum = this.defaults.withdrawCycle;
+  private _startWithdrawingBalance: number = this.defaults.startWithdrawingBalance;
+  private _yearsToForecast: number = this.defaults.yearsToForecast;
+  private _dailyData: IDailyData[] = [];
 
   constructor() {
+  }
+
+  public loadInitialState(): void {
     this._dateStart = storeLoadDate(StorageKeys.DATE_START, this.defaults.dateStart);
     this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.defaults.initialDeposit);
     this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.defaults.regularDeposit);
