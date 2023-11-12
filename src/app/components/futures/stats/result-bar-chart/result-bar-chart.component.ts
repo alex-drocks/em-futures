@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
-import {CalculatorService} from "../../../../services/calculator.service";
+import {FuturesCalculatorService} from "../../../../services/futures/futures-calculator.service";
 import {colors} from "../../../../helpers/colors";
 
 @Component({

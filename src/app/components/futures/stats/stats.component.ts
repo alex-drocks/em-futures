@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {CalculatorService} from "../../../services/calculator.service";
-import {IDailyData} from "../../../app.definitions";
+import {FuturesCalculatorService} from "../../../services/futures/futures-calculator.service";
+import {IDailyData} from "../futures.definitions";
 
 @Component({
   selector: 'app-stats',
@@ -9,7 +9,7 @@ import {IDailyData} from "../../../app.definitions";
 })
 export class StatsComponent {
 
-  constructor(private calculator: CalculatorService) {
+  constructor(private calculator: FuturesCalculatorService) {
   }
 
   public get dailyData(): IDailyData[] {

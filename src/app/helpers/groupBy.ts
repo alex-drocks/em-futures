@@ -1,4 +1,4 @@
-import {IDailyData} from "../app.definitions";
+import {IDailyData} from "../components/futures/futures.definitions";
 import * as dayjs from "dayjs";
 import * as isoWeek from "dayjs/plugin/isoWeek";
 

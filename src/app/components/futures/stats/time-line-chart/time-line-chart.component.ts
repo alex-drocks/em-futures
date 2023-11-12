@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Chart, ChartConfiguration, ChartType, Point, PointElement} from "chart.js";
 import Annotation from 'chartjs-plugin-annotation';
-import {IDailyData} from "../../../../app.definitions";
-import {CalculatorService} from "../../../../services/calculator.service";
+import {IDailyData} from "../../futures.definitions";
+import {FuturesCalculatorService} from "../../../../services/futures/futures-calculator.service";
 import {Subscription} from "rxjs";
 import {colors} from "../../../../helpers/colors";
 
@@ -18,7 +18,7 @@ export class TimeLineChartComponent implements OnInit {
   public lineChartData!: ChartConfiguration['data'];
   public lineChartOptions: ChartConfiguration['options'];
 
-  constructor(private readonly calculator: CalculatorService) {
+  constructor(private readonly calculator: FuturesCalculatorService) {
     Chart.register(Annotation);
   }
 

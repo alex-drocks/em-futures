@@ -1,6 +1,6 @@
 // https://bscscan.com/address/0x5B24f7645eec47EDd997bF8faDF3E340518af11B#code
 import {EventEmitter, Injectable} from '@angular/core';
-import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../helpers/storage";
+import {storeDelete, storeLoadDate, storeLoadNumber, storeLoadString, storeSave} from "../../helpers/storage";
 import * as dayjs from "dayjs";
 import {
   CycleEnum,
@@ -9,14 +9,14 @@ import {
   IDailyData,
   StorageKeys,
   UserActionEnum
-} from "../app.definitions";
-import {getDate, getNumber, round} from "../helpers/utils";
+} from "../../components/futures/futures.definitions";
+import {getDate, getNumber, round} from "../../helpers/utils";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CalculatorService {
+export class FuturesCalculatorService {
   public calculationEmitter: EventEmitter<void> = new EventEmitter();
 
   public DATE_FORMAT = "YYYY-MM-DD";

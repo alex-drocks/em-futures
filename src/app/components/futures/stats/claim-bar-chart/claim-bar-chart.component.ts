@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
 import {colors} from "../../../../helpers/colors";
-import {IDailyData} from "../../../../app.definitions";
+import {IDailyData} from "../../futures.definitions";
 import {groupByMonth} from "../../../../helpers/groupBy";
 
 @Component({

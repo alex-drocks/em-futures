@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
-import {CalculatorService} from './calculator.service'; // Adjust the path accordingly
-import {CycleEnum, DailyYieldPercent} from '../app.definitions';
+import {FuturesCalculatorService} from './futures-calculator.service'; // Adjust the path accordingly
+import {CycleEnum, DailyYieldPercent} from '../../components/futures/futures.definitions';
 import {of} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 
@@ -9,16 +9,16 @@ const activatedRouteStub = {
 };
 
 describe('CalculatorService', () => {
-  let service: CalculatorService;
+  let service: FuturesCalculatorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        CalculatorService,
+        FuturesCalculatorService,
         {provide: ActivatedRoute, useValue: activatedRouteStub}
       ]
     });
-    service = TestBed.inject(CalculatorService);
+    service = TestBed.inject(FuturesCalculatorService);
     service.resetDefaults();
   });
 

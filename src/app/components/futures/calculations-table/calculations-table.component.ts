@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
-import {CalculatorService} from "../../../services/calculator.service";
-import {IDailyData, UserActionEnum} from "../../../app.definitions";
+import {FuturesCalculatorService} from "../../../services/futures/futures-calculator.service";
+import {IDailyData, UserActionEnum} from "../futures.definitions";
 import {storeLoadString, storeSave} from "../../../helpers/storage";
 import {Subscription} from "rxjs";
 
@@ -30,7 +30,7 @@ export class CalculationsTableComponent implements OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(private calculator: CalculatorService) {
+  constructor(private calculator: FuturesCalculatorService) {
     this.loadPreference();
     this.subscription = this.calculator.calculationEmitter.subscribe(() => {
       this.filterRows();

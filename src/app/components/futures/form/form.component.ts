@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {CalculatorService} from "../../../services/calculator.service";
-import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../../../app.definitions";
+import {FuturesCalculatorService} from "../../../services/futures/futures-calculator.service";
+import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../futures.definitions";
 import {storeClearAll} from "../../../helpers/storage";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
@@ -17,7 +17,7 @@ export class FormComponent implements OnInit {
   public withdrawCycleOptions!: ISelectOption[];
 
   constructor(
-    private calculator: CalculatorService,
+    private calculator: FuturesCalculatorService,
     private snackBar: MatSnackBar,
   ) {
   }
@@ -95,7 +95,7 @@ export class FormComponent implements OnInit {
     this.calculator.calculateDailyData();
 
     this.forceRefreshFormDisplayedValues();
-    this.snackBar.open("🐘 Calculation results are ready!");
+    this.snackBar.open("✅ Calculations ready! 🐘");
   }
 
   resetDefaults(): void {
