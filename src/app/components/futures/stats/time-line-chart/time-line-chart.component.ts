@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Chart, ChartConfiguration, ChartType, Point, PointElement} from "chart.js";
 import Annotation from 'chartjs-plugin-annotation';
-import {IDailyData} from "../../../app.definitions";
-import {CalculatorService} from "../../../services/calculator.service";
+import {IDailyData} from "../../../../app.definitions";
+import {CalculatorService} from "../../../../services/calculator.service";
 import {Subscription} from "rxjs";
-import {colors} from "../../../helpers/colors";
+import {colors} from "../../../../helpers/colors";
 
 @Component({
   selector: 'app-time-line-chart',

@@ -1,15 +1,15 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {IDailyData} from "../../../app.definitions";
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
-import {colors} from "../../../helpers/colors";
-import {groupByMonth} from "../../../helpers/groupBy";
+import {colors} from "../../../../helpers/colors";
+import {IDailyData} from "../../../../app.definitions";
+import {groupByMonth} from "../../../../helpers/groupBy";
 
 @Component({
-  selector: 'app-profit-bar-chart',
-  templateUrl: './profit-bar-chart.component.html',
-  styleUrls: ['./profit-bar-chart.component.scss']
+  selector: 'app-claim-bar-chart',
+  templateUrl: './claim-bar-chart.component.html',
+  styleUrls: ['./claim-bar-chart.component.scss']
 })
-export class ProfitBarChartComponent implements OnChanges {
+export class ClaimBarChartComponent implements OnChanges {
   @Input() dailyData!: IDailyData[];
 
   public barChartData!: ChartData<'bar'>;
@@ -36,48 +36,48 @@ export class ProfitBarChartComponent implements OnChanges {
     const groupedData = groupByMonth(this.dailyData);
 
     const labels: string[] = [];
-    const totalDepositedData: number[] = [];
     const totalWithdrawnData: number[] = [];
-    const realizedProfitData: number[] = [];
+    const totalCompoundedData: number[] = [];
+    const totalClaimedData: number[] = [];
 
     for (const [month, data] of Object.entries(groupedData)) {
       labels.push(month);  // Add the month-year to labels
 
       // Calculate the total compounded and withdrawn for this month
       let totalWithdrawnForMonth = 0;
-      let totalDepositedForMonth = 0;
-      let totalRealizedProfitForMonth = 0;
+      let totalCompoundedForMonth = 0;
+      let totalClaimedForMonth = 0;
 
       data.forEach(dailyData => {
         totalWithdrawnForMonth = dailyData.totalWithdrawn;
-        totalDepositedForMonth = dailyData.totalDeposited;
-        totalRealizedProfitForMonth = dailyData.realizedProfit;
+        totalCompoundedForMonth = dailyData.totalCompounded;
+        totalClaimedForMonth = dailyData.totalPayouts;
       });
 
-      totalDepositedData.push(totalDepositedForMonth);
       totalWithdrawnData.push(totalWithdrawnForMonth);
-      realizedProfitData.push(totalRealizedProfitForMonth);
+      totalCompoundedData.push(totalCompoundedForMonth);
+      totalClaimedData.push(totalClaimedForMonth);
     }
 
     this.barChartData = {
       labels: labels,
       datasets: [
         {
-          label: 'Total Deposited',
-          data: totalDepositedData,
-          backgroundColor: colors.DEPOSIT_RED,
-          stack: 'Stack 0'
-        },
-        {
-          label: 'Realized Profit',
-          data: realizedProfitData,
-          backgroundColor: colors.REALIZED_BLUE,
-          stack: 'Stack 0'
-        },
-        {
           label: 'Total Withdrawn',
           data: totalWithdrawnData,
           backgroundColor: colors.WITHDRAWALS_GREEN,
+          stack: 'Stack 0'
+        },
+        {
+          label: 'Total Compounded',
+          data: totalCompoundedData,
+          backgroundColor: colors.COMPOUNDS_BLUE,
+          stack: 'Stack 0'
+        },
+        {
+          label: 'Total Claimed',
+          data: totalClaimedData,
+          backgroundColor: colors.PAYOUTS_PURPLE,
           stack: 'Stack 0'
         }
       ]

@@ -10,7 +10,8 @@ import {
   StorageKeys,
   UserActionEnum
 } from "../app.definitions";
-import {round} from "../helpers/utils";
+import {getDate, getNumber, round} from "../helpers/utils";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -45,18 +46,43 @@ export class CalculatorService {
   private _yearsToForecast: number = this.defaults.yearsToForecast;
   private _dailyData: IDailyData[] = [];
 
-  constructor() {
+  constructor(
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+  ) {
+    this.loadInitialState();
   }
 
-  public loadInitialState(): void {
-    this._dateStart = storeLoadDate(StorageKeys.DATE_START, this.defaults.dateStart);
-    this._initialDeposit = storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.defaults.initialDeposit);
-    this._regularDeposit = storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.defaults.regularDeposit);
-    this._depositCycle = storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as CycleEnum;
-    this._withdrawCycle = storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as CycleEnum;
-    this._startWithdrawingBalance = storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, this.defaults.startWithdrawingBalance);
-    this._yearsToForecast = storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast);
+  private loadInitialState(): void {
+    const params = this.route.snapshot.queryParams;
+
+    this._dateStart = getDate(params?.["dateStart"], storeLoadDate(StorageKeys.DATE_START, this.defaults.dateStart));
+    this._initialDeposit = getNumber(params?.["initialDeposit"], storeLoadNumber(StorageKeys.INITIAL_DEPOSIT, this.defaults.initialDeposit));
+    this._regularDeposit = getNumber(params?.["regularDeposit"], storeLoadNumber(StorageKeys.REGULAR_DEPOSIT, this.defaults.regularDeposit));
+    this._depositCycle = params?.["depositCycle"] || storeLoadString(StorageKeys.DEPOSIT_CYCLE, this.defaults.depositCycle) as CycleEnum;
+    this._withdrawCycle = params?.["withdrawCycle"] || storeLoadString(StorageKeys.WITHDRAW_CYCLE, this.defaults.withdrawCycle) as CycleEnum;
+    this._startWithdrawingBalance = getNumber(params?.["startWithdrawingBalance"], storeLoadNumber(StorageKeys.START_WITHDRAWING_BALANCE, this.defaults.startWithdrawingBalance));
+    this._yearsToForecast = getNumber(params?.["yearsToForecast"], storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast));
+
     this._dailyData = [];
+  }
+
+  private silentUpdateQueryParams(): void {
+    const currentParams = this.route.snapshot.queryParams;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParamsHandling: "merge",
+      queryParams: {
+        ...currentParams,
+        dateStart: this._dateStart.getTime(),
+        initialDeposit: this._initialDeposit,
+        regularDeposit: this._regularDeposit,
+        depositCycle: this._depositCycle,
+        withdrawCycle: this._withdrawCycle,
+        startWithdrawingBalance: this._startWithdrawingBalance,
+        yearsToForecast: this._yearsToForecast,
+      },
+    });
   }
 
   public resetDefaults(): void {
@@ -110,6 +136,7 @@ export class CalculatorService {
       this._dateStart = this.defaults.dateStart;
       storeDelete(StorageKeys.DATE_START);
     }
+    this.silentUpdateQueryParams();
   }
 
   public setInitialDeposit(value: number): void {
@@ -121,6 +148,7 @@ export class CalculatorService {
       this._initialDeposit = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.INITIAL_DEPOSIT, this._initialDeposit);
+    this.silentUpdateQueryParams();
   }
 
   public setRegularDeposit(value: number): void {
@@ -132,16 +160,19 @@ export class CalculatorService {
       this._regularDeposit = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.REGULAR_DEPOSIT, this._regularDeposit);
+    this.silentUpdateQueryParams();
   }
 
   public setDepositCycle(value: CycleEnum): void {
     this._depositCycle = value ?? this.defaults.depositCycle;
     storeSave(StorageKeys.DEPOSIT_CYCLE, this._depositCycle);
+    this.silentUpdateQueryParams();
   }
 
   public setWithdrawCycle(value: CycleEnum): void {
     this._withdrawCycle = value ?? this.defaults.withdrawCycle;
     storeSave(StorageKeys.WITHDRAW_CYCLE, this._withdrawCycle);
+    this.silentUpdateQueryParams();
   }
 
   public setStartWithdrawingBalance(value: number): void {
@@ -153,6 +184,7 @@ export class CalculatorService {
       this._startWithdrawingBalance = this.MAX_BALANCE;
     }
     storeSave(StorageKeys.START_WITHDRAWING_BALANCE, this._startWithdrawingBalance);
+    this.silentUpdateQueryParams();
   }
 
   public setYearsToForecast(value: number): void {
@@ -161,6 +193,7 @@ export class CalculatorService {
       this._yearsToForecast = this.MAX_YEARS_FORECAST;
     }
     storeSave(StorageKeys.YEARS_TO_FORECAST, this._yearsToForecast);
+    this.silentUpdateQueryParams();
   }
 
   public roundNumber(value: number, precision: number = 2): number {

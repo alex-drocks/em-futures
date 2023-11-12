@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,25 +6,5 @@ import {Component, HostListener} from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  showScrollBottom = false;
-  showScrollTop = false;
 
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    this.showScrollBottom = window.scrollY > 100 && !this.isScrolledToBottom();
-    this.showScrollTop = window.scrollY >= 2500;
-  }
-
-  public goToTop(): void {
-    window.scrollTo(0, 0);
-  }
-
-  public goToBottom(): void {
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-
-  public isScrolledToBottom() {
-    const tolerance = 100;
-    return window.scrollY + window.innerHeight + tolerance >= document.body.scrollHeight;
-  }
 }

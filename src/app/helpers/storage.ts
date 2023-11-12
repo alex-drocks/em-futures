@@ -1,4 +1,4 @@
-import {getNumber} from "./utils";
+import {getDate, getNumber} from "./utils";
 
 function storeSave(key: string, value: any) {
   let parsedValue: string = "";
@@ -22,7 +22,7 @@ function storeDelete(key: string): void {
 
 function storeLoadDate(key: string, fallback?: Date): Date {
   const storedValue = storeLoad(key);
-  return storedValue ? new Date(storedValue) : fallback || new Date();
+  return getDate(storedValue, fallback || new Date());
 }
 
 function storeLoadNumber(key: string, fallback?: number): number {

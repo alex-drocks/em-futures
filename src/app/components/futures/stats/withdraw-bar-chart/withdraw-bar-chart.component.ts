@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {IDailyData} from "../../../app.definitions";
+import {IDailyData} from "../../../../app.definitions";
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
-import {groupByMonth, groupByWeek, groupByYear} from "../../../helpers/groupBy";
-import {colors} from "../../../helpers/colors";
-import {storeLoadString, storeSave} from "../../../helpers/storage";
+import {groupByMonth, groupByWeek, groupByYear} from "../../../../helpers/groupBy";
+import {colors} from "../../../../helpers/colors";
+import {storeLoadString, storeSave} from "../../../../helpers/storage";
 
 enum GroupByPeriodEnum {
   WEEKLY = "WEEKLY",

@@ -1,12 +1,23 @@
 import {TestBed} from '@angular/core/testing';
 import {CalculatorService} from './calculator.service'; // Adjust the path accordingly
 import {CycleEnum, DailyYieldPercent} from '../app.definitions';
+import {of} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
+
+const activatedRouteStub = {
+  snapshot: {queryParams: of({})},
+};
 
 describe('CalculatorService', () => {
   let service: CalculatorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        CalculatorService,
+        {provide: ActivatedRoute, useValue: activatedRouteStub}
+      ]
+    });
     service = TestBed.inject(CalculatorService);
     service.resetDefaults();
   });

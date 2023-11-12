@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {CalculatorService} from "../../services/calculator.service";
-import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../../app.definitions";
-import {storeClearAll} from "../../helpers/storage";
+import {CalculatorService} from "../../../services/calculator.service";
+import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../../../app.definitions";
+import {storeClearAll} from "../../../helpers/storage";
 
 
 @Component({
@@ -19,8 +19,6 @@ export class FormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.calculator.loadInitialState();
-
     this.depositCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
     this.withdrawCycleOptions = this.mapCycleEnumToSelectOptions(CycleEnum, "");
 

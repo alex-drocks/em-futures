@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
-import {CalculatorService} from "../../../services/calculator.service";
-import {colors} from "../../../helpers/colors";
+import {CalculatorService} from "../../../../services/calculator.service";
+import {colors} from "../../../../helpers/colors";
 
 @Component({
   selector: 'app-result-bar-chart',

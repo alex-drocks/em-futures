@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import DatalabelsPlugin from 'chartjs-plugin-datalabels';
 import {ChartConfiguration, ChartData, ChartType} from "chart.js";
-import {colors} from "../../../helpers/colors";
+import {colors} from "../../../../helpers/colors";
 
 @Component({
   selector: 'app-deposit-pie-chart',
