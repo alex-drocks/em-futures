@@ -3,6 +3,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {CalculatorService} from "../../../services/calculator.service";
 import {CycleEnum, CycleEnumDayValues, CycleTranslations, ISelectOption} from "../../../app.definitions";
 import {storeClearAll} from "../../../helpers/storage";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 @Component({
@@ -15,7 +16,10 @@ export class FormComponent implements OnInit {
   public depositCycleOptions!: ISelectOption[];
   public withdrawCycleOptions!: ISelectOption[];
 
-  constructor(private calculator: CalculatorService) {
+  constructor(
+    private calculator: CalculatorService,
+    private snackBar: MatSnackBar,
+  ) {
   }
 
   ngOnInit(): void {
@@ -91,6 +95,7 @@ export class FormComponent implements OnInit {
     this.calculator.calculateDailyData();
 
     this.forceRefreshFormDisplayedValues();
+    this.snackBar.open("🐘 Calculation results are ready!");
   }
 
   resetDefaults(): void {
@@ -98,6 +103,13 @@ export class FormComponent implements OnInit {
     this.calculator.resetDefaults();
     this.forceRefreshFormDisplayedValues();
     this.calculator.calculateDailyData();
+    this.snackBar.open("⚙ Restored default settings!");
+  }
+
+  copyURL(): void {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    this.snackBar.open("🔗 Copied link to clipboard!");
   }
 
   private forceRefreshFormDisplayedValues(): void {

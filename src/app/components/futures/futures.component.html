@@ -10,12 +10,15 @@
 <app-stats></app-stats>
 <app-calculations-table></app-calculations-table>
 
-<footer>
+<nav>
   <button *ngIf="showScrollBottom" class="go-to-button go-down" mat-mini-fab color="accent" (click)="goToBottom()">
     <mat-icon fontIcon="keyboard_double_arrow_down"></mat-icon>
   </button>
   <button *ngIf="showScrollTop" class="go-to-button go-up" mat-mini-fab color="accent" (click)="goToTop()">
     <mat-icon fontIcon="keyboard_double_arrow_up"></mat-icon>
   </button>
+</nav>
+
+<footer>
   <a href="https://wiki.elephant.money/services/elephant-money-futures-vaults">wiki.elephant.money</a>
 </footer>

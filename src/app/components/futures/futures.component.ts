@@ -11,8 +11,8 @@ export class FuturesComponent {
 
   @HostListener('window:scroll', [])
   onScroll(): void {
-    this.showScrollBottom = window.scrollY > 100 && !this.isScrolledToBottom();
-    this.showScrollTop = window.scrollY >= 2500;
+    this.showScrollTop = window.scrollY >= 1;
+    this.showScrollBottom = window.scrollY > 1 && !this.isScrolledToBottom();
   }
 
   public goToTop(): void {

@@ -65,6 +65,8 @@ export class CalculatorService {
     this._yearsToForecast = getNumber(params?.["yearsToForecast"], storeLoadNumber(StorageKeys.YEARS_TO_FORECAST, this.defaults.yearsToForecast));
 
     this._dailyData = [];
+
+    this.silentUpdateQueryParams();
   }
 
   private silentUpdateQueryParams(): void {

@@ -30,6 +30,7 @@ import {NgChartsModule} from "ng2-charts";
 import {NgOptimizedImage} from "@angular/common";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 export const MY_DATE_FORMATS = {
@@ -77,19 +78,13 @@ export const MY_DATE_FORMATS = {
     NgOptimizedImage,
     MatTooltipModule,
     MatGridListModule,
+    MatSnackBarModule,
   ],
   exports: [RouterModule],
   providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-    {
-      provide:
-      MAT_DATE_FORMATS,
-      useValue: MY_DATE_FORMATS
-    },
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],},
+    {provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3000}}
   ],
   bootstrap: [AppComponent]
 })
